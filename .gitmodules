@@ -1,0 +1,3 @@
+[submodule "TS_tools"]
+	path = TS_tools
+	url = https://github.com/JHerasP/TS_tools
