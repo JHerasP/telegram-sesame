@@ -1,13 +1,21 @@
-import TelegramBot from "node-telegram-bot-api";
+import TelegramBot, { CallbackQuery, Message } from "node-telegram-bot-api";
+import { logginIn as logginScreen, welcomeScreen } from "../telegram-screens/public/screens-public";
 import { telegramTools } from "../tools";
-import TELEGRAM_MESSAGES from "../tools/telegram-messages";
 
-const TM = TELEGRAM_MESSAGES;
-
-export function sendWelcomeMessage(msg: TelegramBot.Message, telegramBot: TelegramBot): void {
+export function sendWelcomeMessage(telegramBot: TelegramBot, msg: Message): void {
   const chatId = msg.chat.id;
   const userId = msg.from?.id;
   if (!userId) return;
+  const { text, keyboard } = welcomeScreen();
 
-  telegramTools.sendMessage(telegramBot, chatId, TM.start, []);
+  telegramTools.sendMessage(telegramBot, chatId, text, keyboard);
+}
+
+export function sendLogginInProcess(telegramBot: TelegramBot, callback: CallbackQuery): void {
+  const userId = callback.from?.id;
+  const messageId = callback.message?.message_id;
+  if (!userId) return;
+  const { text, keyboard } = logginScreen();
+
+  telegramTools.editMessage(telegramBot, userId, text, keyboard, messageId);
 }
