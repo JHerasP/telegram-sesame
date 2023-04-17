@@ -25,20 +25,20 @@ export class SesameBotPublic {
 
       if (callbacks.includes(command)) sendLogginInProcess(this.publicBot, callbackQuery);
     });
+
     this.publicBot.on("callback_query", (callbackQuery) => {
       const command = callbackQuery.data as ReturnType<typeof welcomeScreen>["callbacks"][number];
       const { callbacks } = welcomeScreen();
 
-      const file = fs.readFileSync("src/api/Sesame-bot-public/html.html", {});
+      const file = fs.readFileSync("src/api/Sesame-bot-public/html.html", { encoding: "utf-8" });
+
+      const result = file.replace(/PETETE/g, "replacement");
+
+      const buff = Buffer.from(result, "utf-8");
 
       if (callbacks.includes(command))
         this.publicBot
-          .sendDocument(
-            callbackQuery.from.id,
-            file,
-            {},
-            { filename: "Text.html", contentType: "application/octet-stream" }
-          )
+          .sendDocument(callbackQuery.from.id, buff, {}, { filename: "Text.html", contentType: "text/html" })
           .catch((er) => console.info("X", er));
     });
   }
