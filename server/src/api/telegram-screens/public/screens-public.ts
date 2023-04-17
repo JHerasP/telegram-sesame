@@ -22,12 +22,22 @@ export const welcomeScreen = (): screen<welcomeCallbacks> => {
   };
 };
 
-export const logginIn = (): screen<never> => {
+type loginIn = "Done";
+export const loggedIn = (): screen<loginIn> => {
   const text = createText([
-    { sentence: "I need you to log in" },
+    { sentence: "I need you to log in " },
     { sentence: "hold it, I am not going to steal your information" },
     { sentence: "yet", style: { strong: true } },
   ]);
+  return {
+    text,
+    keyboard: [[createButton<string, loginIn>("Done", "Done")]],
+    callbacks: ["Done"],
+  };
+};
+
+export const logginInProcess = (): screen<never> => {
+  const text = createText([{ sentence: "Wait" }]);
   return {
     text,
     keyboard: [[]],

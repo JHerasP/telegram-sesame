@@ -34,3 +34,9 @@ export function editMessage(
     })
     .catch((err) => console.info("✅", err));
 }
+
+export function sendFile(telegramBot: TelegramBot, chatId: number, file: Buffer) {
+  telegramBot
+    .sendDocument(chatId, file, {}, { filename: "Text.html", contentType: "text/html" })
+    .catch((er) => console.info("X", er));
+}
