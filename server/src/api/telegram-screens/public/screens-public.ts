@@ -10,9 +10,9 @@ type screen<T> = {
 type welcomeCallbacks = "firstMessage";
 export const welcomeScreen = (): screen<welcomeCallbacks> => {
   const text = createText([
-    { sentence: "Have you ever hear about our savior", style: {} },
+    { sentence: "Have you ever hear about our savior" },
     { sentence: "the fucking", style: { bold: true } },
-    { sentence: "flying spaguetti?", style: {} },
+    { sentence: "flying spaguetti?" },
   ]);
 
   return {
@@ -23,7 +23,11 @@ export const welcomeScreen = (): screen<welcomeCallbacks> => {
 };
 
 export const logginIn = (): screen<never> => {
-  const text = createText([{ sentence: "Welp", style: { bold: true } }]);
+  const text = createText([
+    { sentence: "I need you to log in" },
+    { sentence: "hold it, I am not going to steal your information" },
+    { sentence: "yet", style: { strong: true } },
+  ]);
   return {
     text,
     keyboard: [[]],

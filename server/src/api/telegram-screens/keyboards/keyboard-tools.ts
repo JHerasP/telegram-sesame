@@ -11,12 +11,12 @@ export const createButton = <T extends string, Y extends string>(
 
 export type TTextStyle = {
   sentence: string;
-  style: {
-    bold?: boolean;
-    strong?: boolean;
-    italic?: boolean;
-    underline?: boolean;
-    jumpLine?: boolean;
+  style?: {
+    bold?: true;
+    strong?: true;
+    italic?: true;
+    underline?: true;
+    jumpLine?: true;
   };
 };
 export const createText = (text: TTextStyle[]): string => {
@@ -35,12 +35,12 @@ const addStyles = (line: TTextStyle) => {
   let sentence = line.sentence;
 
   Object.entries(line.style).forEach((style) => {
-    const [key, value] = style as [keyof TTextStyle["style"], boolean];
-    if (key === "bold" && value) sentence = `<b>${sentence}</b>`;
-    if (key === "italic" && value) sentence = `<i>${sentence}</i>`;
-    if (key === "strong" && value) sentence = `<strong>${sentence}</strong>`;
-    if (key === "underline" && value) sentence = `<u>${sentence}</u>`;
-    if (key === "jumpLine" && value) sentence = `\n ${sentence}`;
+    const [key] = style as [keyof TTextStyle["style"], boolean];
+    if (key === "bold") sentence = `<b>${sentence}</b>`;
+    if (key === "italic") sentence = `<i>${sentence}</i>`;
+    if (key === "strong") sentence = `<strong>${sentence}</strong>`;
+    if (key === "underline") sentence = `<u>${sentence}</u>`;
+    if (key === "jumpLine") sentence = `\n ${sentence}`;
     else sentence = ` ${sentence} `; // Keep the spaces
   });
   return sentence;
