@@ -11,6 +11,7 @@ export function sendMessage(
       reply_markup: {
         inline_keyboard: keyboard,
       },
+      parse_mode: "HTML",
     })
     .catch(() => undefined);
 }
@@ -29,6 +30,7 @@ export function editMessage(
       reply_markup: {
         inline_keyboard: keyboard,
       },
+      parse_mode: "HTML",
     })
-    .catch(() => undefined);
+    .catch((err) => console.info("✅", err));
 }

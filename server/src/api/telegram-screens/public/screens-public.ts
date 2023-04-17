@@ -1,5 +1,5 @@
 import { InlineKeyboardButton } from "node-telegram-bot-api";
-import { createButton } from "../keyboards/callback-buttons";
+import { createButton, createText } from "../keyboards/keyboard-tools";
 
 type screen<T> = {
   text: string;
@@ -7,20 +7,26 @@ type screen<T> = {
   callbacks: T[];
 };
 
-type welcomeCallbacks = "hey";
+type welcomeCallbacks = "firstMessage";
 export const welcomeScreen = (): screen<welcomeCallbacks> => {
+  const text = createText([
+    { sentence: "Have you ever hear about our savior", style: {} },
+    { sentence: "the fucking", style: { bold: true } },
+    { sentence: "flying spaguetti?", style: {} },
+  ]);
+
   return {
-    text: "Have you ever hear about our savior the fucking flying spaguetti?",
-    keyboard: [[createButton<string, welcomeCallbacks>("Leave me alone", "hey")]],
-    callbacks: ["hey"],
+    text,
+    keyboard: [[createButton<string, welcomeCallbacks>("We only live once, lets go!", "firstMessage")]],
+    callbacks: ["firstMessage"],
   };
 };
 
-type logginInCallbacks = "Ok";
-export const logginIn = (): screen<logginInCallbacks> => {
+export const logginIn = (): screen<never> => {
+  const text = createText([{ sentence: "Welp", style: { bold: true } }]);
   return {
-    text: "I am working on it, please be patient",
-    keyboard: [[createButton<string, logginInCallbacks>("Wubba Lubba Dub Dub!", "Ok")]],
-    callbacks: ["Ok"],
+    text,
+    keyboard: [[]],
+    callbacks: [],
   };
 };
