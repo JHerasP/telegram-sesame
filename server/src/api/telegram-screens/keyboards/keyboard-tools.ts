@@ -40,8 +40,9 @@ const addStyles = (line: TTextStyle) => {
     if (key === "italic") sentence = `<i>${sentence}</i>`;
     if (key === "strong") sentence = `<strong>${sentence}</strong>`;
     if (key === "underline") sentence = `<u>${sentence}</u>`;
-    if (key === "jumpLine") sentence = `\n ${sentence}`;
+    if (key === "jumpLine") sentence = `${sentence} \n`;
     else sentence = ` ${sentence} `; // Keep the spaces
   });
+
   return sentence;
 };

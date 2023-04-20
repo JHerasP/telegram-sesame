@@ -25,9 +25,9 @@ export const welcomeScreen = (): screen<welcomeCallbacks> => {
 type loginIn = "Done";
 export const loggedIn = (): screen<loginIn> => {
   const text = createText([
-    { sentence: "I need you to log in " },
-    { sentence: "hold it, I am not going to steal your information" },
-    { sentence: "yet", style: { strong: true } },
+    { sentence: "I need you to log in, hold it, I am not going to steal your information" },
+    { sentence: "yet.", style: { strong: true, jumpLine: true } },
+    { sentence: "After you finish it, You will receibe a message on this chat." },
   ]);
   return {
     text,
