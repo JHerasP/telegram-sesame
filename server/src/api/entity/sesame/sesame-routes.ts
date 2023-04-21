@@ -1,8 +1,10 @@
 import { Response, Router } from "express";
+import { ExpressBody } from "../../../../../TS_tools/request-utility";
 
 const router = Router();
 
-router.get("/", async (_req, res: Response) => {
+router.post("/", async (req: ExpressBody<{ email: string; password: string }>, res: Response) => {
+  console.log(req.body);
   res.send("Hey");
 });
 
