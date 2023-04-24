@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "fs": "^0.0.1-security",
     "node-telegram-bot-api": "^0.61.0"
