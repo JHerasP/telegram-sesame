@@ -7,6 +7,7 @@ const ENV = {
   port: process.env.SESAME_PROJECT_PORT!,
   telegramToken: process.env.SESAME_TELEGRAM_TOKEN!,
   sesameUrl: process.env.SESAME_URL!,
+  sesameCrypto: process.env.SESAME_CRYPTO!,
 } as const;
 
 export { ENV };

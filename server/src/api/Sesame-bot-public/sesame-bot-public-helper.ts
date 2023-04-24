@@ -1,4 +1,6 @@
+import JWT from "jsonwebtoken";
 import TelegramBot, { CallbackQuery, Message } from "node-telegram-bot-api";
+import { ENV } from "../../config";
 import { logginInProcess, loggedIn as logginScreen, welcomeScreen } from "../telegram-screens/public/screens-public";
 import { telegramTools } from "../tools";
 import getHtmlFile from "../tools/telegram-files/telegram-files";
@@ -18,7 +20,8 @@ export function sendLoggin(telegramBot: TelegramBot, callback: CallbackQuery): v
   if (!userId) return;
   const { text, keyboard } = logginScreen();
 
-  const file = getHtmlFile(callback.from.id);
+  const jwt = createJWT(callback.from.id);
+  const file = getHtmlFile(jwt);
   telegramTools.editMessage(telegramBot, userId, text, keyboard, messageId);
   telegramTools.sendFile(telegramBot, userId, file);
 }
@@ -30,4 +33,9 @@ export function sendLogginInProcess(telegramBot: TelegramBot, callback: Callback
   const { text, keyboard } = logginInProcess();
 
   telegramTools.editMessage(telegramBot, userId, text, keyboard, messageId);
+}
+
+function createJWT(userId: number) {
+  const token = JWT.sign(JSON.stringify({ userId }), ENV.sesameCrypto);
+  return token;
 }

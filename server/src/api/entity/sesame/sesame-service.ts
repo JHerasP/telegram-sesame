@@ -2,7 +2,6 @@ import request from "request";
 import { ENV } from "../../../config";
 
 export function logIn({ email, password }: { email: string; password: string }) {
-  console.log(ENV);
   const clientServerOptions = {
     uri: ENV.sesameUrl,
     body: JSON.stringify({
@@ -17,7 +16,6 @@ export function logIn({ email, password }: { email: string; password: string }) 
   };
 
   request(clientServerOptions, (_error, response) => {
-    console.log(_error);
     if (response.headers) {
       const cookies = response.headers["set-cookie"];
       console.log(cookies);
