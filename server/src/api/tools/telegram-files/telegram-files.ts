@@ -5,7 +5,5 @@ export default function getHtmlFile(jwt: string): Buffer {
 
   const result = file.replace(/PETETE/g, jwt);
 
-  console.log(jwt, result);
-
   return Buffer.from(result, "utf-8");
 }

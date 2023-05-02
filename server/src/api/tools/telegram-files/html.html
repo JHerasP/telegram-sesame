@@ -16,7 +16,7 @@
         <div style="display: flex; flex-direction: column; justify-content: center; gap: 20px">
           <div>
             <label style="display: block">Email</label>
-            <input type="password" id="yourEmbarrassingTeenagerEmail" />
+            <input type="text" id="yourEmbarrassingTeenagerEmail" />
           </div>
 
           <div>
@@ -45,8 +45,22 @@
         },
         body: JSON.stringify({ email, password }),
       })
-        .then(() => window.alert("Everything went fine, you can leave this page"))
-        .catch(() => window.alert("There was an error, check your password"));
+        .then((response) => {
+          if (!response.ok) throw new Error();
+          return response.json();
+        })
+        .then((error) => {
+          if (error.error) {
+            console.error(error);
+            throw new Error();
+          } else {
+            window.alert(`Everything went fine. Please, leave me alone.`);
+            window.close();
+          }
+        })
+        .catch((error) => {
+          window.alert(`Meh, something went wrong, check your password`);
+        });
     }
   </script>
 </html>

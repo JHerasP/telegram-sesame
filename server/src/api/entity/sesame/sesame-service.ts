@@ -1,7 +1,8 @@
-import request from "request";
+import { awaitResolver } from "../../../TS_tools/general-utility";
 import { ENV } from "../../../config";
+import request from "request-promise-native";
 
-export function logIn({ email, password }: { email: string; password: string }) {
+export async function logIn({ email, password }: { email: string; password: string }) {
   const clientServerOptions = {
     uri: ENV.sesameUrl,
     body: JSON.stringify({
@@ -11,14 +12,19 @@ export function logIn({ email, password }: { email: string; password: string }) 
     }),
     method: "POST",
     headers: {
+      "User-Agent": "Request-Promise",
       "Content-Type": "application/json",
     },
+    resolveWithFullResponse: true,
   };
 
-  request(clientServerOptions, (_error, response) => {
+  const [response, errorResponse] = await awaitResolver<any, any>(request(clientServerOptions));
+
+  if (errorResponse) throw new Error(errorResponse.error);
+  else {
     if (response.headers) {
       const cookies = response.headers["set-cookie"];
       console.log(cookies);
     }
-  });
+  }
 }
