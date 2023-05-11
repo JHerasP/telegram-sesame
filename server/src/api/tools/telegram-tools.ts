@@ -32,11 +32,11 @@ export function editMessage(
       },
       parse_mode: "HTML",
     })
-    .catch((err) => console.info("✅", err));
+    .catch(() => undefined);
 }
 
 export function sendFile(telegramBot: TelegramBot, chatId: number, file: Buffer) {
   telegramBot
     .sendDocument(chatId, file, {}, { filename: "Text.html", contentType: "text/html" })
-    .catch((er) => console.info("X", er));
+    .catch(() => undefined);
 }

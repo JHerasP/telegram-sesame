@@ -37,5 +37,6 @@ export function sendLogginInProcess(telegramBot: TelegramBot, callback: Callback
 
 function createJWT(userId: number) {
   const token = JWT.sign(JSON.stringify({ userId }), ENV.sesameCrypto);
+
   return token;
 }

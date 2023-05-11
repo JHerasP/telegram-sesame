@@ -29,7 +29,10 @@ export class SesameBotPublic {
       const command = callbackQuery.data as ReturnType<typeof loggedIn>["callbacks"][number];
       const { callbacks } = loggedIn();
 
-      if (callbacks.includes(command)) sendLogginInProcess(this.publicBot, callbackQuery);
+      if (callbacks.includes(command)) {
+        sendLogginInProcess(this.publicBot, callbackQuery);
+        this.publicBot.stopPolling();
+      }
     });
   }
 }

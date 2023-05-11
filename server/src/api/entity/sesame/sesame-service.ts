@@ -1,8 +1,9 @@
+import request from "request-promise-native";
 import { awaitResolver } from "../../../TS_tools/general-utility";
 import { ENV } from "../../../config";
-import request from "request-promise-native";
+import { SesameBot } from "../../Sesame-bot/SesameBot";
 
-export async function logIn({ email, password }: { email: string; password: string }) {
+export async function logIn({ email, password }: { email: string; password: string }, jwt: string) {
   const clientServerOptions = {
     uri: ENV.sesameUrl,
     body: JSON.stringify({
@@ -24,7 +25,9 @@ export async function logIn({ email, password }: { email: string; password: stri
   else {
     if (response.headers) {
       const cookies = response.headers["set-cookie"];
-      console.log(cookies);
+      const decoded = Buffer.from(jwt.split(".")[1], "base64").toString();
+
+      new SesameBot(JSON.parse(decoded).userId, cookies[1]);
     }
   }
 }
