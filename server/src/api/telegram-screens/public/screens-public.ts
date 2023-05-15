@@ -44,3 +44,16 @@ export const logginInProcess = (): screen<never> => {
     callbacks: [],
   };
 };
+type logged = "Logged";
+export const loggedScreen = (): screen<logged> => {
+  const text = createText([
+    { sentence: "Everithing went" },
+    { sentence: "fine", style: { bold: true, jumpLine: true } },
+  ]);
+
+  return {
+    text,
+    keyboard: [[createButton<string, logged>("Start", "Logged")]],
+    callbacks: ["Logged"],
+  };
+};

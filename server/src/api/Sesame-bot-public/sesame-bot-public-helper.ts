@@ -1,7 +1,12 @@
 import JWT from "jsonwebtoken";
 import TelegramBot, { CallbackQuery, Message } from "node-telegram-bot-api";
 import { ENV } from "../../config";
-import { logginInProcess, loggedIn as logginScreen, welcomeScreen } from "../telegram-screens/public/screens-public";
+import {
+  loggedScreen,
+  logginInProcess,
+  loggedIn as logginScreen,
+  welcomeScreen,
+} from "../telegram-screens/public/screens-public";
 import { telegramTools } from "../tools";
 import getHtmlFile from "../tools/telegram-files/telegram-files";
 
@@ -39,4 +44,11 @@ function createJWT(userId: number) {
   const token = JWT.sign(JSON.stringify({ userId }), ENV.sesameCrypto);
 
   return token;
+}
+
+export function sendLoggedIn(telegramBot: TelegramBot, userId: number): void {
+  if (!userId) return;
+  const { text, keyboard } = loggedScreen();
+
+  telegramTools.sendMessage(telegramBot, userId, text, keyboard);
 }

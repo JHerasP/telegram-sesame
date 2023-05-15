@@ -3,7 +3,12 @@ import { configIndex } from "../../config";
 import { loggedIn, welcomeScreen } from "../telegram-screens/public/screens-public";
 import TELEGRAM_COMMANDS from "../tools/telegram-commands";
 
-import { sendLogginInProcess, sendLoggin as sendLoggin, sendWelcomeMessage } from "./sesame-bot-public-helper";
+import {
+  sendLogginInProcess,
+  sendLoggin as sendLoggin,
+  sendWelcomeMessage,
+  sendLoggedIn,
+} from "./sesame-bot-public-helper";
 
 const TOKEN = configIndex.ENV.telegramToken;
 const TC = TELEGRAM_COMMANDS;
@@ -29,10 +34,11 @@ export class SesameBotPublic {
       const command = callbackQuery.data as ReturnType<typeof loggedIn>["callbacks"][number];
       const { callbacks } = loggedIn();
 
-      if (callbacks.includes(command)) {
-        sendLogginInProcess(this.publicBot, callbackQuery);
-        this.publicBot.stopPolling();
-      }
+      if (callbacks.includes(command)) sendLogginInProcess(this.publicBot, callbackQuery);
     });
+  }
+
+  public sendLoggedInMessage(userId: string) {
+    sendLoggedIn(this.publicBot, parseInt(userId));
   }
 }

@@ -15,4 +15,4 @@ app.use(
 
 app.listen(PORT, () => console.info(`Server is listening on ${PORT}`));
 
-new SesameBotPublic();
+export const sesameBot = new SesameBotPublic();
