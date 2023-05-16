@@ -2,9 +2,10 @@ import JWT from "jsonwebtoken";
 import TelegramBot, { CallbackQuery, Message } from "node-telegram-bot-api";
 import { ENV } from "../../config";
 import {
+  infoScreen,
   loggedScreen,
-  logginInProcess,
-  loggedIn as logginScreen,
+  firstStepsScreen as logginScreen,
+  menuScreen,
   welcomeScreen,
 } from "../telegram-screens/public/screens-public";
 import { telegramTools } from "../tools";
@@ -31,15 +32,6 @@ export function sendLoggin(telegramBot: TelegramBot, callback: CallbackQuery): v
   telegramTools.sendFile(telegramBot, userId, file);
 }
 
-export function sendLogginInProcess(telegramBot: TelegramBot, callback: CallbackQuery): void {
-  const userId = callback.from?.id;
-  const messageId = callback.message?.message_id;
-  if (!userId) return;
-  const { text, keyboard } = logginInProcess();
-
-  telegramTools.editMessage(telegramBot, userId, text, keyboard, messageId);
-}
-
 function createJWT(userId: number) {
   const token = JWT.sign(JSON.stringify({ userId }), ENV.sesameCrypto);
 
@@ -51,4 +43,25 @@ export function sendLoggedIn(telegramBot: TelegramBot, userId: number): void {
   const { text, keyboard } = loggedScreen();
 
   telegramTools.sendMessage(telegramBot, userId, text, keyboard);
+}
+
+export function sendMenu(telegramBot: TelegramBot, callback: CallbackQuery): void {
+  const userId = callback.from?.id;
+  const messageId = callback.message?.message_id;
+  if (!userId) return;
+  const { text, keyboard } = menuScreen();
+
+  telegramTools.editMessage(telegramBot, userId, text, keyboard, messageId);
+}
+
+export function handleMenu(
+  telegramBot: TelegramBot,
+  callback: CallbackQuery,
+  command: ReturnType<typeof menuScreen>["callbacks"][number]
+): void {
+  const userId = callback.from?.id;
+  const messageId = callback.message?.message_id;
+  if (!userId) return;
+  const { text, keyboard } = infoScreen();
+  if (command === "MenuScreen: Info") telegramTools.editMessage(telegramBot, userId, text, keyboard, messageId);
 }

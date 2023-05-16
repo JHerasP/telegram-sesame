@@ -6,54 +6,111 @@ type screen<T> = {
   keyboard: InlineKeyboardButton[][];
   callbacks: T[];
 };
+export type telegramButtonsCallbacks = welcomeCallbacks | loggedCallbacks | menuCallbacks | infoMenuCallbacks;
 
-type welcomeCallbacks = "firstMessage";
+type welcomeCallbacks = "wellcomeScreen: Conditions";
 export const welcomeScreen = (): screen<welcomeCallbacks> => {
   const text = createText([
-    { sentence: "Have you ever hear about our savior" },
-    { sentence: "the fucking", style: { bold: true } },
-    { sentence: "flying spaguetti?" },
+    { sentence: "ヾ(•ω•`)o", style: { strong: true } },
+    { sentence: " Wellcome to the sesame bot 1993", style: { strong: true, underline: true, jumpLine: true } },
+    { sentence: "", style: { jumpLine: true } },
+    { sentence: "Before we start, I need you to accept the next " },
+    { sentence: "conditions:", style: { jumpLine: true, strong: true } },
+    { sentence: "", style: { jumpLine: true } },
+    { sentence: "- I won't blame the creator for any bug or mistake that this" },
+    { sentence: "rushed", style: { strong: true, jumpLine: true } },
+    { sentence: "bot makes.", style: { jumpLine: true } },
+    { sentence: "", style: { jumpLine: true } },
+    { sentence: "- I won't talk about this bot to anybody.", style: { jumpLine: true } },
+    { sentence: "", style: { jumpLine: true } },
+    {
+      sentence: "- If you are happy with the bot, you have to ",
+    },
+    { sentence: "pat", style: { strong: true } },
+    { sentence: "the creator on the head and say: " },
+    { sentence: "good boy", style: { italic: true } },
   ]);
 
   return {
     text,
-    keyboard: [[createButton<string, welcomeCallbacks>("We only live once, lets go!", "firstMessage")]],
-    callbacks: ["firstMessage"],
+    keyboard: [[createButton<string, welcomeCallbacks>("We only live once, lets go!", "wellcomeScreen: Conditions")]],
+    callbacks: ["wellcomeScreen: Conditions"],
   };
 };
 
-type loginIn = "Done";
-export const loggedIn = (): screen<loginIn> => {
+export const firstStepsScreen = (): screen<never> => {
   const text = createText([
-    { sentence: "I need you to log in, hold it, I am not going to steal your information" },
-    { sentence: "yet.", style: { strong: true, jumpLine: true } },
-    { sentence: "After you finish it, You will receibe a message on this chat." },
+    { sentence: "First, I need you to " },
+    { sentence: "log in.", style: { strong: true, jumpLine: true } },
+    { sentence: "Don't worry, I am not going to steal your information (⌐■_■),", style: { jumpLine: true } },
+    { sentence: "", style: { jumpLine: true } },
+    { sentence: "This is a file with a log in form." },
+    { sentence: "After you finish it, You will receibe a message on" },
+    { sentence: "this", style: { bold: true } },
+    { sentence: "chat." },
   ]);
-  return {
-    text,
-    keyboard: [[createButton<string, loginIn>("Done", "Done")]],
-    callbacks: ["Done"],
-  };
-};
-
-export const logginInProcess = (): screen<never> => {
-  const text = createText([{ sentence: "Wait" }]);
   return {
     text,
     keyboard: [[]],
     callbacks: [],
   };
 };
-type logged = "Logged";
-export const loggedScreen = (): screen<logged> => {
+
+type loggedCallbacks = "LoggedScreen: start";
+export const loggedScreen = (): screen<loggedCallbacks> => {
   const text = createText([
-    { sentence: "Everithing went" },
-    { sentence: "fine", style: { bold: true, jumpLine: true } },
+    { sentence: "Everything went fine...", style: { jumpLine: true } },
+    { sentence: "Yes I know, I am also surprised.", style: { jumpLine: true } },
+    { sentence: "", style: { jumpLine: true } },
+    { sentence: "Please remmeber that the log in iformation will last" },
+    { sentence: "less than a month", style: { strong: true, jumpLine: true } },
+    { sentence: "When the time comes, I will ask you again to log in" },
   ]);
 
   return {
     text,
-    keyboard: [[createButton<string, logged>("Start", "Logged")]],
-    callbacks: ["Logged"],
+    keyboard: [[createButton<string, loggedCallbacks>("I want to eat pancakes (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧", "LoggedScreen: start")]],
+    callbacks: ["LoggedScreen: start"],
+  };
+};
+
+type menuCallbacks = `MenuScreen: ${"Info" | "Check in" | "Check out" | "Options"}`;
+export const menuScreen = (): screen<menuCallbacks> => {
+  const text = createText([
+    { sentence: "So, It is sesame time, do as you wish " },
+    { sentence: "ヽ(✿ﾟ▽ﾟ)ノ", style: { bold: true } },
+  ]);
+
+  return {
+    text,
+    keyboard: [
+      [createButton<string, menuCallbacks>("Loggin info", "MenuScreen: Info")],
+      [createButton<string, menuCallbacks>("Check in", "MenuScreen: Check in")],
+      [createButton<string, menuCallbacks>("Check out", "MenuScreen: Check out")],
+      [createButton<string, menuCallbacks>("Options", "MenuScreen: Options")],
+    ],
+    callbacks: ["MenuScreen: Info", "MenuScreen: Check in", "MenuScreen: Check out", "MenuScreen: Options"],
+  };
+};
+
+type infoMenuCallbacks = "infoScreen: Back";
+export const infoScreen = (): screen<infoMenuCallbacks> => {
+  const text = createText([
+    {
+      sentence: "In here you can check when was the time when you logged in and when I am going to ask you to renewal:",
+      style: { jumpLine: true },
+    },
+    { sentence: "", style: { jumpLine: true } },
+    { sentence: "Logged in since:" },
+    { sentence: `${new Date().toISOString()}`, style: { strong: true, jumpLine: true } },
+    { sentence: "", style: { jumpLine: true } },
+    { sentence: "Login renewal:" },
+    { sentence: `${new Date().toISOString()}`, style: { strong: true } },
+  ]);
+
+  return {
+    text,
+    keyboard: [[createButton<string, infoMenuCallbacks>("Back", "infoScreen: Back")]],
+    callbacks: ["infoScreen: Back"],
   };
 };
