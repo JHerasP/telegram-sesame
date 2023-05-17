@@ -93,7 +93,7 @@ export const menuScreen = (): screen<menuCallbacks> => {
 };
 
 type infoMenuCallbacks = "infoScreen: Back";
-export const infoScreen = (): screen<infoMenuCallbacks> => {
+export const infoScreen = (logSince: string, logUntil: string): screen<infoMenuCallbacks> => {
   const text = createText([
     {
       sentence: "In here you can check when was the time when you logged in and when I am going to ask you to renewal:",
@@ -101,10 +101,10 @@ export const infoScreen = (): screen<infoMenuCallbacks> => {
     },
     { sentence: "", style: { jumpLine: true } },
     { sentence: "Logged in since:" },
-    { sentence: `${new Date().toISOString()}`, style: { strong: true, jumpLine: true } },
+    { sentence: `${logSince}`, style: { strong: true, jumpLine: true } },
     { sentence: "", style: { jumpLine: true } },
     { sentence: "Login renewal:" },
-    { sentence: `${new Date().toISOString()}`, style: { strong: true } },
+    { sentence: `${logUntil}`, style: { strong: true } },
   ]);
 
   return {

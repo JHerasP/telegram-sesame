@@ -10,6 +10,7 @@ import {
 } from "../telegram-screens/public/screens-public";
 import { telegramTools } from "../tools";
 import getHtmlFile from "../tools/telegram-files/telegram-files";
+import { sesameDatabase } from "../Sesame-database/SesameDatabase";
 
 export function sendWelcomeMessage(telegramBot: TelegramBot, msg: Message): void {
   const chatId = msg.chat.id;
@@ -62,6 +63,12 @@ export function handleMenu(
   const userId = callback.from?.id;
   const messageId = callback.message?.message_id;
   if (!userId) return;
-  const { text, keyboard } = infoScreen();
-  if (command === "MenuScreen: Info") telegramTools.editMessage(telegramBot, userId, text, keyboard, messageId);
+  if (command === "MenuScreen: Info") {
+    const user = sesameDatabase.getUser(userId);
+    if (!user) return;
+    const since = new Intl.DateTimeFormat("es").format(user.logSince);
+    const until = new Intl.DateTimeFormat("es").format(user.logUntil);
+    const { text, keyboard } = infoScreen(since, until);
+    telegramTools.editMessage(telegramBot, userId, text, keyboard, messageId);
+  }
 }

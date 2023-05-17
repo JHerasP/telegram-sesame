@@ -1,9 +1,12 @@
 interface User {
   cookie: string;
+  logSince: Date;
+  logUntil: Date;
 }
 
 class SesameDatabase {
   private users: Map<number, User>;
+
   constructor() {
     this.users = new Map();
   }

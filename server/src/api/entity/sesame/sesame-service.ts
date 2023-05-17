@@ -28,7 +28,14 @@ export async function logIn({ email, password }: { email: string; password: stri
       const cookies = response.headers["set-cookie"];
       const decoded = Buffer.from(jwt.split(".")[1], "base64").toString();
 
-      sesameDatabase.setUser(JSON.parse(decoded).userId, cookies[1]);
+      const logUntil = new Date();
+      logUntil.setDate(logUntil.getDate() + 25);
+
+      sesameDatabase.setUser(JSON.parse(decoded).userId, {
+        cookie: cookies[1],
+        logSince: new Date(),
+        logUntil: logUntil,
+      });
       sesameBot.sendLoggedInMessage(JSON.parse(decoded).userId);
     }
   }
