@@ -12,7 +12,6 @@ class SesameDatabase {
     this.users.set(userId, user);
   }
   public getUser(id: number) {
-    console.info("🆗", this.users);
     return this.users.get(id);
   }
   public deleteUser(id: number) {

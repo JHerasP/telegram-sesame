@@ -11,6 +11,7 @@ export function commandHandler(
     case "wellcomeScreen: Conditions":
       return sendLoggin(telegramBot, callbackQuery);
     case "LoggedScreen: start":
+    case "infoScreen: Back":
       return sendMenu(telegramBot, callbackQuery);
     case "MenuScreen: Info":
     case "MenuScreen: Check in":

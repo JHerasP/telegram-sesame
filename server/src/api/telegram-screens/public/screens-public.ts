@@ -44,7 +44,6 @@ export const firstStepsScreen = (): screen<never> => {
     { sentence: "log in.", style: { strong: true, jumpLine: true } },
     { sentence: "Don't worry, I am not going to steal your information (⌐■_■),", style: { jumpLine: true } },
     { sentence: "", style: { jumpLine: true } },
-    { sentence: "This is a file with a log in form." },
     { sentence: "After you finish it, You will receibe a message on" },
     { sentence: "this", style: { bold: true } },
     { sentence: "chat." },
