@@ -20,7 +20,7 @@ export function sendWelcomeMessage(telegramBot: TelegramBot, msg: Message): void
   telegramTools.sendMessage(telegramBot, chatId, text, keyboard);
 }
 
-export function sendLoggin(telegramBot: TelegramBot, callback: CallbackQuery): void {
+export function sendLoggin(telegramBot: TelegramBot, callback: CallbackQuery) {
   const userId = callback.from?.id;
   const messageId = callback.message?.message_id;
   if (!userId) return;
@@ -38,14 +38,14 @@ function createJWT(userId: number) {
   return token;
 }
 
-export function sendLoggedIn(telegramBot: TelegramBot, userId: number): void {
+export function sendLoggedIn(telegramBot: TelegramBot, userId: number) {
   if (!userId) return;
   const { text, keyboard } = loggedScreen();
 
   telegramTools.sendMessage(telegramBot, userId, text, keyboard);
 }
 
-export function sendMenu(telegramBot: TelegramBot, callback: CallbackQuery): void {
+export function sendMenu(telegramBot: TelegramBot, callback: CallbackQuery) {
   const userId = callback.from?.id;
   const messageId = callback.message?.message_id;
   if (!userId) return;
@@ -58,7 +58,7 @@ export function handleMenu(
   telegramBot: TelegramBot,
   callback: CallbackQuery,
   command: ReturnType<typeof menuScreen>["callbacks"][number]
-): void {
+) {
   const userId = callback.from?.id;
   const messageId = callback.message?.message_id;
   if (!userId) return;

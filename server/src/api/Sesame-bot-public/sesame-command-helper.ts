@@ -4,8 +4,8 @@ import { handleMenu, sendLoggin, sendMenu } from "./sesame-bot-public-helper";
 
 export function commandHandler(
   telegramBot: TelegramBot,
-  command: telegramButtonsCallbacks,
-  callbackQuery: TelegramBot.CallbackQuery
+  callbackQuery: TelegramBot.CallbackQuery,
+  command?: telegramButtonsCallbacks
 ) {
   switch (command) {
     case "wellcomeScreen: Conditions":
@@ -17,7 +17,6 @@ export function commandHandler(
     case "MenuScreen: Check out":
     case "MenuScreen: Options":
       return handleMenu(telegramBot, callbackQuery, command);
-
     default:
       break;
   }
