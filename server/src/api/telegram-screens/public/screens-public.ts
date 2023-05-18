@@ -59,11 +59,11 @@ type loggedCallbacks = "LoggedScreen: start";
 export const loggedScreen = (): screen<loggedCallbacks> => {
   const text = createText([
     { sentence: "Everything went fine...", style: { jumpLine: true } },
-    { sentence: "Yes I know, I am also surprised.", style: { jumpLine: true } },
+    { sentence: "Yes I know, I am also surprised. ( ͡ಠ ʖ̯ ͡ಠ)", style: { jumpLine: true } },
     { sentence: "", style: { jumpLine: true } },
-    { sentence: "Please remmeber that the log in iformation will last" },
-    { sentence: "less than a month", style: { strong: true, jumpLine: true } },
-    { sentence: "When the time comes, I will ask you again to log in" },
+    { sentence: "If you find any problem, I recommend you to write: " },
+    { sentence: "/start", style: { italic: true } },
+    { sentence: "and log in again" },
   ]);
 
   return {
@@ -116,5 +116,22 @@ export const infoScreen = (logSince: string, logUntil: string): screen<infoMenuC
       ],
     ],
     callbacks: ["infoScreen: Back", "infoScreen: session"],
+  };
+};
+
+type renewLoginCallbacks = never;
+export const renewLoginScreen = (logUntil: string): screen<renewLoginCallbacks> => {
+  const text = createText([
+    { sentence: "Hey, your session will expire on" },
+    { sentence: `${logUntil}`, style: { strong: true } },
+    { sentence: "days." },
+    { sentence: "", style: { jumpLine: true } },
+    { sentence: "Fill the form again to renew it", style: { jumpLine: true } },
+  ]);
+
+  return {
+    text,
+    keyboard: [[]],
+    callbacks: [],
   };
 };

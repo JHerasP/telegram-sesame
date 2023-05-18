@@ -20,6 +20,9 @@ class SesameDatabase {
   public deleteUser(id: number) {
     this.users.delete(id);
   }
+  public getAllUsers() {
+    return this.users;
+  }
 }
 
 export const sesameDatabase = new SesameDatabase();

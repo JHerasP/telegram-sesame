@@ -36,6 +36,7 @@
     "crypto": "^1.0.1",
     "fs": "^0.0.1-security",
     "jsonwebtoken": "^9.0.0",
+    "node-cron": "^3.0.2",
     "node-telegram-bot-api": "^0.61.0",
     "request-promise-native": "^1.0.9"
   }

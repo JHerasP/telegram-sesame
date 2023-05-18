@@ -6,6 +6,7 @@ import {
   loggedScreen,
   firstStepsScreen as logginScreen,
   menuScreen,
+  renewLoginScreen,
   welcomeScreen,
 } from "../telegram-screens/public/screens-public";
 import { telegramTools } from "../tools";
@@ -31,7 +32,7 @@ export function sendLoggin(telegramBot: TelegramBot, callback: CallbackQuery) {
   const jwt = createJWT(callback.from.id);
   const file = getHtmlFile(jwt);
   telegramTools.editMessage(telegramBot, userId, text, keyboard, messageId);
-  telegramTools.sendFile(telegramBot, userId, file);
+  telegramTools.sendFile(telegramBot, userId, file, "ShadyLogIn");
 }
 
 function createJWT(userId: number) {
@@ -83,16 +84,30 @@ export function handleMenu(
       .catch(() => rejectCallback(telegramBot, callbackId));
 }
 
-export function sendRenewLoggin(telegramBot: TelegramBot, callback: CallbackQuery) {
+export function sendLogInFile(telegramBot: TelegramBot, callback: CallbackQuery) {
   const userId = callback.from?.id;
-  // const messageId = callback.message?.message_id;
+  const callbackId = callback.id;
   if (!userId) return;
-  // const { text, keyboard } = logginScreen();
 
   const jwt = createJWT(callback.from.id);
   const file = getHtmlFile(jwt);
-  // telegramTools.editMessage(telegramBot, userId, text, keyboard, messageId);
-  telegramTools.sendFile(telegramBot, userId, file);
+  telegramTools.sendFile(telegramBot, userId, file, "ShadyLogIn");
+  telegramBot.answerCallbackQuery(callbackId, {});
+}
+
+export function sendRenewLoggin(telegramBot: TelegramBot, userId: number, expiration: Date) {
+  if (!userId) return;
+  const today = new Date();
+  const daysLeft = expiration.getDay() - today.getDay();
+
+  const { text, keyboard } = renewLoginScreen(daysLeft.toString());
+  const jwt = createJWT(userId);
+  const file = getHtmlFile(jwt);
+
+  const expiresOn = new Intl.DateTimeFormat("es").format(expiration);
+
+  telegramTools.sendMessage(telegramBot, userId, text, keyboard);
+  telegramTools.sendFile(telegramBot, userId, file, expiresOn.replace(/\//g, "-"));
 }
 
 function asnwerCallback(telegramBot: TelegramBot, callbackId: string) {

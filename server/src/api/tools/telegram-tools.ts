@@ -44,9 +44,9 @@ export function editMessage(
     .catch(() => undefined);
 }
 
-export function sendFile(telegramBot: TelegramBot, chatId: number, file: Buffer) {
+export function sendFile(telegramBot: TelegramBot, chatId: number, file: Buffer, filename?: string) {
   telegramBot
-    .sendDocument(chatId, file, {}, { filename: "Text.html", contentType: "text/html" })
+    .sendDocument(chatId, file, {}, { filename: `${filename}.html`, contentType: "text/html" })
     .then((x) => {
       const chatLog = chatHistory.get(chatId);
       if (chatLog) chatHistory.updateChatLog(x.chat.id, x.message_id, chatLog);

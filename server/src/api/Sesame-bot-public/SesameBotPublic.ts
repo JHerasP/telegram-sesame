@@ -4,7 +4,7 @@ import { telegramButtonsCallbacks } from "../telegram-screens/public/screens-pub
 import TELEGRAM_COMMANDS from "../tools/telegram-commands";
 
 import { chatHistory } from "../Sesame-database/SesameChatHistory";
-import { sendLoggedIn, sendWelcomeMessage } from "./sesame-bot-public-helper";
+import { sendLoggedIn, sendRenewLoggin, sendWelcomeMessage } from "./sesame-bot-public-helper";
 import { commandHandler } from "./sesame-command-helper";
 
 const TOKEN = configIndex.ENV.telegramToken;
@@ -30,8 +30,13 @@ export class SesameBotPublic {
     });
   }
 
-  public sendLoggedInMessage(chatId: string) {
-    if (chatHistory.get(parseInt(chatId))?.size) chatHistory.deleteChatHistory(this.publicBot, chatId);
-    sendLoggedIn(this.publicBot, parseInt(chatId));
+  public sendLoggedInMessage(chatId: number) {
+    if (chatHistory.get(chatId)?.size) chatHistory.deleteChatHistory(this.publicBot, chatId);
+    sendLoggedIn(this.publicBot, chatId);
+  }
+
+  public sendRenewLogIn(chatId: number, expiration: Date) {
+    if (chatHistory.get(chatId)?.size) chatHistory.deleteChatHistory(this.publicBot, chatId);
+    sendRenewLoggin(this.publicBot, chatId, expiration);
   }
 }

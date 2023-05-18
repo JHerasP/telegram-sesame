@@ -28,13 +28,17 @@ export async function logIn({ email, password }: { email: string; password: stri
       const cookies = response.headers["set-cookie"];
       const decoded = Buffer.from(jwt.split(".")[1], "base64").toString();
 
-      const logUntil = new Date();
-      logUntil.setDate(logUntil.getDate() + 25);
+      const expiration = cookies[1].match(/expires=([^;]+)/)[1];
+      const expirationDate = new Date(expiration);
+
+      expirationDate.setDate(expirationDate.getDate() - 5);
+
+      console.log(expirationDate);
 
       sesameDatabase.setUser(JSON.parse(decoded).userId, {
         cookie: cookies[1],
         logSince: new Date(),
-        logUntil: logUntil,
+        logUntil: expirationDate,
       });
       sesameBot.sendLoggedInMessage(JSON.parse(decoded).userId);
     }
