@@ -92,7 +92,7 @@ export const menuScreen = (): screen<menuCallbacks> => {
   };
 };
 
-type infoMenuCallbacks = "infoScreen: Back";
+type infoMenuCallbacks = "infoScreen: Back" | "infoScreen: session";
 export const infoScreen = (logSince: string, logUntil: string): screen<infoMenuCallbacks> => {
   const text = createText([
     {
@@ -109,7 +109,12 @@ export const infoScreen = (logSince: string, logUntil: string): screen<infoMenuC
 
   return {
     text,
-    keyboard: [[createButton<string, infoMenuCallbacks>("Back", "infoScreen: Back")]],
-    callbacks: ["infoScreen: Back"],
+    keyboard: [
+      [
+        createButton<string, infoMenuCallbacks>("Renew session", "infoScreen: session"),
+        createButton<string, infoMenuCallbacks>("Back", "infoScreen: Back"),
+      ],
+    ],
+    callbacks: ["infoScreen: Back", "infoScreen: session"],
   };
 };

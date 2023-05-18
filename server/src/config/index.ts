@@ -8,6 +8,8 @@ const ENV = {
   telegramToken: process.env.SESAME_TELEGRAM_TOKEN!,
   sesameUrl: process.env.SESAME_URL!,
   sesameCrypto: process.env.SESAME_CRYPTO!,
+  checkIn: process.env.SESAME_CHECK_IN_URL!,
+  checkOut: process.env.SESAME_CHECK_OUT_URL!,
 } as const;
 
 export { ENV };

@@ -1,6 +1,7 @@
 import TelegramBot from "node-telegram-bot-api";
 import { telegramButtonsCallbacks } from "../telegram-screens/public/screens-public";
-import { handleMenu, sendLoggin, sendMenu } from "./sesame-bot-public-helper";
+import { handleMenu, sendLoggin, sendMenu, sendRenewLoggin } from "./sesame-bot-public-helper";
+import { caseGuard } from "../../TS_tools/general-utility";
 
 export function commandHandler(
   telegramBot: TelegramBot,
@@ -18,7 +19,11 @@ export function commandHandler(
     case "MenuScreen: Check out":
     case "MenuScreen: Options":
       return handleMenu(telegramBot, callbackQuery, command);
+
+    case "infoScreen: session":
+      return sendRenewLoggin(telegramBot, callbackQuery);
     default:
+      if (command) caseGuard(command);
       break;
   }
 }

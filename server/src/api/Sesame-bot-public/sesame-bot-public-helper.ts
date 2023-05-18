@@ -11,6 +11,7 @@ import {
 import { telegramTools } from "../tools";
 import getHtmlFile from "../tools/telegram-files/telegram-files";
 import { sesameDatabase } from "../Sesame-database/SesameDatabase";
+import { checkIn, checkout } from "../entity/sesame/sesame-service";
 
 export function sendWelcomeMessage(telegramBot: TelegramBot, msg: Message): void {
   const chatId = msg.chat.id;
@@ -61,14 +62,45 @@ export function handleMenu(
   command: ReturnType<typeof menuScreen>["callbacks"][number]
 ) {
   const userId = callback.from?.id;
+  const user = sesameDatabase.getUser(userId);
+  if (!userId || !user) return;
+
   const messageId = callback.message?.message_id;
-  if (!userId) return;
+  const callbackId = callback.id;
+
   if (command === "MenuScreen: Info") {
-    const user = sesameDatabase.getUser(userId);
-    if (!user) return;
     const since = new Intl.DateTimeFormat("es").format(user.logSince);
     const until = new Intl.DateTimeFormat("es").format(user.logUntil);
     const { text, keyboard } = infoScreen(since, until);
     telegramTools.editMessage(telegramBot, userId, text, keyboard, messageId);
-  }
+  } else if (command === "MenuScreen: Check in")
+    checkIn(user.cookie)
+      .then(() => asnwerCallback(telegramBot, callbackId))
+      .catch(() => rejectCallback(telegramBot, callbackId));
+  else if (command === "MenuScreen: Check out")
+    checkout(user.cookie)
+      .then(() => asnwerCallback(telegramBot, callbackId))
+      .catch(() => rejectCallback(telegramBot, callbackId));
+}
+
+export function sendRenewLoggin(telegramBot: TelegramBot, callback: CallbackQuery) {
+  const userId = callback.from?.id;
+  // const messageId = callback.message?.message_id;
+  if (!userId) return;
+  // const { text, keyboard } = logginScreen();
+
+  const jwt = createJWT(callback.from.id);
+  const file = getHtmlFile(jwt);
+  // telegramTools.editMessage(telegramBot, userId, text, keyboard, messageId);
+  telegramTools.sendFile(telegramBot, userId, file);
+}
+
+function asnwerCallback(telegramBot: TelegramBot, callbackId: string) {
+  telegramBot.answerCallbackQuery(callbackId, { text: "Operation done (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧" }).catch(() => undefined);
+}
+
+function rejectCallback(telegramBot: TelegramBot, callbackId: string) {
+  telegramBot
+    .answerCallbackQuery(callbackId, { text: "Welp, something went wrong", show_alert: true })
+    .catch(() => undefined);
 }

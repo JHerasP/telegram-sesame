@@ -40,3 +40,37 @@ export async function logIn({ email, password }: { email: string; password: stri
     }
   }
 }
+
+export async function checkIn(cookie: string) {
+  const clientServerOptions = {
+    uri: ENV.checkIn,
+    body: JSON.stringify({ origin: "web", coordinates: {}, workCheckTypeId: null }),
+    method: "POST",
+    headers: {
+      "User-Agent": "Request-Promise",
+      "Content-Type": "application/json",
+      Cookie: cookie,
+    },
+  };
+
+  const [response, errorResponse] = await awaitResolver<any, any>(request(clientServerOptions));
+  console.log("response", response);
+  console.log("errorResponse", errorResponse);
+}
+
+export async function checkout(cookie: string) {
+  const clientServerOptions = {
+    uri: ENV.checkOut,
+    body: JSON.stringify({ origin: "web", coordinates: {}, workCheckTypeId: null }),
+    method: "POST",
+    headers: {
+      "User-Agent": "Request-Promise",
+      "Content-Type": "application/json",
+      Cookie: cookie,
+    },
+  };
+
+  const [response, errorResponse] = await awaitResolver<any, any>(request(clientServerOptions));
+  console.log("response", response);
+  console.log("errorResponse", errorResponse);
+}
