@@ -1,6 +1,6 @@
 import TelegramBot from "node-telegram-bot-api";
 import { telegramButtonsCallbacks } from "../telegram-screens/public/screens-public";
-import { handleMenu, sendLoggin, sendMenu, sendLogInFile } from "./sesame-bot-public-helper";
+import { handleMenu, sendLoggin, sendMenu, sendLogInFile, toogleAutoclose } from "./sesame-bot-public-helper";
 import { caseGuard } from "../../TS_tools/general-utility";
 
 export function commandHandler(
@@ -13,6 +13,7 @@ export function commandHandler(
       return sendLoggin(telegramBot, callbackQuery);
     case "LoggedScreen: start":
     case "infoScreen: Back":
+    case "optionsScreen: Back":
       return sendMenu(telegramBot, callbackQuery);
     case "MenuScreen: Info":
     case "MenuScreen: Check in":
@@ -21,6 +22,8 @@ export function commandHandler(
       return handleMenu(telegramBot, callbackQuery, command);
     case "infoScreen: session":
       return sendLogInFile(telegramBot, callbackQuery);
+    case "optionsScreen: Toogle autoclose":
+      return toogleAutoclose(telegramBot, callbackQuery);
     default:
       if (command) caseGuard(command);
       break;

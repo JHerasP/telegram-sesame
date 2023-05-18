@@ -6,7 +6,13 @@ type screen<T> = {
   keyboard: InlineKeyboardButton[][];
   callbacks: T[];
 };
-export type telegramButtonsCallbacks = welcomeCallbacks | loggedCallbacks | menuCallbacks | infoMenuCallbacks;
+export type telegramButtonsCallbacks =
+  | welcomeCallbacks
+  | loggedCallbacks
+  | menuCallbacks
+  | infoMenuCallbacks
+  | renewLoginCallbacks
+  | optionCallbacks;
 
 type welcomeCallbacks = "wellcomeScreen: Conditions";
 export const welcomeScreen = (): screen<welcomeCallbacks> => {
@@ -133,5 +139,24 @@ export const renewLoginScreen = (logUntil: string): screen<renewLoginCallbacks> 
     text,
     keyboard: [[]],
     callbacks: [],
+  };
+};
+
+type optionCallbacks = "optionsScreen: Back" | "optionsScreen: Toogle autoclose";
+export const optionsScreen = (autoclose: boolean): screen<optionCallbacks> => {
+  const text = createText([
+    { sentence: "Woba duba lob lob" },
+    { sentence: `Autoclose: ${autoclose}`, style: { strong: true } },
+  ]);
+
+  return {
+    text,
+    keyboard: [
+      [
+        createButton<string, optionCallbacks>("Toogle autoclose", "optionsScreen: Toogle autoclose"),
+        createButton<string, optionCallbacks>("Back", "optionsScreen: Back"),
+      ],
+    ],
+    callbacks: ["optionsScreen: Back", "optionsScreen: Toogle autoclose"],
   };
 };

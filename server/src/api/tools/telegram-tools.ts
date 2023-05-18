@@ -29,7 +29,7 @@ export function editMessage(
   chatId: number,
   message: string,
   keyboard: TelegramBot.InlineKeyboardButton[][],
-  messageId?: number
+  messageId: number
 ) {
   telegramBot
     .editMessageText(message, {

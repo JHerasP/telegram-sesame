@@ -1,7 +1,8 @@
-interface User {
+export interface User {
   cookie: string;
   logSince: Date;
   logUntil: Date;
+  autoClose: boolean;
 }
 
 class SesameDatabase {
@@ -22,6 +23,11 @@ class SesameDatabase {
   }
   public getAllUsers() {
     return this.users;
+  }
+
+  public toogleAutoclose(userId: number) {
+    const user = this.users.get(userId);
+    if (user) user.autoClose = !user.autoClose;
   }
 }
 
