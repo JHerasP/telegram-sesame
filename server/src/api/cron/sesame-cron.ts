@@ -4,7 +4,7 @@ import { sesameBot } from "../../../server";
 import { checkout } from "../entity/sesame/sesame-service";
 
 export const startSessionCheck = () => {
-  const onEveryDay = "*/5 * * * * *";
+  const onEveryDay = "0 12 * * *";
   cron.schedule(
     onEveryDay,
     () => {
@@ -16,7 +16,7 @@ export const startSessionCheck = () => {
         });
       }
     },
-    { name: "Periodic run" }
+    { name: "Periodic run", timezone: "Europe/Madrid" }
   );
 };
 
@@ -30,8 +30,17 @@ export const startAutoClose = () => {
     beforeClockingOut,
     () => {
       const users = sesameDatabase.getAllUsers();
-      if (users.size) users.forEach((info) => info.autoClose && checkout(info.cookie));
+      if (users.size) users.forEach((info) => info.autoClose && waitRandomTime(() => checkout(info.cookie)));
     },
     { name: "Autoclose", timezone: "Europe/Madrid" }
   );
 };
+
+function waitRandomTime(callback: VoidFunction) {
+  const minTime = 1 * 60 * 1000;
+  const maxTime = 7 * 60 * 1000;
+
+  const randomTime = Math.floor(Math.random() * (maxTime - minTime + 1)) + minTime;
+
+  setTimeout(callback, randomTime);
+}

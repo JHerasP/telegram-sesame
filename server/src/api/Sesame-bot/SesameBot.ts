@@ -1,16 +1,16 @@
 import TelegramBot from "node-telegram-bot-api";
 import { configIndex } from "../../config";
-import { telegramButtonsCallbacks } from "../telegram-screens/public/screens-public";
+import { telegramButtonsCallbacks } from "../telegram-screens/screens";
 import TELEGRAM_COMMANDS from "../tools/telegram-commands";
 
 import { chatHistory } from "../Sesame-database/SesameChatHistory";
-import { sendLoggedIn, sendRenewLoggin, sendWelcomeMessage } from "./sesame-bot-public-helper";
+import { sendLoggedIn, sendRenewLoggin, sendWelcomeMessage } from "./sesame-callback-actions";
 import { commandHandler } from "./sesame-command-helper";
 
 const TOKEN = configIndex.ENV.telegramToken;
 const TC = TELEGRAM_COMMANDS;
 
-export class SesameBotPublic {
+export class SesameBot {
   private publicBot: TelegramBot;
 
   constructor() {

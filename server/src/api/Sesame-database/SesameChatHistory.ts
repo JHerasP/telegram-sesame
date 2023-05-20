@@ -23,7 +23,7 @@ class SesameChatHistory {
   public deleteChatHistory(telegramBot: TelegramBot, chatId: number) {
     const chatLogs = this.history.get(chatId);
     if (chatLogs) {
-      chatLogs.forEach((chatLog) => telegramBot.deleteMessage(chatId, chatLog).catch(undefined));
+      chatLogs.forEach((chatLog) => telegramBot.deleteMessage(chatId, chatLog).catch(() => undefined));
       chatLogs.clear();
     }
   }

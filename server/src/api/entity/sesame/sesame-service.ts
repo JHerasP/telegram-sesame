@@ -56,12 +56,11 @@ export async function checkIn(cookie: string) {
     },
   };
 
-  const [response, errorResponse] = await awaitResolver<any, any>(request(clientServerOptions));
+  const [_, errorResponse] = await awaitResolver<any, any>(request(clientServerOptions));
+
   if (errorResponse && errorResponse.statusCode === 422) {
     throw new Error("You are already in, how many times do you want to check in until you are satisfied? (╬▔皿▔)╯");
   }
-  console.log("response", response);
-  console.log("errorResponse", errorResponse);
 }
 
 export async function checkout(cookie: string) {
@@ -76,11 +75,9 @@ export async function checkout(cookie: string) {
     },
   };
 
-  const [response, errorResponse] = await awaitResolver<any, any>(request(clientServerOptions));
+  const [_, errorResponse] = await awaitResolver<any, any>(request(clientServerOptions));
 
   if (errorResponse && errorResponse.statusCode === 422) {
     throw new Error("You are not working, how come can you stop working twice? (►__◄)");
   }
-  console.log("response", response);
-  console.log("errorResponse", errorResponse);
 }

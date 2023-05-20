@@ -12,7 +12,7 @@ import {
   optionsScreen,
   renewLoginScreen,
   welcomeScreen,
-} from "../telegram-screens/public/screens-public";
+} from "../telegram-screens/screens";
 import { telegramTools } from "../tools";
 import getHtmlFile from "../tools/telegram-files/telegram-files";
 
@@ -72,20 +72,11 @@ export function handleMenu(
 
   const callbackId = callback.id;
 
-  if (command === "MenuScreen: Info") {
-    const since = new Intl.DateTimeFormat("es").format(user.logSince);
-    const until = new Intl.DateTimeFormat("es").format(user.logUntil);
-    const { text, keyboard } = infoScreen(since, until);
-    telegramTools.editMessage(telegramBot, userId, text, keyboard, messageId);
-  } else if (command === "MenuScreen: Check in")
-    checkIn(user.cookie)
-      .then(() => asnwerCallback(telegramBot, callbackId))
-      .catch((err) => rejectCallback(telegramBot, callbackId, err.message));
-  else if (command === "MenuScreen: Check out")
-    checkout(user.cookie)
-      .then(() => asnwerCallback(telegramBot, callbackId))
-      .catch((err) => rejectCallback(telegramBot, callbackId, err.message));
+  if (command === "MenuScreen: Info") sendInfo(user, telegramBot, userId, messageId);
+  else if (command === "MenuScreen: Check in") checkInSesame(user, telegramBot, callbackId);
+  else if (command === "MenuScreen: Check out") checkOutSesame(user, telegramBot, callbackId);
   else if (command === "MenuScreen: Options") sendOptions(telegramBot, userId, user, messageId);
+  else return;
 }
 
 export function sendLogInFile(telegramBot: TelegramBot, callback: CallbackQuery) {
@@ -140,12 +131,33 @@ export function logOut(telegramBot: TelegramBot, callback: CallbackQuery) {
   telegramTools.editMessage(telegramBot, userId, text, [], messageId);
 }
 
+function sendInfo(user: User, telegramBot: TelegramBot, userId: number, messageId: number) {
+  const since = new Intl.DateTimeFormat("es").format(user.logSince);
+  const until = new Intl.DateTimeFormat("es").format(user.logUntil);
+
+  const { text, keyboard } = infoScreen(since, until);
+
+  telegramTools.editMessage(telegramBot, userId, text, keyboard, messageId);
+}
+
+function checkOutSesame(user: User, telegramBot: TelegramBot, callbackId: string) {
+  checkout(user.cookie)
+    .then(() => asnwerCallback(telegramBot, callbackId))
+    .catch((err) => rejectCallback(telegramBot, callbackId, err.message));
+}
+
+function checkInSesame(user: User, telegramBot: TelegramBot, callbackId: string) {
+  checkIn(user.cookie)
+    .then(() => asnwerCallback(telegramBot, callbackId))
+    .catch((err) => rejectCallback(telegramBot, callbackId, err.message));
+}
+
 function asnwerCallback(telegramBot: TelegramBot, callbackId: string) {
   telegramBot.answerCallbackQuery(callbackId, { text: "Operation done (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧" }).catch(() => undefined);
 }
 
 function rejectCallback(telegramBot: TelegramBot, callbackId: string, message?: string) {
   telegramBot
-    .answerCallbackQuery(callbackId, { text: message ?? "Welp, something went wrong", show_alert: true })
+    .answerCallbackQuery(callbackId, { text: message ?? "Welp, something went wrong (●'◡'●)", show_alert: true })
     .catch(() => undefined);
 }

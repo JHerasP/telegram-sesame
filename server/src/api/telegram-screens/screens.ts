@@ -1,5 +1,5 @@
 import { InlineKeyboardButton } from "node-telegram-bot-api";
-import { createButton, createText } from "../keyboards/keyboard-tools";
+import { createButton, createText } from "./keyboards/keyboard-tools";
 
 type screen<T> = {
   text: string;
@@ -40,7 +40,7 @@ export const welcomeScreen = (): screen<welcomeCallbacks> => {
 
   return {
     text,
-    keyboard: [[createButton<string, welcomeCallbacks>("We only live once, lets go!", "wellcomeScreen: Conditions")]],
+    keyboard: [[createButton<welcomeCallbacks>("We only live once, lets go!", "wellcomeScreen: Conditions")]],
     callbacks: ["wellcomeScreen: Conditions"],
   };
 };
@@ -75,7 +75,7 @@ export const loggedScreen = (): screen<loggedCallbacks> => {
 
   return {
     text,
-    keyboard: [[createButton<string, loggedCallbacks>("I want to eat pancakes (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧", "LoggedScreen: start")]],
+    keyboard: [[createButton<loggedCallbacks>("I want to eat pancakes (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧", "LoggedScreen: start")]],
     callbacks: ["LoggedScreen: start"],
   };
 };
@@ -90,10 +90,10 @@ export const menuScreen = (): screen<menuCallbacks> => {
   return {
     text,
     keyboard: [
-      [createButton<string, menuCallbacks>("Loggin info", "MenuScreen: Info")],
-      [createButton<string, menuCallbacks>("Check in", "MenuScreen: Check in")],
-      [createButton<string, menuCallbacks>("Check out", "MenuScreen: Check out")],
-      [createButton<string, menuCallbacks>("Options", "MenuScreen: Options")],
+      [createButton<menuCallbacks>("📲 Check in", "MenuScreen: Check in")],
+      [createButton<menuCallbacks>("📴 Check out", "MenuScreen: Check out")],
+      [createButton<menuCallbacks>("🗃 Loggin info", "MenuScreen: Info")],
+      [createButton<menuCallbacks>("⚙ Options", "MenuScreen: Options")],
     ],
     callbacks: ["MenuScreen: Info", "MenuScreen: Check in", "MenuScreen: Check out", "MenuScreen: Options"],
   };
@@ -116,7 +116,7 @@ export const infoScreen = (logSince: string, logUntil: string): screen<infoMenuC
 
   return {
     text,
-    keyboard: [[createButton<string, infoMenuCallbacks>("Back", "infoScreen: Back")]],
+    keyboard: [[createButton<infoMenuCallbacks>("Back", "infoScreen: Back")]],
     callbacks: ["infoScreen: Back"],
   };
 };
@@ -156,10 +156,10 @@ export const optionsScreen = (autoclose: boolean): screen<optionCallbacks> => {
   return {
     text,
     keyboard: [
-      [createButton<string, optionCallbacks>("Toogle auto check out", "optionsScreen: Toogle autoclose")],
-      [createButton<string, optionCallbacks>("Renew session", "optionsScreen: renew session")],
-      [createButton<string, optionCallbacks>("Log out", "optionsScreen: remove session")],
-      [createButton<string, optionCallbacks>("Back", "optionsScreen: Back")],
+      [createButton<optionCallbacks>("⌚ Toogle auto check out", "optionsScreen: Toogle autoclose")],
+      [createButton<optionCallbacks>("📋 Renew session", "optionsScreen: renew session")],
+      [createButton<optionCallbacks>("🎢 Log out", "optionsScreen: remove session")],
+      [createButton<optionCallbacks>("Back", "optionsScreen: Back")],
     ],
     callbacks: [
       "optionsScreen: Back",

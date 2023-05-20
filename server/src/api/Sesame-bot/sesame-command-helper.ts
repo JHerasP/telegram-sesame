@@ -1,6 +1,6 @@
 import TelegramBot from "node-telegram-bot-api";
-import { telegramButtonsCallbacks } from "../telegram-screens/public/screens-public";
-import { handleMenu, sendLoggin, sendMenu, sendLogInFile, toogleAutoclose, logOut } from "./sesame-bot-public-helper";
+import { telegramButtonsCallbacks } from "../telegram-screens/screens";
+import { handleMenu, sendLoggin, sendMenu, sendLogInFile, toogleAutoclose, logOut } from "./sesame-callback-actions";
 import { caseGuard } from "../../TS_tools/general-utility";
 
 export function commandHandler(

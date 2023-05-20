@@ -2,10 +2,10 @@ import { ICustomInLineKeyboadButton } from "./types";
 
 export type TWeekMenuValues = ICustomInLineKeyboadButton<string, string>;
 
-export const createButton = <T extends string, Y extends string>(
-  text: T,
+export const createButton = <Y extends string>(
+  text: string,
   callback_data: Y
-): ICustomInLineKeyboadButton<T, Y> => {
+): ICustomInLineKeyboadButton<string, Y> => {
   return { text, callback_data };
 };
 
@@ -37,10 +37,10 @@ const addStyles = (line: TTextStyle) => {
   Object.entries(line.style).forEach((style) => {
     const [key] = style as [keyof TTextStyle["style"], boolean];
     if (key === "bold") sentence = `<b>${sentence}</b>`;
-    if (key === "italic") sentence = `<i>${sentence}</i>`;
-    if (key === "strong") sentence = `<strong>${sentence}</strong>`;
-    if (key === "underline") sentence = `<u>${sentence}</u>`;
-    if (key === "jumpLine") sentence = `${sentence} \n`;
+    else if (key === "italic") sentence = `<i>${sentence}</i>`;
+    else if (key === "strong") sentence = `<strong>${sentence}</strong>`;
+    else if (key === "underline") sentence = `<u>${sentence}</u>`;
+    else if (key === "jumpLine") sentence = `${sentence} \n`;
     else sentence = ` ${sentence} `; // Keep the spaces
   });
 
