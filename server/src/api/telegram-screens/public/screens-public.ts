@@ -12,7 +12,8 @@ export type telegramButtonsCallbacks =
   | menuCallbacks
   | infoMenuCallbacks
   | renewLoginCallbacks
-  | optionCallbacks;
+  | optionCallbacks
+  | logOutCallbacks;
 
 type welcomeCallbacks = "wellcomeScreen: Conditions";
 export const welcomeScreen = (): screen<welcomeCallbacks> => {
@@ -67,7 +68,7 @@ export const loggedScreen = (): screen<loggedCallbacks> => {
     { sentence: "Everything went fine...", style: { jumpLine: true } },
     { sentence: "Yes I know, I am also surprised. ( ͡ಠ ʖ̯ ͡ಠ)", style: { jumpLine: true } },
     { sentence: "", style: { jumpLine: true } },
-    { sentence: "If you find any problem, I recommend you to write: " },
+    { sentence: "If you find any problem, I recommend you to write:" },
     { sentence: "/start", style: { italic: true } },
     { sentence: "and log in again" },
   ]);
@@ -98,7 +99,7 @@ export const menuScreen = (): screen<menuCallbacks> => {
   };
 };
 
-type infoMenuCallbacks = "infoScreen: Back" | "infoScreen: session";
+type infoMenuCallbacks = "infoScreen: Back";
 export const infoScreen = (logSince: string, logUntil: string): screen<infoMenuCallbacks> => {
   const text = createText([
     {
@@ -115,13 +116,8 @@ export const infoScreen = (logSince: string, logUntil: string): screen<infoMenuC
 
   return {
     text,
-    keyboard: [
-      [
-        createButton<string, infoMenuCallbacks>("Renew session", "infoScreen: session"),
-        createButton<string, infoMenuCallbacks>("Back", "infoScreen: Back"),
-      ],
-    ],
-    callbacks: ["infoScreen: Back", "infoScreen: session"],
+    keyboard: [[createButton<string, infoMenuCallbacks>("Back", "infoScreen: Back")]],
+    callbacks: ["infoScreen: Back"],
   };
 };
 
@@ -142,21 +138,50 @@ export const renewLoginScreen = (logUntil: string): screen<renewLoginCallbacks> 
   };
 };
 
-type optionCallbacks = "optionsScreen: Back" | "optionsScreen: Toogle autoclose";
+type optionCallbacks =
+  | "optionsScreen: Back"
+  | "optionsScreen: Toogle autoclose"
+  | "optionsScreen: renew session"
+  | "optionsScreen: remove session";
 export const optionsScreen = (autoclose: boolean): screen<optionCallbacks> => {
   const text = createText([
-    { sentence: "Woba duba lob lob" },
-    { sentence: `Autoclose: ${autoclose}`, style: { strong: true } },
+    { sentence: "In here you can " },
+    { sentence: "wubba lubba dub dub", style: { italic: true } },
+    { sentence: "with the settings" },
+    { sentence: "ฅʕ•̫͡•ʔฅ ", style: { strong: true, jumpLine: true } },
+    { sentence: "", style: { jumpLine: true } },
+    { sentence: `Autoclose: ${autoclose ? "On" : "Off"}`, style: { strong: true } },
   ]);
 
   return {
     text,
     keyboard: [
-      [
-        createButton<string, optionCallbacks>("Toogle autoclose", "optionsScreen: Toogle autoclose"),
-        createButton<string, optionCallbacks>("Back", "optionsScreen: Back"),
-      ],
+      [createButton<string, optionCallbacks>("Toogle auto check out", "optionsScreen: Toogle autoclose")],
+      [createButton<string, optionCallbacks>("Renew session", "optionsScreen: renew session")],
+      [createButton<string, optionCallbacks>("Log out", "optionsScreen: remove session")],
+      [createButton<string, optionCallbacks>("Back", "optionsScreen: Back")],
     ],
-    callbacks: ["optionsScreen: Back", "optionsScreen: Toogle autoclose"],
+    callbacks: [
+      "optionsScreen: Back",
+      "optionsScreen: Toogle autoclose",
+      "optionsScreen: renew session",
+      "optionsScreen: remove session",
+    ],
+  };
+};
+
+type logOutCallbacks = never;
+export const logOutScreen = (): screen<logOutCallbacks> => {
+  const text = createText([
+    { sentence: "Sesion removed", style: { jumpLine: true } },
+    { sentence: "I hope the reason of you abandon was because you got fired", style: { jumpLine: true } },
+    { sentence: "", style: { jumpLine: true } },
+    { sentence: "(。・ω・。)", style: { strong: true } },
+  ]);
+
+  return {
+    text,
+    keyboard: [],
+    callbacks: [],
   };
 };

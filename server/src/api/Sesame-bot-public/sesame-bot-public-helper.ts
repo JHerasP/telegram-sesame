@@ -5,6 +5,7 @@ import { User, sesameDatabase } from "../Sesame-database/SesameDatabase";
 import { checkIn, checkout } from "../entity/sesame/sesame-service";
 import {
   infoScreen,
+  logOutScreen,
   loggedScreen,
   firstStepsScreen as logginScreen,
   menuScreen,
@@ -127,6 +128,16 @@ export function toogleAutoclose(telegramBot: TelegramBot, callback: CallbackQuer
   if (!userId || !user || !messageId) return;
   sesameDatabase.toogleAutoclose(userId);
   sendOptions(telegramBot, userId, user, messageId);
+}
+
+export function logOut(telegramBot: TelegramBot, callback: CallbackQuery) {
+  const userId = callback.from?.id;
+  const messageId = callback.message?.message_id;
+  const { text } = logOutScreen();
+  if (!userId || !messageId) return;
+
+  sesameDatabase.logOut(userId);
+  telegramTools.editMessage(telegramBot, userId, text, [], messageId);
 }
 
 function asnwerCallback(telegramBot: TelegramBot, callbackId: string) {

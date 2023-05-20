@@ -29,6 +29,9 @@ class SesameDatabase {
     const user = this.users.get(userId);
     if (user) user.autoClose = !user.autoClose;
   }
+  public logOut(userId: number) {
+    this.users.delete(userId);
+  }
 }
 
 export const sesameDatabase = new SesameDatabase();
