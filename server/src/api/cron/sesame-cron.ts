@@ -3,7 +3,7 @@ import { sesameDatabase } from "../Sesame-database/SesameDatabase";
 import { sesameBot } from "../../../server";
 import { checkout } from "../entity/sesame/sesame-service";
 
-export const startSessionCheck = () => {
+export function startCronSessionCheck() {
   const onEveryDay = "0 12 * * *";
   cron.schedule(
     onEveryDay,
@@ -18,13 +18,13 @@ export const startSessionCheck = () => {
     },
     { name: "Periodic run", timezone: "Europe/Madrid" }
   );
-};
+}
 
 function isSameDay(until: Date, today: Date) {
   return until.getMonth() === today.getMonth() && until.getDate() === today.getDate();
 }
 
-export const startAutoClose = () => {
+export function startCronAutoClockOut() {
   const beforeClockingOut = "15 20 * * 1-5";
   cron.schedule(
     beforeClockingOut,
@@ -34,7 +34,7 @@ export const startAutoClose = () => {
     },
     { name: "Autoclose", timezone: "Europe/Madrid" }
   );
-};
+}
 
 function waitRandomTime(callback: VoidFunction) {
   const minTime = 1 * 60 * 1000;

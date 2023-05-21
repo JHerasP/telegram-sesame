@@ -1,12 +1,13 @@
 import { SesameBot } from "./src/api/Sesame-bot/SesameBot";
-import { startSessionCheck, startAutoClose } from "./src/api/cron/sesame-cron";
+import { startCronSessionCheck, startCronAutoClockOut } from "./src/api/cron/sesame-cron";
 import app from "./src/app";
 import { configIndex } from "./src/config";
 
 const PORT = configIndex.ENV.port;
+const HOST = configIndex.ENV.host;
 
-app.listen(parseInt(PORT), "0.0.0.0", () => console.info(`Server is listening on1 ${PORT}`));
+app.listen(parseInt(PORT), HOST, () => console.info(`Server is listening on ${PORT}`));
 
 export const sesameBot = new SesameBot();
-startSessionCheck();
-startAutoClose();
+startCronSessionCheck();
+startCronAutoClockOut();

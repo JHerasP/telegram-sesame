@@ -3,6 +3,7 @@ import { awaitResolver } from "../../../TS_tools/general-utility";
 import { ENV } from "../../../config";
 import { sesameDatabase } from "../../Sesame-database/SesameDatabase";
 import { sesameBot } from "../../../../server";
+import petete from "jsonwebtoken";
 
 export async function logIn({ email, password }: { email: string; password: string }, jwt: string) {
   const clientServerOptions = {
@@ -27,6 +28,9 @@ export async function logIn({ email, password }: { email: string; password: stri
     if (response.headers) {
       const cookies = response.headers["set-cookie"];
       const decoded = Buffer.from(jwt.split(".")[1], "base64").toString();
+
+      const decodedToken = petete.decode(jwt);
+      console.log(decodedToken);
 
       const expiration = cookies[1].match(/expires=([^;]+)/)[1];
       const expirationDate = new Date(expiration);
@@ -59,7 +63,7 @@ export async function checkIn(cookie: string) {
   const [_, errorResponse] = await awaitResolver<any, any>(request(clientServerOptions));
 
   if (errorResponse && errorResponse.statusCode === 422) {
-    throw new Error("You are already in, how many times do you want to check in until you are satisfied? (╬▔皿▔)╯");
+    throw new Error("You are already in. How many times do you want to check in until you are satisfied? (╬▔皿▔)╯");
   }
 }
 
@@ -78,6 +82,6 @@ export async function checkout(cookie: string) {
   const [_, errorResponse] = await awaitResolver<any, any>(request(clientServerOptions));
 
   if (errorResponse && errorResponse.statusCode === 422) {
-    throw new Error("You are not working, how come can you stop working twice? (►__◄)");
+    throw new Error("You are not working. How come can you stop working twice? (►__◄)");
   }
 }

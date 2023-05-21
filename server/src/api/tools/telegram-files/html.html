@@ -225,13 +225,13 @@
       const email = document.getElementById("yourEmbarrassingTeenagerEmail").value;
       const password = document.getElementById("yourTotallySecurePassword").value;
 
-      fetch("http://localhost:3050/sesame/", {
+      fetch("http://SERVER_IP:SERVER_PORT/sesame/", {
         method: "POST",
         mode: "cors",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          Authorization: "Bearer PETETE",
+          Authorization: "Bearer JWT",
         },
         body: JSON.stringify({ email, password }),
       })
