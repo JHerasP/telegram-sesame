@@ -1,6 +1,6 @@
 import TelegramBot from "node-telegram-bot-api";
 
-class SesameChatHistory {
+export class SesameChatHistory {
   private history: Map<number, Set<number>>;
   constructor() {
     this.history = new Map<number, Set<number>>();
@@ -16,10 +16,15 @@ class SesameChatHistory {
     this.history.set(chatId, chatLog);
   }
 
-  public updateChatLog(chatId: number, messageId: number, chatLog: Set<number>) {
-    chatLog.add(messageId);
-    this.history.set(chatId, chatLog);
+  public updateChatLog(chatId: number, messageId: number) {
+    const chatLog = this.history.get(chatId);
+
+    if (chatLog) {
+      chatLog.add(messageId);
+      this.history.set(chatId, chatLog);
+    }
   }
+
   public deleteChatHistory(telegramBot: TelegramBot, chatId: number) {
     const chatLogs = this.history.get(chatId);
     if (chatLogs) {

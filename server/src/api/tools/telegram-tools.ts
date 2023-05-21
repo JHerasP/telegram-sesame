@@ -18,7 +18,7 @@ export function sendMessage(
     })
     .then((x) => {
       const chatLog = chatHistory.get(chatId);
-      if (chatLog) chatHistory.updateChatLog(x.chat.id, x.message_id, chatLog);
+      if (chatLog) chatHistory.updateChatLog(x.chat.id, x.message_id);
       else chatHistory.createChatLog(x.chat.id, x.message_id);
     })
     .catch(() => undefined);
@@ -48,8 +48,7 @@ export function sendFile(telegramBot: TelegramBot, chatId: number, file: Buffer,
   telegramBot
     .sendDocument(chatId, file, {}, { filename: `${filename}.html`, contentType: "text/html" })
     .then((x) => {
-      const chatLog = chatHistory.get(chatId);
-      if (chatLog) chatHistory.updateChatLog(x.chat.id, x.message_id, chatLog);
+      chatHistory.updateChatLog(x.chat.id, x.message_id);
     })
     .catch(() => undefined);
 }

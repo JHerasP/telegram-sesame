@@ -5,7 +5,7 @@ export interface User {
   autoClose: boolean;
 }
 
-class SesameDatabase {
+export class SesameDatabase {
   private users: Map<number, User>;
 
   constructor() {
@@ -29,6 +29,7 @@ class SesameDatabase {
     const user = this.users.get(userId);
     if (user) user.autoClose = !user.autoClose;
   }
+
   public logOut(userId: number) {
     this.users.delete(userId);
   }
