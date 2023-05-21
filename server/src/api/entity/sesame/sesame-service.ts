@@ -27,23 +27,22 @@ export async function logIn({ email, password }: { email: string; password: stri
   else {
     if (response.headers) {
       const cookies = response.headers["set-cookie"];
-      const decoded = Buffer.from(jwt.split(".")[1], "base64").toString();
+      const decoded = petete.decode(jwt.split(" ")[1], { json: true });
 
-      const decodedToken = petete.decode(jwt);
-      console.log(decodedToken);
+      if (!decoded) return;
 
       const expiration = cookies[1].match(/expires=([^;]+)/)[1];
       const expirationDate = new Date(expiration);
 
       expirationDate.setDate(expirationDate.getDate() - 5);
 
-      sesameDatabase.setUser(JSON.parse(decoded).userId, {
+      sesameDatabase.setUser(decoded.userId, {
         cookie: cookies[1],
         logSince: new Date(),
         logUntil: expirationDate,
         autoClose: true,
       });
-      sesameBot.sendLoggedInMessage(JSON.parse(decoded).userId);
+      sesameBot.sendLoggedInMessage(decoded.userId);
     }
   }
 }
