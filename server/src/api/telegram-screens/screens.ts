@@ -14,7 +14,8 @@ export type telegramButtonsCallbacks =
   | infoMenuCallbacks
   | renewLoginCallbacks
   | optionCallbacks
-  | logOutCallbacks;
+  | logOutCallbacks
+  | autoChecoutCallbaks;
 
 type welcomeCallbacks = "wellcomeScreen: Conditions";
 export const welcomeScreen = (): screen<welcomeCallbacks> => {
@@ -81,7 +82,7 @@ export const loggedScreen = (): screen<loggedCallbacks> => {
   };
 };
 
-type menuCallbacks = `MenuScreen: ${"Info" | "Check in" | "Check out" | "Options"}`;
+type menuCallbacks = `MenuScreen: ${"Info" | "Check in" | "Check out" | "Options" | "Refresh"}`;
 export const menuScreen = (user: User): screen<menuCallbacks> => {
   const text = createText([
     { sentence: "So, It is sesame time, do as you wish " },
@@ -94,12 +95,19 @@ export const menuScreen = (user: User): screen<menuCallbacks> => {
   return {
     text,
     keyboard: [
-      [createButton<menuCallbacks>("📲 Check in", "MenuScreen: Check in")],
+      [createButton<menuCallbacks>("📳  Check in", "MenuScreen: Check in")],
       [createButton<menuCallbacks>("📴 Check out", "MenuScreen: Check out")],
+      [createButton<menuCallbacks>("🔫 Refresh", "MenuScreen: Refresh")],
       [createButton<menuCallbacks>("🗃 Loggin info", "MenuScreen: Info")],
       [createButton<menuCallbacks>("⚙ Options", "MenuScreen: Options")],
     ],
-    callbacks: ["MenuScreen: Info", "MenuScreen: Check in", "MenuScreen: Check out", "MenuScreen: Options"],
+    callbacks: [
+      "MenuScreen: Info",
+      "MenuScreen: Check in",
+      "MenuScreen: Check out",
+      "MenuScreen: Options",
+      "MenuScreen: Refresh",
+    ],
   };
 };
 
@@ -152,7 +160,7 @@ export const optionsScreen = (autoclose: boolean): screen<optionCallbacks> => {
     { sentence: "In here you can " },
     { sentence: "wubba lubba dub dub", style: { italic: true } },
     { sentence: "with the settings" },
-    { sentence: "ฅʕ•̫͡•ʔฅ ", style: { strong: true, jumpLine: true } },
+    { sentence: " ฅʕ•̫͡•ʔฅ  ", style: { strong: true, jumpLine: true } },
     { sentence: "", style: { jumpLine: true } },
     { sentence: `Autoclose: ${autoclose ? "On" : "Off"}`, style: { strong: true } },
   ]);
@@ -187,5 +195,21 @@ export const logOutScreen = (): screen<logOutCallbacks> => {
     text,
     keyboard: [],
     callbacks: [],
+  };
+};
+
+type autoChecoutCallbaks = "autoCheckOutScreen: checkOut";
+export const autoCheckOutScreen = (): screen<autoChecoutCallbaks> => {
+  const text = createText([
+    { sentence: "Hey, i just clossed your session", style: { jumpLine: true } },
+    { sentence: "Thank my creator later", style: { jumpLine: true } },
+    { sentence: "", style: { jumpLine: true } },
+    { sentence: "(✿◠‿◠)", style: { strong: true } },
+  ]);
+
+  return {
+    text,
+    keyboard: [[createButton<autoChecoutCallbaks>("Gracias maquina", "autoCheckOutScreen: checkOut")]],
+    callbacks: ["autoCheckOutScreen: checkOut"],
   };
 };

@@ -37,13 +37,16 @@ export class SesameDatabase {
   public logOut(userId: number) {
     this.users.delete(userId);
   }
+
   public refresh(userId: number) {
     const user = this.users.get(userId);
     if (!user) return;
 
-    return getEmployeeInfo(user?.cookie).then((userData) => {
-      this.users.set(userId, { ...user, workingStatus: userData.workStatus });
-    });
+    return getEmployeeInfo(user?.cookie)
+      .then((userData) => {
+        this.users.set(userId, { ...user, workingStatus: userData.workStatus });
+      })
+      .catch(() => undefined);
   }
 }
 

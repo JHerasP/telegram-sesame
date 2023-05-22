@@ -54,7 +54,6 @@ export async function logIn({ email, password }: { email: string; password: stri
 export async function checkIn(user: User) {
   const { employeeId, cookie } = user;
 
-  console.log(ENV.checkIn.replace("idEmployee", employeeId));
   const clientServerOptions = {
     uri: ENV.checkIn.replace("idEmployee", employeeId),
     body: JSON.stringify({ origin: "web", coordinates: {}, workCheckTypeId: null }),
@@ -110,15 +109,11 @@ export async function getEmployeeInfo(cookie: string) {
     },
   };
 
-  const [body, errorResponse] = await awaitResolver<string, any>(request(clientServerOptions));
+  const [body] = await awaitResolver<string, any>(request(clientServerOptions));
   if (body) {
     const data = JSON.parse(body);
     if (data) return data.data[0] as { id: string; workStatus: "online" | "offline" };
   }
 
-  if (errorResponse.statusCode === 422) {
-    throw new Error("You are not working. How come can you stop working twice? (►__◄)");
-  } else {
-    throw new Error("Meh, my creator screwed up somehow, try to log in again (┬┬﹏┬┬)");
-  }
+  throw new Error("Meh, my creator screwed up somehow, try to log in again (┬┬﹏┬┬)");
 }

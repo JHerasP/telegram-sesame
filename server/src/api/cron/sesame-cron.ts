@@ -1,7 +1,8 @@
 import cron from "node-cron";
 import { sesameDatabase } from "../Sesame-database/SesameDatabase";
 import { sesameBot } from "../../../server";
-import { checkout } from "../entity/sesame/sesame-service";
+import { checkout, getEmployeeInfo } from "../entity/sesame/sesame-service";
+import { sendAutoCheckOut } from "../Sesame-bot/sesame-callback-actions";
 
 export function startCronSessionCheck() {
   const onEveryDay = "0 12 * * *";
@@ -26,11 +27,24 @@ function isSameDay(until: Date, today: Date) {
 
 export function startCronAutoClockOut() {
   const beforeClockingOut = "15 20 * * 1-5";
+
   cron.schedule(
     beforeClockingOut,
     () => {
       const users = sesameDatabase.getAllUsers();
-      if (users.size) users.forEach((info) => info.autoClose && waitRandomTime(() => checkout(info)));
+      if (!users.size) return;
+      users.forEach(async (info, userId) => {
+        if (!info.autoClose) return;
+
+        await sesameDatabase.refresh(userId);
+        const user = sesameDatabase.getUser(userId);
+        if (user && user.workingStatus === "online")
+          waitRandomTime(() =>
+            checkout(user)
+              .then(() => sendAutoCheckOut(userId))
+              .catch(() => undefined)
+          );
+      });
     },
     { name: "Autoclose", timezone: "Europe/Madrid" }
   );

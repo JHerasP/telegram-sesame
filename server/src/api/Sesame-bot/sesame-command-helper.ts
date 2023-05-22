@@ -2,6 +2,7 @@ import TelegramBot from "node-telegram-bot-api";
 import { telegramButtonsCallbacks } from "../telegram-screens/screens";
 import { handleMenu, sendLoggin, sendMenu, sendLogInFile, toogleAutoclose, logOut } from "./sesame-callback-actions";
 import { caseGuard } from "../../TS_tools/general-utility";
+import { sesameBot } from "../../../server";
 
 export type callbackIds = {
   userId: TelegramBot.CallbackQuery["from"]["id"];
@@ -24,6 +25,7 @@ export function commandHandler(callbackQuery: TelegramBot.CallbackQuery, command
     case "MenuScreen: Info":
     case "MenuScreen: Check in":
     case "MenuScreen: Check out":
+    case "MenuScreen: Refresh":
     case "MenuScreen: Options":
       return handleMenu({ callbackId, userId, messageId }, command);
     case "optionsScreen: renew session":
@@ -32,6 +34,9 @@ export function commandHandler(callbackQuery: TelegramBot.CallbackQuery, command
       return toogleAutoclose({ userId, messageId });
     case "optionsScreen: remove session":
       return logOut({ callbackId, userId, messageId });
+    case "autoCheckOutScreen: checkOut":
+      if (messageId) return sesameBot.telegramBot.deleteMessage(userId, messageId).catch(() => undefined);
+      return;
     default:
       if (command) caseGuard(command);
       break;

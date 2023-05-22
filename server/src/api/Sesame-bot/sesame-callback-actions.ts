@@ -6,7 +6,7 @@ import { User, sesameDatabase } from "../Sesame-database/SesameDatabase";
 import { checkIn, checkout } from "../entity/sesame/sesame-service";
 import {
   infoScreen,
-  logOutScreen,
+  autoCheckOutScreen,
   loggedScreen,
   firstStepsScreen as logginScreen,
   menuScreen,
@@ -76,6 +76,7 @@ export function handleMenu(
   else if (command === "MenuScreen: Check out")
     checkOutSesame(user, callbackId).then(() => sendMenu({ messageId, userId }));
   else if (command === "MenuScreen: Options") sendOptions(userId, user, messageId);
+  else if (command === "MenuScreen: Refresh") sendMenu({ messageId, userId });
   else return;
 }
 
@@ -117,7 +118,7 @@ export function toogleAutoclose({ messageId, userId }: callbackIds) {
 }
 
 export function logOut({ messageId, userId }: callbackIds) {
-  const { text } = logOutScreen();
+  const { text } = autoCheckOutScreen();
   if (!userId || !messageId) return;
 
   sesameDatabase.logOut(userId);
@@ -131,6 +132,14 @@ function sendInfo(user: User, userId: number, messageId: number) {
   const { text, keyboard } = infoScreen(since, until);
 
   telegramTools.editMessage(userId, text, keyboard, messageId);
+}
+
+export async function sendAutoCheckOut(userId: number) {
+  if (!userId) return;
+
+  const { text, keyboard } = autoCheckOutScreen();
+
+  telegramTools.sendMessage(userId, text, keyboard);
 }
 
 function checkOutSesame(user: User, callbackId: string) {
