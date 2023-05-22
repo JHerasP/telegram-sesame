@@ -1,5 +1,6 @@
 import { InlineKeyboardButton } from "node-telegram-bot-api";
 import { createButton, createText } from "./keyboards/keyboard-tools";
+import { User } from "../Sesame-database/SesameDatabase";
 
 type screen<T> = {
   text: string;
@@ -81,10 +82,12 @@ export const loggedScreen = (): screen<loggedCallbacks> => {
 };
 
 type menuCallbacks = `MenuScreen: ${"Info" | "Check in" | "Check out" | "Options"}`;
-export const menuScreen = (): screen<menuCallbacks> => {
+export const menuScreen = (user: User): screen<menuCallbacks> => {
   const text = createText([
     { sentence: "So, It is sesame time, do as you wish " },
-    { sentence: "ヽ(✿ﾟ▽ﾟ)ノ", style: { bold: true } },
+    { sentence: "ヽ(✿ﾟ▽ﾟ)ノ", style: { bold: true, jumpLine: true } },
+    { sentence: "", style: { jumpLine: true } },
+    { sentence: `Status ${user.workingStatus}`, style: { jumpLine: true } },
   ]);
 
   return {

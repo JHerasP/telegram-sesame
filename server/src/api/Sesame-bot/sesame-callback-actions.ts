@@ -1,5 +1,6 @@
 import JWT from "jsonwebtoken";
-import TelegramBot, { CallbackQuery, Message } from "node-telegram-bot-api";
+import { CallbackQuery, Message } from "node-telegram-bot-api";
+import { sesameBot } from "../../../server";
 import { ENV } from "../../config";
 import { User, sesameDatabase } from "../Sesame-database/SesameDatabase";
 import { checkIn, checkout } from "../entity/sesame/sesame-service";
@@ -15,26 +16,25 @@ import {
 } from "../telegram-screens/screens";
 import { telegramTools } from "../tools";
 import getHtmlFile from "../tools/telegram-files/telegram-files";
+import { callbackIds } from "./sesame-command-helper";
 
-export function sendWelcomeMessage(telegramBot: TelegramBot, msg: Message): void {
+export function sendWelcomeMessage(msg: Message): void {
   const chatId = msg.chat.id;
   const userId = msg.from?.id;
   if (!userId) return;
   const { text, keyboard } = welcomeScreen();
 
-  telegramTools.sendMessage(telegramBot, chatId, text, keyboard);
+  telegramTools.sendMessage(chatId, text, keyboard);
 }
 
-export function sendLoggin(telegramBot: TelegramBot, callback: CallbackQuery) {
-  const userId = callback.from?.id;
-  const messageId = callback.message?.message_id;
+export function sendLoggin({ messageId, userId }: callbackIds) {
   if (!userId || !messageId) return;
   const { text, keyboard } = logginScreen();
 
-  const jwt = createJWT(callback.from.id);
+  const jwt = createJWT(userId);
   const file = getHtmlFile(jwt);
-  telegramTools.editMessage(telegramBot, userId, text, keyboard, messageId);
-  telegramTools.sendFile(telegramBot, userId, file, "ShadyLogIn");
+  telegramTools.editMessage(userId, text, keyboard, messageId);
+  telegramTools.sendFile(userId, file, "ShadyLogIn");
 }
 
 function createJWT(userId: number) {
@@ -43,54 +43,50 @@ function createJWT(userId: number) {
   return token;
 }
 
-export function sendLoggedIn(telegramBot: TelegramBot, userId: number) {
+export function sendLoggedIn(userId: number) {
   if (!userId) return;
   const { text, keyboard } = loggedScreen();
 
-  telegramTools.sendMessage(telegramBot, userId, text, keyboard);
+  telegramTools.sendMessage(userId, text, keyboard);
 }
 
-export function sendMenu(telegramBot: TelegramBot, callback: CallbackQuery) {
-  const userId = callback.from?.id;
-  const messageId = callback.message?.message_id;
+export async function sendMenu({ messageId, userId }: callbackIds) {
   if (!userId || !messageId) return;
-  const { text, keyboard } = menuScreen();
 
-  telegramTools.editMessage(telegramBot, userId, text, keyboard, messageId);
+  await sesameDatabase.refresh(userId);
+  const user = sesameDatabase.getUser(userId);
+  if (!user) return;
+
+  const { text, keyboard } = menuScreen(user);
+
+  telegramTools.editMessage(userId, text, keyboard, messageId);
 }
 
 export function handleMenu(
-  telegramBot: TelegramBot,
-  callback: CallbackQuery,
+  { callbackId, messageId, userId }: callbackIds,
   command: ReturnType<typeof menuScreen>["callbacks"][number]
 ) {
-  const userId = callback.from?.id;
-  const messageId = callback.message?.message_id;
-
+  if (!userId || !messageId || !callbackId) return;
   const user = sesameDatabase.getUser(userId);
-  if (!userId || !user || !messageId) return;
+  if (!user) return;
 
-  const callbackId = callback.id;
-
-  if (command === "MenuScreen: Info") sendInfo(user, telegramBot, userId, messageId);
-  else if (command === "MenuScreen: Check in") checkInSesame(user, telegramBot, callbackId);
-  else if (command === "MenuScreen: Check out") checkOutSesame(user, telegramBot, callbackId);
-  else if (command === "MenuScreen: Options") sendOptions(telegramBot, userId, user, messageId);
+  if (command === "MenuScreen: Info") sendInfo(user, userId, messageId);
+  else if (command === "MenuScreen: Check in") checkInSesame(user, callbackId);
+  else if (command === "MenuScreen: Check out") checkOutSesame(user, callbackId);
+  else if (command === "MenuScreen: Options") sendOptions(userId, user, messageId);
   else return;
 }
 
-export function sendLogInFile(telegramBot: TelegramBot, callback: CallbackQuery) {
-  const userId = callback.from?.id;
-  const callbackId = callback.id;
-  if (!userId) return;
+export function sendLogInFile({ callbackId, userId }: callbackIds) {
+  if (!userId || !callbackId) return;
 
-  const jwt = createJWT(callback.from.id);
+  const jwt = createJWT(userId);
   const file = getHtmlFile(jwt);
-  telegramTools.sendFile(telegramBot, userId, file, "ShadyLogIn");
-  telegramBot.answerCallbackQuery(callbackId, {});
+  telegramTools.sendFile(userId, file, "ShadyLogIn");
+  sesameBot.telegramBot.answerCallbackQuery(callbackId, {});
 }
 
-export function sendRenewLoggin(telegramBot: TelegramBot, userId: number, expiration: Date) {
+export function sendRenewLoggin(userId: number, expiration: Date) {
   if (!userId) return;
   const today = new Date();
   const daysLeft = expiration.getDay() - today.getDay();
@@ -101,63 +97,60 @@ export function sendRenewLoggin(telegramBot: TelegramBot, userId: number, expira
 
   const expiresOn = new Intl.DateTimeFormat("es").format(expiration);
 
-  telegramTools.sendMessage(telegramBot, userId, text, keyboard);
-  telegramTools.sendFile(telegramBot, userId, file, expiresOn.replace(/\//g, "-"));
+  telegramTools.sendMessage(userId, text, keyboard);
+  telegramTools.sendFile(userId, file, expiresOn.replace(/\//g, "-"));
 }
 
-export function sendOptions(telegramBot: TelegramBot, userId: number, user: User, messageId: number) {
+export function sendOptions(userId: number, user: User, messageId: number) {
   const { text, keyboard } = optionsScreen(user.autoClose);
 
-  telegramTools.editMessage(telegramBot, userId, text, keyboard, messageId);
+  telegramTools.editMessage(userId, text, keyboard, messageId);
 }
 
-export function toogleAutoclose(telegramBot: TelegramBot, callback: CallbackQuery) {
-  const userId = callback.from?.id;
-  const messageId = callback.message?.message_id;
-
+export function toogleAutoclose({ messageId, userId }: callbackIds) {
   const user = sesameDatabase.getUser(userId);
   if (!userId || !user || !messageId) return;
   sesameDatabase.toogleAutoclose(userId);
-  sendOptions(telegramBot, userId, user, messageId);
+  sendOptions(userId, user, messageId);
 }
 
-export function logOut(telegramBot: TelegramBot, callback: CallbackQuery) {
-  const userId = callback.from?.id;
-  const messageId = callback.message?.message_id;
+export function logOut({ messageId, userId }: callbackIds) {
   const { text } = logOutScreen();
   if (!userId || !messageId) return;
 
   sesameDatabase.logOut(userId);
-  telegramTools.editMessage(telegramBot, userId, text, [], messageId);
+  telegramTools.editMessage(userId, text, [], messageId);
 }
 
-function sendInfo(user: User, telegramBot: TelegramBot, userId: number, messageId: number) {
+function sendInfo(user: User, userId: number, messageId: number) {
   const since = new Intl.DateTimeFormat("es").format(user.logSince);
   const until = new Intl.DateTimeFormat("es").format(user.logUntil);
 
   const { text, keyboard } = infoScreen(since, until);
 
-  telegramTools.editMessage(telegramBot, userId, text, keyboard, messageId);
+  telegramTools.editMessage(userId, text, keyboard, messageId);
 }
 
-function checkOutSesame(user: User, telegramBot: TelegramBot, callbackId: string) {
-  checkout(user.cookie)
-    .then(() => asnwerCallback(telegramBot, callbackId))
-    .catch((err) => rejectCallback(telegramBot, callbackId, err.message));
+function checkOutSesame(user: User, callbackId: string) {
+  checkout(user)
+    .then(() => asnwerCallback(callbackId))
+    .catch((err) => rejectCallback(callbackId.toString(), err.message));
 }
 
-function checkInSesame(user: User, telegramBot: TelegramBot, callbackId: string) {
-  checkIn(user.cookie)
-    .then(() => asnwerCallback(telegramBot, callbackId))
-    .catch((err) => rejectCallback(telegramBot, callbackId, err.message));
+function checkInSesame(user: User, callbackId: string) {
+  checkIn(user)
+    .then(() => asnwerCallback(callbackId))
+    .catch((err) => rejectCallback(callbackId, err.message));
 }
 
-function asnwerCallback(telegramBot: TelegramBot, callbackId: string) {
-  telegramBot.answerCallbackQuery(callbackId, { text: "Operation done (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧" }).catch(() => undefined);
+function asnwerCallback(callbackId: string) {
+  sesameBot.telegramBot
+    .answerCallbackQuery(callbackId, { text: "Operation done (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧" })
+    .catch(() => undefined);
 }
 
-function rejectCallback(telegramBot: TelegramBot, callbackId: string, message?: string) {
-  telegramBot
+function rejectCallback(callbackId: string, message?: string) {
+  sesameBot.telegramBot
     .answerCallbackQuery(callbackId, { text: message ?? "Welp, something went wrong (●'◡'●)", show_alert: true })
     .catch(() => undefined);
 }

@@ -30,7 +30,7 @@ export function startCronAutoClockOut() {
     beforeClockingOut,
     () => {
       const users = sesameDatabase.getAllUsers();
-      if (users.size) users.forEach((info) => info.autoClose && waitRandomTime(() => checkout(info.cookie)));
+      if (users.size) users.forEach((info) => info.autoClose && waitRandomTime(() => checkout(info)));
     },
     { name: "Autoclose", timezone: "Europe/Madrid" }
   );

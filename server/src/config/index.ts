@@ -14,6 +14,7 @@ const ENV = {
   sesameCrypto: process.env.SESAME_CRYPTO!,
   checkIn: process.env.SESAME_CHECK_IN_URL!,
   checkOut: process.env.SESAME_CHECK_OUT_URL!,
+  employeeInfo: process.env.SESAME_EMPLOYEE_INFO!,
   serverIp: process.env.SESAME_DEV === "true" ? "localhost" : process.env.SESAME_SERVER_IP!,
 } as const;
 

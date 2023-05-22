@@ -1,4 +1,5 @@
 import TelegramBot from "node-telegram-bot-api";
+import { sesameBot } from "../../../server";
 
 export class SesameChatHistory {
   private history: Map<number, Set<number>>;
@@ -25,10 +26,10 @@ export class SesameChatHistory {
     }
   }
 
-  public deleteChatHistory(telegramBot: TelegramBot, chatId: number) {
+  public deleteChatHistory(chatId: number) {
     const chatLogs = this.history.get(chatId);
     if (chatLogs) {
-      chatLogs.forEach((chatLog) => telegramBot.deleteMessage(chatId, chatLog).catch(() => undefined));
+      chatLogs.forEach((chatLog) => sesameBot.telegramBot.deleteMessage(chatId, chatLog).catch(() => undefined));
       chatLogs.clear();
     }
   }

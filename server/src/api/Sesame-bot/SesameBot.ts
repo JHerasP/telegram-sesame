@@ -11,32 +11,32 @@ const TOKEN = configIndex.ENV.telegramToken;
 const TC = TELEGRAM_COMMANDS;
 
 export class SesameBot {
-  private publicBot: TelegramBot;
+  telegramBot: TelegramBot;
 
   constructor() {
-    this.publicBot = new TelegramBot(TOKEN, { polling: true });
+    this.telegramBot = new TelegramBot(TOKEN, { polling: true });
     this.init();
   }
 
   init() {
-    this.publicBot.onText(TC.start, (message) => {
-      sendWelcomeMessage(this.publicBot, message);
+    this.telegramBot.onText(TC.start, (message) => {
+      sendWelcomeMessage(message);
     });
 
-    this.publicBot.on("callback_query", (callbackQuery) => {
+    this.telegramBot.on("callback_query", (callbackQuery) => {
       const command = callbackQuery.data as telegramButtonsCallbacks;
 
-      commandHandler(this.publicBot, callbackQuery, command);
+      commandHandler(callbackQuery, command);
     });
   }
 
   public sendLoggedInMessage(chatId: number) {
-    if (chatHistory.get(chatId)?.size) chatHistory.deleteChatHistory(this.publicBot, chatId);
-    sendLoggedIn(this.publicBot, chatId);
+    if (chatHistory.get(chatId)?.size) chatHistory.deleteChatHistory(chatId);
+    sendLoggedIn(chatId);
   }
 
   public sendRenewLogIn(chatId: number, expiration: Date) {
-    if (chatHistory.get(chatId)?.size) chatHistory.deleteChatHistory(this.publicBot, chatId);
-    sendRenewLoggin(this.publicBot, chatId, expiration);
+    if (chatHistory.get(chatId)?.size) chatHistory.deleteChatHistory(chatId);
+    sendRenewLoggin(chatId, expiration);
   }
 }

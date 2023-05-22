@@ -2,14 +2,10 @@
 process.env["NTBA_FIX_350"] = "1";
 import TelegramBot from "node-telegram-bot-api";
 import { chatHistory } from "../Sesame-database/SesameChatHistory";
+import { sesameBot } from "../../../server";
 
-export function sendMessage(
-  telegramBot: TelegramBot,
-  chatId: number,
-  message: string,
-  keyboard: TelegramBot.InlineKeyboardButton[][]
-) {
-  telegramBot
+export function sendMessage(chatId: number, message: string, keyboard: TelegramBot.InlineKeyboardButton[][]) {
+  sesameBot.telegramBot
     .sendMessage(chatId, message, {
       reply_markup: {
         inline_keyboard: keyboard,
@@ -25,13 +21,12 @@ export function sendMessage(
 }
 
 export function editMessage(
-  telegramBot: TelegramBot,
   chatId: number,
   message: string,
   keyboard: TelegramBot.InlineKeyboardButton[][],
   messageId: number
 ) {
-  telegramBot
+  sesameBot.telegramBot
     .editMessageText(message, {
       chat_id: chatId,
       message_id: messageId,
@@ -44,8 +39,8 @@ export function editMessage(
     .catch(() => undefined);
 }
 
-export function sendFile(telegramBot: TelegramBot, chatId: number, file: Buffer, filename?: string) {
-  telegramBot
+export function sendFile(chatId: number, file: Buffer, filename?: string) {
+  sesameBot.telegramBot
     .sendDocument(chatId, file, {}, { filename: `${filename}.html`, contentType: "text/html" })
     .then((x) => {
       chatHistory.updateChatLog(x.chat.id, x.message_id);
