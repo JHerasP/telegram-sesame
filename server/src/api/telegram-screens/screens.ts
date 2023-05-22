@@ -52,8 +52,8 @@ export const firstStepsScreen = (): screen<never> => {
     { sentence: "log in.", style: { strong: true, jumpLine: true } },
     { sentence: "Don't worry, I am not going to steal your information (⌐■_■),", style: { jumpLine: true } },
     { sentence: "", style: { jumpLine: true } },
-    { sentence: "After you finish it, You will receibe a message on" },
-    { sentence: "this", style: { bold: true } },
+    { sentence: "After you finish it, You will receibe a message on", style: {} },
+    { sentence: " this ", style: { bold: true } },
     { sentence: "chat." },
   ]);
   return {
@@ -70,7 +70,7 @@ export const loggedScreen = (): screen<loggedCallbacks> => {
     { sentence: "Yes I know, I am also surprised. ( ͡ಠ ʖ̯ ͡ಠ)", style: { jumpLine: true } },
     { sentence: "", style: { jumpLine: true } },
     { sentence: "If you find any problem, I recommend you to write:" },
-    { sentence: "/start", style: { italic: true } },
+    { sentence: " /start ", style: { italic: true } },
     { sentence: "and log in again" },
   ]);
 
@@ -87,7 +87,8 @@ export const menuScreen = (user: User): screen<menuCallbacks> => {
     { sentence: "So, It is sesame time, do as you wish " },
     { sentence: "ヽ(✿ﾟ▽ﾟ)ノ", style: { bold: true, jumpLine: true } },
     { sentence: "", style: { jumpLine: true } },
-    { sentence: `Status ${user.workingStatus}`, style: { jumpLine: true } },
+    { sentence: "Status: " },
+    { sentence: `${user.workingStatus}`, style: { strong: true } },
   ]);
 
   return {

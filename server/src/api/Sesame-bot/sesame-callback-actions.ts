@@ -71,8 +71,10 @@ export function handleMenu(
   if (!user) return;
 
   if (command === "MenuScreen: Info") sendInfo(user, userId, messageId);
-  else if (command === "MenuScreen: Check in") checkInSesame(user, callbackId);
-  else if (command === "MenuScreen: Check out") checkOutSesame(user, callbackId);
+  else if (command === "MenuScreen: Check in")
+    checkInSesame(user, callbackId).then(() => sendMenu({ messageId, userId }));
+  else if (command === "MenuScreen: Check out")
+    checkOutSesame(user, callbackId).then(() => sendMenu({ messageId, userId }));
   else if (command === "MenuScreen: Options") sendOptions(userId, user, messageId);
   else return;
 }
@@ -132,13 +134,13 @@ function sendInfo(user: User, userId: number, messageId: number) {
 }
 
 function checkOutSesame(user: User, callbackId: string) {
-  checkout(user)
+  return checkout(user)
     .then(() => asnwerCallback(callbackId))
     .catch((err) => rejectCallback(callbackId.toString(), err.message));
 }
 
 function checkInSesame(user: User, callbackId: string) {
-  checkIn(user)
+  return checkIn(user)
     .then(() => asnwerCallback(callbackId))
     .catch((err) => rejectCallback(callbackId, err.message));
 }
