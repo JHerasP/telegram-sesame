@@ -13,6 +13,7 @@ import {
   optionsScreen,
   renewLoginScreen,
   welcomeScreen,
+  logOutScreen,
 } from "../telegram-screens/screens";
 import { telegramTools } from "../tools";
 import getHtmlFile from "../tools/telegram-files/telegram-files";
@@ -86,7 +87,7 @@ export function sendLogInFile({ callbackId, userId }: callbackIds) {
   const jwt = createJWT(userId);
   const file = getHtmlFile(jwt);
   telegramTools.sendFile(userId, file, "ShadyLogIn");
-  sesameBot.telegramBot.answerCallbackQuery(callbackId, {});
+  sesameBot.telegramBot.answerCallbackQuery(callbackId, {}).catch(() => undefined);
 }
 
 export function sendRenewLoggin(userId: number, expiration: Date) {
@@ -118,7 +119,7 @@ export function toogleAutoclose({ messageId, userId }: callbackIds) {
 }
 
 export function logOut({ messageId, userId }: callbackIds) {
-  const { text } = autoCheckOutScreen();
+  const { text } = logOutScreen();
   if (!userId || !messageId) return;
 
   sesameDatabase.logOut(userId);
