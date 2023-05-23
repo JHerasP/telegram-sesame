@@ -6,7 +6,7 @@ import { configIndex } from "./src/config";
 const PORT = configIndex.ENV.port;
 const HOST = configIndex.ENV.host;
 const DEV = configIndex.ENV.dev;
-console.info(DEV ? "⚠ Dev mode ⚠" : "🆗 Prod mode 🆗");
+console.info(DEV === "true" ? "⚠ Dev mode ⚠" : "🆗 Prod mode 🆗");
 app.listen(parseInt(PORT), HOST, () => console.info(`Server is listening on ${PORT}`));
 
 export const sesameBot = new SesameBot();
