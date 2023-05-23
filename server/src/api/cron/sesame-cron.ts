@@ -26,7 +26,7 @@ function isSameDay(until: Date, today: Date) {
 }
 
 export function startCronAutoClockOut() {
-  const beforeClockingOut = "15 20 * * 1-5";
+  const beforeClockingOut = "10 15 * * 1-5";
 
   cron.schedule(
     beforeClockingOut,

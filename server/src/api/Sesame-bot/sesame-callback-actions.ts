@@ -76,7 +76,7 @@ export function handleMenu(
   else if (command === "MenuScreen: Check out")
     checkOutSesame(user, callbackId).then(() => sendMenu({ messageId, userId }));
   else if (command === "MenuScreen: Options") sendOptions(userId, user, messageId);
-  else if (command === "MenuScreen: Refresh") sendMenu({ messageId, userId });
+  else if (command === "MenuScreen: Refresh") sendMenu({ messageId, userId }).then(() => asnwerCallback(callbackId));
   else return;
 }
 
