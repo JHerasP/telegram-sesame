@@ -50,6 +50,12 @@ export class SesameDatabase {
       })
       .catch(() => undefined);
   }
+
+  public toogleremmeberCheckIn(userId: number) {
+    const user = this.users.get(userId);
+
+    if (user) user.remmeberCheckIn = !user.remmeberCheckIn;
+  }
 }
 
 export const sesameDatabase = new SesameDatabase();

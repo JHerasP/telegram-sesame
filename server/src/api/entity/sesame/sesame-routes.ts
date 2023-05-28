@@ -14,7 +14,9 @@ const checkJWT = (req: ExpressBody<logInBody>, res, next) => {
   const token = req.headers.authorization;
   if (!token) return res.status(200).send("Where is my token?");
 
-  const decodedToken = JWT.verify(token, ENV.sesameCrypto);
+  const noBearer = token.split(" ")[1];
+
+  const decodedToken = JWT.verify(noBearer, ENV.sesameCrypto);
 
   if (decodedToken) next();
   else res.status(200).send("ಠ▃ಠ");

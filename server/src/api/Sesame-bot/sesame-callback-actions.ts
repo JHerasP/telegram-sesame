@@ -73,7 +73,7 @@ export function sendLogInFile({ callbackId, userId }: callbackIds) {
 }
 
 export function sendOptions(userId: number, user: User, messageId: number) {
-  const { text, keyboard } = optionsScreen(user.autoCheckOut);
+  const { text, keyboard } = optionsScreen(user.autoCheckOut, user.remmeberCheckIn);
 
   telegramTools.editMessage(userId, text, keyboard, messageId);
 }
@@ -82,6 +82,13 @@ export function toogleAutoclose({ messageId, userId }: callbackIds) {
   const user = sesameDatabase.getUser(userId);
   if (!userId || !user || !messageId) return;
   sesameDatabase.toogleAutoclose(userId);
+  sendOptions(userId, user, messageId);
+}
+
+export function toogleRemmemberCheckIn({ messageId, userId }: callbackIds) {
+  const user = sesameDatabase.getUser(userId);
+  if (!userId || !user || !messageId) return;
+  sesameDatabase.toogleremmeberCheckIn(userId);
   sendOptions(userId, user, messageId);
 }
 
