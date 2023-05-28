@@ -1,6 +1,6 @@
 import { InlineKeyboardButton } from "node-telegram-bot-api";
-import { createButton, createText } from "./keyboards/keyboard-tools";
 import { User } from "../Sesame-database/SesameDatabase";
+import { createButton, createText } from "./keyboards/keyboard-tools";
 
 type screen<T> = {
   text: string;
@@ -15,7 +15,8 @@ export type telegramButtonsCallbacks =
   | renewLoginCallbacks
   | optionCallbacks
   | logOutCallbacks
-  | autoChecoutCallbaks;
+  | autoChecoutCallbaks
+  | remmemberCheckInCallbacks;
 
 type welcomeCallbacks = "wellcomeScreen: Conditions";
 export const welcomeScreen = (): screen<welcomeCallbacks> => {
@@ -201,7 +202,7 @@ export const logOutScreen = (): screen<logOutCallbacks> => {
 type autoChecoutCallbaks = "autoCheckOutScreen: checkOut";
 export const autoCheckOutScreen = (): screen<autoChecoutCallbaks> => {
   const text = createText([
-    { sentence: "Hey, i just clossed your session", style: { jumpLine: true } },
+    { sentence: "Hey, your clock was still running. I just clossed it for you", style: { jumpLine: true } },
     { sentence: "Thank my creator later", style: { jumpLine: true } },
     { sentence: "", style: { jumpLine: true } },
     { sentence: "(✿◠‿◠)", style: { strong: true } },
@@ -211,5 +212,20 @@ export const autoCheckOutScreen = (): screen<autoChecoutCallbaks> => {
     text,
     keyboard: [[createButton<autoChecoutCallbaks>("Gracias maquina", "autoCheckOutScreen: checkOut")]],
     callbacks: ["autoCheckOutScreen: checkOut"],
+  };
+};
+
+type remmemberCheckInCallbacks = "remmemberChecInScreen: checkIn";
+export const remmemberChecInScreen = (): screen<remmemberCheckInCallbacks> => {
+  const text = createText([
+    { sentence: "Good moooooooooooooorning ヾ(•ω•`)o", style: { jumpLine: true } },
+    { sentence: "", style: { jumpLine: true } },
+    { sentence: "Did you forget to check in?", style: { jumpLine: true } },
+  ]);
+
+  return {
+    text,
+    keyboard: [[createButton<remmemberCheckInCallbacks>("Let me sleep", "remmemberChecInScreen: checkIn")]],
+    callbacks: ["remmemberChecInScreen: checkIn"],
   };
 };

@@ -2,8 +2,9 @@ import request from "request-promise-native";
 import { awaitResolver } from "../../../TS_tools/general-utility";
 import { ENV } from "../../../config";
 import { User, sesameDatabase } from "../../Sesame-database/SesameDatabase";
-import { sesameBot } from "../../../../server";
-import petete from "jsonwebtoken";
+import JWT from "jsonwebtoken";
+
+import { sendLoggedInMessage } from "../../Sesame-bot/sesame-actions";
 
 export async function logIn({ email, password }: { email: string; password: string }, jwt: string) {
   const clientServerOptions = {
@@ -27,7 +28,7 @@ export async function logIn({ email, password }: { email: string; password: stri
   else {
     if (response.headers) {
       const cookies = response.headers["set-cookie"];
-      const decoded = petete.decode(jwt.split(" ")[1], { json: true });
+      const decoded = JWT.decode(jwt.split(" ")[1], { json: true });
 
       if (!decoded) return;
 
@@ -44,9 +45,11 @@ export async function logIn({ email, password }: { email: string; password: stri
         cookie: cookies[1],
         logSince: new Date(),
         logUntil: expirationDate,
-        autoClose: true,
+        autoCheckOut: true,
+        remmeberCheckIn: true,
+        autoCheckIn: false,
       });
-      sesameBot.sendLoggedInMessage(decoded.userId);
+      sendLoggedInMessage(decoded.userId);
     }
   }
 }

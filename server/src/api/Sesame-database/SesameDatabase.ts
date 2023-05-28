@@ -6,7 +6,9 @@ export interface User {
   cookie: string;
   logSince: Date;
   logUntil: Date;
-  autoClose: boolean;
+  autoCheckOut: boolean;
+  remmeberCheckIn: boolean;
+  autoCheckIn: boolean;
 }
 
 export class SesameDatabase {
@@ -31,7 +33,7 @@ export class SesameDatabase {
 
   public toogleAutoclose(userId: number) {
     const user = this.users.get(userId);
-    if (user) user.autoClose = !user.autoClose;
+    if (user) user.autoCheckOut = !user.autoCheckOut;
   }
 
   public logOut(userId: number) {

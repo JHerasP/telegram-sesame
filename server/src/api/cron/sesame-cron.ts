@@ -1,8 +1,11 @@
 import cron from "node-cron";
+import {
+  sendAutoCheckOut,
+  sendRemmberCheckIn as sendRememberCheckIn,
+  sendRenewLogIn,
+} from "../Sesame-bot/sesame-actions";
 import { sesameDatabase } from "../Sesame-database/SesameDatabase";
-import { sesameBot } from "../../../server";
-import { checkout, getEmployeeInfo } from "../entity/sesame/sesame-service";
-import { sendAutoCheckOut } from "../Sesame-bot/sesame-callback-actions";
+import { checkout } from "../entity/sesame/sesame-service";
 
 export function startCronSessionCheck() {
   const onEveryDay = "0 12 * * *";
@@ -11,9 +14,10 @@ export function startCronSessionCheck() {
     () => {
       const today = new Date();
       const users = sesameDatabase.getAllUsers();
+
       if (users.size) {
         users.forEach((info, key) => {
-          if (isSameDay(info.logUntil, today)) sesameBot.sendRenewLogIn(key, info.logUntil);
+          if (isSameDay(info.logUntil, today)) sendRenewLogIn(key, info.logUntil);
         });
       }
     },
@@ -33,11 +37,14 @@ export function startCronAutoClockOut() {
     () => {
       const users = sesameDatabase.getAllUsers();
       if (!users.size) return;
+
       users.forEach(async (info, userId) => {
-        if (!info.autoClose) return;
+        if (!info.autoCheckOut) return;
 
         await sesameDatabase.refresh(userId);
+
         const user = sesameDatabase.getUser(userId);
+
         if (user && user.workingStatus === "online")
           waitRandomTime(() =>
             checkout(user)
@@ -57,4 +64,27 @@ function waitRandomTime(callback: VoidFunction) {
   const randomTime = Math.floor(Math.random() * (maxTime - minTime + 1)) + minTime;
 
   setTimeout(callback, randomTime);
+}
+
+export function startCronAutoCheckIn() {
+  const beforeClockingOut = "7 10 * * 1-5";
+
+  cron.schedule(
+    beforeClockingOut,
+    () => {
+      const users = sesameDatabase.getAllUsers();
+      if (!users.size) return;
+
+      users.forEach(async (info, userId) => {
+        if (!info.remmeberCheckIn) return;
+
+        await sesameDatabase.refresh(userId);
+
+        const user = sesameDatabase.getUser(userId);
+
+        if (user && user.workingStatus === "offline") sendRememberCheckIn(userId);
+      });
+    },
+    { name: "Autoclose", timezone: "Europe/Madrid" }
+  );
 }

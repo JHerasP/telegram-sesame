@@ -2,7 +2,7 @@
 process.env["NTBA_FIX_350"] = "1";
 import TelegramBot from "node-telegram-bot-api";
 import { chatHistory } from "../Sesame-database/SesameChatHistory";
-import { sesameBot } from "../../../server";
+import { sesameBot } from "../Sesame-bot/SesameBot";
 
 export function sendMessage(chatId: number, message: string, keyboard: TelegramBot.InlineKeyboardButton[][]) {
   sesameBot.telegramBot

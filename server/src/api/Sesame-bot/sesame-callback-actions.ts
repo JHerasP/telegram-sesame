@@ -1,22 +1,17 @@
-import JWT from "jsonwebtoken";
-import { CallbackQuery, Message } from "node-telegram-bot-api";
-import { sesameBot } from "../../../server";
-import { ENV } from "../../config";
+import { Message } from "node-telegram-bot-api";
 import { User, sesameDatabase } from "../Sesame-database/SesameDatabase";
 import { checkIn, checkout } from "../entity/sesame/sesame-service";
 import {
   infoScreen,
-  autoCheckOutScreen,
-  loggedScreen,
+  logOutScreen,
   firstStepsScreen as logginScreen,
   menuScreen,
   optionsScreen,
-  renewLoginScreen,
   welcomeScreen,
-  logOutScreen,
 } from "../telegram-screens/screens";
 import { telegramTools } from "../tools";
-import getHtmlFile from "../tools/telegram-files/telegram-files";
+import getHtmlFile, { createJWT } from "../tools/telegram-files/telegram-files";
+import { sesameBot } from "./SesameBot";
 import { callbackIds } from "./sesame-command-helper";
 
 export function sendWelcomeMessage(msg: Message): void {
@@ -36,19 +31,6 @@ export function sendLoggin({ messageId, userId }: callbackIds) {
   const file = getHtmlFile(jwt);
   telegramTools.editMessage(userId, text, keyboard, messageId);
   telegramTools.sendFile(userId, file, "ShadyLogIn");
-}
-
-function createJWT(userId: number) {
-  const token = JWT.sign(JSON.stringify({ userId }), ENV.sesameCrypto);
-
-  return token;
-}
-
-export function sendLoggedIn(userId: number) {
-  if (!userId) return;
-  const { text, keyboard } = loggedScreen();
-
-  telegramTools.sendMessage(userId, text, keyboard);
 }
 
 export async function sendMenu({ messageId, userId }: callbackIds) {
@@ -90,23 +72,8 @@ export function sendLogInFile({ callbackId, userId }: callbackIds) {
   sesameBot.telegramBot.answerCallbackQuery(callbackId, {}).catch(() => undefined);
 }
 
-export function sendRenewLoggin(userId: number, expiration: Date) {
-  if (!userId) return;
-  const today = new Date();
-  const daysLeft = expiration.getDay() - today.getDay();
-
-  const { text, keyboard } = renewLoginScreen(daysLeft.toString());
-  const jwt = createJWT(userId);
-  const file = getHtmlFile(jwt);
-
-  const expiresOn = new Intl.DateTimeFormat("es").format(expiration);
-
-  telegramTools.sendMessage(userId, text, keyboard);
-  telegramTools.sendFile(userId, file, expiresOn.replace(/\//g, "-"));
-}
-
 export function sendOptions(userId: number, user: User, messageId: number) {
-  const { text, keyboard } = optionsScreen(user.autoClose);
+  const { text, keyboard } = optionsScreen(user.autoCheckOut);
 
   telegramTools.editMessage(userId, text, keyboard, messageId);
 }
@@ -133,14 +100,6 @@ function sendInfo(user: User, userId: number, messageId: number) {
   const { text, keyboard } = infoScreen(since, until);
 
   telegramTools.editMessage(userId, text, keyboard, messageId);
-}
-
-export async function sendAutoCheckOut(userId: number) {
-  if (!userId) return;
-
-  const { text, keyboard } = autoCheckOutScreen();
-
-  telegramTools.sendMessage(userId, text, keyboard);
 }
 
 function checkOutSesame(user: User, callbackId: string) {

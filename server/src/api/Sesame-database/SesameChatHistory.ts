@@ -1,5 +1,4 @@
-import TelegramBot from "node-telegram-bot-api";
-import { sesameBot } from "../../../server";
+import { sesameBot } from "../Sesame-bot/SesameBot";
 
 export class SesameChatHistory {
   private history: Map<number, Set<number>>;
