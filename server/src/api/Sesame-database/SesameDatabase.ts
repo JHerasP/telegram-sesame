@@ -46,7 +46,7 @@ export class SesameDatabase {
 
     return getEmployeeInfo(user?.cookie)
       .then((userData) => {
-        this.users.set(userId, { ...user, workingStatus: userData.workStatus });
+        if (userData) this.users.set(userId, { ...user, workingStatus: userData.workStatus });
       })
       .catch(() => undefined);
   }

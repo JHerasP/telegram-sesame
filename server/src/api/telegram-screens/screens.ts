@@ -225,7 +225,7 @@ export const remmemberChecInScreen = (): screen<remmemberCheckInCallbacks> => {
 
   return {
     text,
-    keyboard: [[createButton<remmemberCheckInCallbacks>("Let me sleep", "remmemberChecInScreen: checkIn")]],
+    keyboard: [[createButton<remmemberCheckInCallbacks>("Utzi lo egin (╯▔皿▔)╯", "remmemberChecInScreen: checkIn")]],
     callbacks: ["remmemberChecInScreen: checkIn"],
   };
 };

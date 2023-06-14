@@ -1,11 +1,13 @@
 import cron from "node-cron";
+import { awaitResolver } from "../../TS_tools/general-utility";
 import {
   sendAutoCheckOut,
   sendRemmberCheckIn as sendRememberCheckIn,
   sendRenewLogIn,
 } from "../Sesame-bot/sesame-actions";
 import { sesameDatabase } from "../Sesame-database/SesameDatabase";
-import { checkout } from "../entity/sesame/sesame-service";
+import { checkout, getEmployeeHolidays, getYearHolidays } from "../entity/sesame/sesame-service";
+import { checkHoliday } from "./cron-tools";
 
 export function startCronSessionCheck() {
   const onEveryDay = "0 12 * * *";
@@ -67,24 +69,32 @@ function waitRandomTime(callback: VoidFunction) {
 }
 
 export function startCronAutoCheckIn() {
-  const beforeClockingOut = "7 10 * * 1-5";
+  const beforeClockingIn = "7 10 * * 1-5";
 
   cron.schedule(
-    beforeClockingOut,
+    beforeClockingIn,
     () => {
       const users = sesameDatabase.getAllUsers();
       if (!users.size) return;
 
-      users.forEach(async (info, userId) => {
-        if (!info.remmeberCheckIn) return;
-
+      users.forEach(async (_, userId) => {
         await sesameDatabase.refresh(userId);
-
         const user = sesameDatabase.getUser(userId);
+        if (!user) return;
+        if (!user.remmeberCheckIn) return;
+        if (user.workingStatus === "online") return;
 
-        if (user && user.workingStatus === "offline") sendRememberCheckIn(userId);
+        const [holidays] = await awaitResolver(getEmployeeHolidays(user));
+        const [yearHolidays] = await awaitResolver(getYearHolidays(user));
+
+        if (holidays && yearHolidays) {
+          const isHolyday = checkHoliday(holidays.flat());
+          const isYearHolyday = checkHoliday(yearHolidays);
+
+          if (!isHolyday && !isYearHolyday) sendRememberCheckIn(userId);
+        }
       });
     },
-    { name: "Autoclose", timezone: "Europe/Madrid" }
+    { name: "AutoCheckIn", timezone: "Europe/Madrid" }
   );
 }
