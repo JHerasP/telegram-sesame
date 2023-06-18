@@ -69,7 +69,7 @@ function waitRandomTime(callback: VoidFunction) {
 }
 
 export function startCronAutoCheckIn() {
-  const beforeClockingIn = "7 10 * * 1-5";
+  const beforeClockingIn = "10 7 * * 1-5";
 
   cron.schedule(
     beforeClockingIn,
