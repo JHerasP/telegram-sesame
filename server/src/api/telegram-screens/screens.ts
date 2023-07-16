@@ -1,6 +1,7 @@
 import { InlineKeyboardButton } from "node-telegram-bot-api";
 import { User } from "../Sesame-database/SesameDatabase";
 import { createButton, createText } from "./keyboards/keyboard-tools";
+import { WorkType } from "../entity/sesame/types";
 
 type screen<T> = {
   text: string;
@@ -14,7 +15,8 @@ export type telegramButtonsCallbacks =
   | infoMenuCallbacks
   | optionCallbacks
   | autoChecoutCallbaks
-  | remmemberCheckInCallbacks;
+  | remmemberCheckInCallbacks
+  | checkCallbacks;
 
 type welcomeCallbacks = "wellcomeScreen: Conditions";
 export const welcomeScreen = (): screen<welcomeCallbacks> => {
@@ -81,10 +83,10 @@ export const loggedScreen = (): screen<loggedCallbacks> => {
   };
 };
 
-type menuCallbacks = `MenuScreen: ${"Info" | "Check in" | "Check out" | "Options" | "Refresh"}`;
+type menuCallbacks = `MenuScreen: ${"Info" | "Check menu" | "Options" | "Refresh"}`;
 export const menuScreen = (user: User): screen<menuCallbacks> => {
   const text = createText([
-    { sentence: "So, It is sesame time, do as you wish " },
+    { sentence: "So, It is sesame time, do as you wish ", style: { jumpLine: true } },
     { sentence: "ヽ(✿ﾟ▽ﾟ)ノ", style: { bold: true, jumpLine: true } },
     { sentence: "", style: { jumpLine: true } },
     { sentence: "Status: " },
@@ -94,19 +96,43 @@ export const menuScreen = (user: User): screen<menuCallbacks> => {
   return {
     text,
     keyboard: [
-      [createButton<menuCallbacks>("📳  Check in", "MenuScreen: Check in")],
-      [createButton<menuCallbacks>("📴 Check out", "MenuScreen: Check out")],
+      [createButton<menuCallbacks>("📳  Check menu", "MenuScreen: Check menu")],
       [createButton<menuCallbacks>("🔫 Refresh", "MenuScreen: Refresh")],
       [createButton<menuCallbacks>("🗃 Loggin info", "MenuScreen: Info")],
       [createButton<menuCallbacks>("⚙ Options", "MenuScreen: Options")],
     ],
-    callbacks: [
-      "MenuScreen: Info",
-      "MenuScreen: Check in",
-      "MenuScreen: Check out",
-      "MenuScreen: Options",
-      "MenuScreen: Refresh",
-    ],
+    callbacks: ["MenuScreen: Info", "MenuScreen: Check menu", "MenuScreen: Options", "MenuScreen: Refresh"],
+  };
+};
+
+type checkCallbacks = `CheckScreen: ${string}` | `CheckScreen: Check out` | `CheckScreen: Back`;
+export const checkScreen = (user: User, workTypes: WorkType[]): screen<checkCallbacks> => {
+  const text = createText([
+    { sentence: "WTF, why are there so many check in types?", style: { jumpLine: true } },
+    { sentence: "(>ლ)", style: { bold: true, jumpLine: true } },
+    { sentence: "", style: { jumpLine: true } },
+    { sentence: "Status: " },
+    { sentence: `${user.workingStatus}`, style: { strong: true } },
+  ]);
+
+  const buttons = workTypes.map((workType) => {
+    return [createButton(workType.name, `CheckScreen: ${workType.id}`)];
+  });
+
+  const callbacks = workTypes.map((workType) => {
+    const callback: checkCallbacks = `CheckScreen: ${workType.id}`;
+    return callback;
+  });
+
+  buttons.push([createButton("Check out", "CheckScreen: Check out")]);
+  buttons.push([createButton("Back", "CheckScreen: Back")]);
+  callbacks.push("CheckScreen: Check out");
+  callbacks.push("CheckScreen: Back");
+
+  return {
+    text,
+    keyboard: buttons,
+    callbacks: callbacks,
   };
 };
 

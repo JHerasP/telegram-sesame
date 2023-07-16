@@ -2,7 +2,7 @@ import { getEmployeeInfo } from "../entity/sesame/sesame-service";
 
 export interface User {
   employeeId: string;
-  workingStatus: "online" | "offline";
+  workingStatus: string;
   cookie: string;
   logSince: Date;
   logUntil: Date;

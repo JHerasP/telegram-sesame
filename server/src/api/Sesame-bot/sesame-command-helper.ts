@@ -8,6 +8,7 @@ import {
   toogleAutoclose,
   logOut,
   toogleRemmemberCheckIn,
+  handleCheckMenu,
 } from "./sesame-callback-actions";
 import { caseGuard } from "../../TS_tools/general-utility";
 import { sesameBot } from "./SesameBot";
@@ -31,8 +32,7 @@ export function commandHandler(callbackQuery: TelegramBot.CallbackQuery, command
     case "optionsScreen: Back":
       return sendMenu({ callbackId, userId, messageId });
     case "MenuScreen: Info":
-    case "MenuScreen: Check in":
-    case "MenuScreen: Check out":
+    case "MenuScreen: Check menu":
     case "MenuScreen: Refresh":
     case "MenuScreen: Options":
       return handleMenu({ callbackId, userId, messageId }, command);
@@ -49,7 +49,13 @@ export function commandHandler(callbackQuery: TelegramBot.CallbackQuery, command
       if (messageId) return sesameBot.telegramBot.deleteMessage(userId, messageId).catch(() => undefined);
       return;
     default:
+      if (isCheckScreen(command)) return handleCheckMenu({ callbackId, userId, messageId }, command);
       if (command) caseGuard(command);
       break;
   }
+}
+
+type checkScreen = `CheckScreen: ${string}`;
+function isCheckScreen(test: checkScreen | undefined): test is checkScreen {
+  return test?.includes("CheckScreen") || false;
 }

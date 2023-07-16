@@ -3,9 +3,8 @@ import { awaitResolver } from "../../../TS_tools/general-utility";
 import { ENV } from "../../../config";
 import { User, sesameDatabase } from "../../Sesame-database/SesameDatabase";
 import decode from "jsonwebtoken/decode";
-
 import { sendLoggedInMessage } from "../../Sesame-bot/sesame-actions";
-import { HolidaysResponse, YearHolidayResponse } from "./types";
+import { HolidaysResponse, WorkType, YearHolidayResponse } from "./types";
 
 export async function logIn({ email, password }: { email: string; password: string }, jwt: string) {
   const clientServerOptions = {
@@ -57,12 +56,12 @@ export async function logIn({ email, password }: { email: string; password: stri
   }
 }
 
-export async function checkIn(user: User) {
+export async function checkIn(user: User, workCheckTypeId: string) {
   const { employeeId, cookie } = user;
 
   const clientServerOptions = {
     uri: ENV.checkIn.replace("idEmployee", employeeId),
-    body: JSON.stringify({ origin: "web", coordinates: {}, workCheckTypeId: null }),
+    body: JSON.stringify({ origin: "web", coordinates: {}, workCheckTypeId: workCheckTypeId }),
     method: "POST",
     headers: {
       "User-Agent": "Request-Promise",
@@ -118,7 +117,8 @@ export async function getEmployeeInfo(cookie: string) {
   const [body] = await awaitResolver<string, any>(request(clientServerOptions));
   if (body) {
     const data = JSON.parse(body);
-    if (data) return data.data[0] as { id: string; workStatus: "online" | "offline" };
+
+    if (data) return data.data[0] as { id: string; workStatus: string };
   }
 
   return null;
@@ -175,5 +175,27 @@ export async function getEmployeeHolidays({ cookie, employeeId }: User) {
       });
     }
   }
+  return [];
+}
+
+export async function getWorkTypes({ cookie, employeeId }: User) {
+  const clientServerOptions = {
+    uri: ENV.checkInTypes.replace("idEmployee", employeeId),
+    method: "GET",
+    headers: {
+      "User-Agent": "Request-Promise",
+      "Content-Type": "application/json",
+      Cookie: cookie,
+    },
+  };
+
+  const [body] = await awaitResolver<string, any>(request(clientServerOptions));
+  if (body) {
+    const data = JSON.parse(body);
+    if (data) {
+      return data.data as WorkType[];
+    }
+  }
+
   return [];
 }

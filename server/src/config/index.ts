@@ -17,6 +17,7 @@ const ENV = {
   employeeInfo: process.env.SESAME_EMPLOYEE_INFO!,
   holidaysUrl: process.env.SESAME_EMPLOYEE_HOLIDAYS!,
   yearholidaysUrl: process.env.SESAME_YEAR_HOLIDAYS!,
+  checkInTypes: process.env.SESAME_CHECK_IN_TYPES!,
   serverIp: process.env.SESAME_DEV === "true" ? "localhost" : process.env.SESAME_SERVER_IP!,
 } as const;
 

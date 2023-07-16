@@ -1,7 +1,8 @@
 import { Message } from "node-telegram-bot-api";
 import { User, sesameDatabase } from "../Sesame-database/SesameDatabase";
-import { checkIn, checkout } from "../entity/sesame/sesame-service";
+import { checkIn, checkout, getWorkTypes } from "../entity/sesame/sesame-service";
 import {
+  checkScreen,
   infoScreen,
   logOutScreen,
   firstStepsScreen as logginScreen,
@@ -54,12 +55,37 @@ export function handleMenu(
   if (!user) return;
 
   if (command === "MenuScreen: Info") sendInfo(user, userId, messageId);
-  else if (command === "MenuScreen: Check in")
-    checkInSesame(user, callbackId).then(() => sendMenu({ messageId, userId }));
-  else if (command === "MenuScreen: Check out")
-    checkOutSesame(user, callbackId).then(() => sendMenu({ messageId, userId }));
+  else if (command === "MenuScreen: Check menu") sendCheckMenu({ messageId, userId });
   else if (command === "MenuScreen: Options") sendOptions(userId, user, messageId);
   else if (command === "MenuScreen: Refresh") sendMenu({ messageId, userId }).then(() => asnwerCallback(callbackId));
+  else return;
+}
+
+export async function sendCheckMenu({ messageId, userId }: callbackIds) {
+  if (!userId || !messageId) return;
+
+  const user = sesameDatabase.getUser(userId);
+  if (!user) return;
+  const workTypes = await getWorkTypes(user);
+
+  const { text, keyboard } = checkScreen(user, workTypes);
+
+  telegramTools.editMessage(userId, text, keyboard, messageId);
+}
+
+export function handleCheckMenu(
+  { callbackId, messageId, userId }: callbackIds,
+  command: ReturnType<typeof checkScreen>["callbacks"][number]
+) {
+  if (!userId || !messageId || !callbackId) return;
+  const user = sesameDatabase.getUser(userId);
+  if (!user) return;
+
+  if (command === "CheckScreen: Check out")
+    return checkOutSesame(user, callbackId).then(() => sendMenu({ messageId, userId }));
+  else if (command === "CheckScreen: Back") return sendMenu({ messageId, userId });
+  if (command.includes("CheckScreen"))
+    return checkInSesame(user, callbackId, command).then(() => sendMenu({ messageId, userId }));
   else return;
 }
 
@@ -115,8 +141,10 @@ function checkOutSesame(user: User, callbackId: string) {
     .catch((err) => rejectCallback(callbackId.toString(), err.message));
 }
 
-function checkInSesame(user: User, callbackId: string) {
-  return checkIn(user)
+function checkInSesame(user: User, callbackId: string, workCheckTypeId: string) {
+  const checkId = workCheckTypeId.split(":")[1].split(" ").join("");
+
+  return checkIn(user, checkId)
     .then(() => asnwerCallback(callbackId))
     .catch((err) => rejectCallback(callbackId, err.message));
 }
