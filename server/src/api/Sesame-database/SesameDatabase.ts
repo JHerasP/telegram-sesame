@@ -1,8 +1,10 @@
+import { Autocomplete } from "../../TS_tools/ts-utility-types/utiliy-types";
 import { getEmployeeInfo } from "../entity/sesame/sesame-service";
 
 export interface User {
   employeeId: string;
-  workingStatus: string;
+  // This is weird, working status is a mix in between online and offline + the cases created by the user
+  workingStatus: Autocomplete<"online" | "offline">;
   cookie: string;
   logSince: Date;
   logUntil: Date;

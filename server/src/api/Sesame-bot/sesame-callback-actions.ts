@@ -81,7 +81,9 @@ export function handleCheckMenu(
   const user = sesameDatabase.getUser(userId);
   if (!user) return;
 
-  if (command === "CheckScreen: Check out")
+  if (command === "CheckScreen: Check in")
+    return checkInSesame(user, callbackId).then(() => sendMenu({ messageId, userId }));
+  else if (command === "CheckScreen: Check out")
     return checkOutSesame(user, callbackId).then(() => sendMenu({ messageId, userId }));
   else if (command === "CheckScreen: Back") return sendMenu({ messageId, userId });
   if (command.includes("CheckScreen"))
@@ -141,8 +143,8 @@ function checkOutSesame(user: User, callbackId: string) {
     .catch((err) => rejectCallback(callbackId.toString(), err.message));
 }
 
-function checkInSesame(user: User, callbackId: string, workCheckTypeId: string) {
-  const checkId = workCheckTypeId.split(":")[1].split(" ").join("");
+function checkInSesame(user: User, callbackId: string, workCheckTypeId?: string) {
+  const checkId = workCheckTypeId?.split(":")[1].split(" ").join("");
 
   return checkIn(user, checkId)
     .then(() => asnwerCallback(callbackId))

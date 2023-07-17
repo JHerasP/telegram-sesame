@@ -47,7 +47,7 @@ export async function logIn({ email, password }: { email: string; password: stri
           logSince: new Date(),
           logUntil: expirationDate,
           autoCheckOut: true,
-          remmeberCheckIn: true,
+          remmeberCheckIn: false,
           autoCheckIn: false,
         });
         sendLoggedInMessage(decoded.userId);
@@ -55,8 +55,10 @@ export async function logIn({ email, password }: { email: string; password: stri
     }
   }
 }
-
-export async function checkIn(user: User, workCheckTypeId: string) {
+// Not sending workCheckTypeId means check in from office.
+// Nonsense, instead of using the list provided by the endpoint,
+// it is a mix between the defaults and the ones created by the user.
+export async function checkIn(user: User, workCheckTypeId?: string) {
   const { employeeId, cookie } = user;
 
   const clientServerOptions = {

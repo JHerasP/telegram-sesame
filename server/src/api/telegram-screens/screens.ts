@@ -105,7 +105,11 @@ export const menuScreen = (user: User): screen<menuCallbacks> => {
   };
 };
 
-type checkCallbacks = `CheckScreen: ${string}` | `CheckScreen: Check out` | `CheckScreen: Back`;
+type checkCallbacks =
+  | `CheckScreen: ${string}`
+  | `CheckScreen: Check in`
+  | `CheckScreen: Check out`
+  | `CheckScreen: Back`;
 export const checkScreen = (user: User, workTypes: WorkType[]): screen<checkCallbacks> => {
   const text = createText([
     { sentence: "WTF, why are there so many check in types?", style: { jumpLine: true } },
@@ -124,8 +128,10 @@ export const checkScreen = (user: User, workTypes: WorkType[]): screen<checkCall
     return callback;
   });
 
-  buttons.push([createButton("Check out", "CheckScreen: Check out")]);
+  buttons.unshift([createButton("Office", "CheckScreen: Check in")]);
+  buttons.push([createButton("📴 Check out", "CheckScreen: Check out")]);
   buttons.push([createButton("Back", "CheckScreen: Back")]);
+  callbacks.unshift("CheckScreen: Check in");
   callbacks.push("CheckScreen: Check out");
   callbacks.push("CheckScreen: Back");
 

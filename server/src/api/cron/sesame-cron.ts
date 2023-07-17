@@ -47,7 +47,7 @@ export function startCronAutoClockOut() {
 
         const user = sesameDatabase.getUser(userId);
 
-        if (user && user.workingStatus === "online")
+        if (user && user.workingStatus !== "offline")
           waitRandomTime(() =>
             checkout(user)
               .then(() => sendAutoCheckOut(userId))
@@ -82,7 +82,7 @@ export function startCronAutoCheckIn() {
         const user = sesameDatabase.getUser(userId);
         if (!user) return;
         if (!user.remmeberCheckIn) return;
-        if (user.workingStatus === "online") return;
+        if (user.workingStatus !== "offline") return;
 
         const [holidays] = await awaitResolver(getEmployeeHolidays(user));
         const [yearHolidays] = await awaitResolver(getYearHolidays(user));
