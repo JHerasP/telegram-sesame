@@ -5,6 +5,7 @@ import { User, sesameDatabase } from "../../Sesame-database/SesameDatabase";
 import decode from "jsonwebtoken/decode";
 import { sendLoggedInMessage } from "../../Sesame-bot/sesame-actions";
 import { HolidaysResponse, WorkType, YearHolidayResponse } from "./types";
+import { logConsole } from "../../tools/log";
 
 export async function logIn({ email, password }: { email: string; password: string }, jwt: string) {
   const clientServerOptions = {
@@ -40,8 +41,10 @@ export async function logIn({ email, password }: { email: string; password: stri
       const [employeeInfo] = await awaitResolver(getEmployeeInfo(cookies[1]));
 
       if (employeeInfo) {
-        sesameDatabase.setUser(decoded.userId, {
-          employeeId: employeeInfo.id,
+        const user: User = {
+          telegramId: decoded.userId,
+          sesameId: employeeInfo.id,
+          employeeName: email,
           workingStatus: employeeInfo.workStatus,
           cookie: cookies[1],
           logSince: new Date(),
@@ -49,8 +52,12 @@ export async function logIn({ email, password }: { email: string; password: stri
           autoCheckOut: true,
           remmeberCheckIn: false,
           autoCheckIn: false,
-        });
+        };
+        sesameDatabase.setUser(decoded.userId, user);
+
         sendLoggedInMessage(decoded.userId);
+
+        logConsole(user, "Logged");
       }
     }
   }
@@ -59,10 +66,10 @@ export async function logIn({ email, password }: { email: string; password: stri
 // Nonsense, instead of using the list provided by the endpoint,
 // it is a mix between the defaults and the ones created by the user.
 export async function checkIn(user: User, workCheckTypeId?: string) {
-  const { employeeId, cookie } = user;
+  const { sesameId, cookie } = user;
 
   const clientServerOptions = {
-    uri: ENV.checkIn.replace("idEmployee", employeeId),
+    uri: ENV.checkIn.replace("idEmployee", sesameId),
     body: JSON.stringify({ origin: "web", coordinates: {}, workCheckTypeId: workCheckTypeId }),
     method: "POST",
     headers: {
@@ -74,6 +81,8 @@ export async function checkIn(user: User, workCheckTypeId?: string) {
 
   const [_, errorResponse] = await awaitResolver<any, any>(request(clientServerOptions));
 
+  logConsole(user, "Check in");
+
   if (!errorResponse) return;
 
   if (errorResponse.statusCode === 422) {
@@ -84,9 +93,9 @@ export async function checkIn(user: User, workCheckTypeId?: string) {
 }
 
 export async function checkout(user: User) {
-  const { employeeId, cookie } = user;
+  const { sesameId, cookie } = user;
   const clientServerOptions = {
-    uri: ENV.checkOut.replace("idEmployee", employeeId),
+    uri: ENV.checkOut.replace("idEmployee", sesameId),
     body: JSON.stringify({ origin: "web", coordinates: {}, workCheckTypeId: null }),
     method: "POST",
     headers: {
@@ -97,6 +106,9 @@ export async function checkout(user: User) {
   };
 
   const [_, errorResponse] = await awaitResolver<any, any>(request(clientServerOptions));
+
+  logConsole(user, "Check out");
+
   if (!errorResponse) return;
   if (errorResponse.statusCode === 422) {
     throw new Error("You are not working. How come can you stop working twice? (►__◄)");
@@ -126,10 +138,10 @@ export async function getEmployeeInfo(cookie: string) {
   return null;
 }
 
-export async function getYearHolidays({ cookie, employeeId }: User) {
+export async function getYearHolidays({ cookie, sesameId }: User) {
   const year = new Date().getFullYear();
   const clientServerOptions = {
-    uri: ENV.yearholidaysUrl.replace("idEmployee", employeeId).replace("year", year.toString()),
+    uri: ENV.yearholidaysUrl.replace("idEmployee", sesameId).replace("year", year.toString()),
     method: "GET",
     headers: {
       "User-Agent": "Request-Promise",
@@ -150,9 +162,9 @@ export async function getYearHolidays({ cookie, employeeId }: User) {
   return [];
 }
 
-export async function getEmployeeHolidays({ cookie, employeeId }: User) {
+export async function getEmployeeHolidays({ cookie, sesameId }: User) {
   const clientServerOptions = {
-    uri: ENV.holidaysUrl.replace("idEmployee", employeeId),
+    uri: ENV.holidaysUrl.replace("idEmployee", sesameId),
     method: "GET",
     headers: {
       "User-Agent": "Request-Promise",
@@ -180,9 +192,9 @@ export async function getEmployeeHolidays({ cookie, employeeId }: User) {
   return [];
 }
 
-export async function getWorkTypes({ cookie, employeeId }: User) {
+export async function getWorkTypes({ cookie, sesameId }: User) {
   const clientServerOptions = {
-    uri: ENV.checkInTypes.replace("idEmployee", employeeId),
+    uri: ENV.checkInTypes.replace("idEmployee", sesameId),
     method: "GET",
     headers: {
       "User-Agent": "Request-Promise",

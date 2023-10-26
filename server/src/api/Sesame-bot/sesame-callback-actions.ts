@@ -86,6 +86,7 @@ export function handleCheckMenu(
   else if (command === "CheckScreen: Check out")
     return checkOutSesame(user, callbackId).then(() => sendMenu({ messageId, userId }));
   else if (command === "CheckScreen: Back") return sendMenu({ messageId, userId });
+
   if (command.includes("CheckScreen"))
     return checkInSesame(user, callbackId, command).then(() => sendMenu({ messageId, userId }));
   else return;

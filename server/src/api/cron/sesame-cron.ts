@@ -8,6 +8,7 @@ import {
 import { sesameDatabase } from "../Sesame-database/SesameDatabase";
 import { checkout, getEmployeeHolidays, getYearHolidays } from "../entity/sesame/sesame-service";
 import { checkHoliday } from "./cron-tools";
+import { logConsole } from "../tools/log";
 
 export function startCronSessionCheck() {
   const onEveryDay = "0 12 * * *";
@@ -47,12 +48,19 @@ export function startCronAutoClockOut() {
 
         const user = sesameDatabase.getUser(userId);
 
-        if (user && user.workingStatus !== "offline")
+        if (user && user.workingStatus !== "offline") {
+          logConsole(user, "Start auto check out");
+
           waitRandomTime(() =>
             checkout(user)
-              .then(() => sendAutoCheckOut(userId))
+              .then(() => {
+                sendAutoCheckOut(userId);
+
+                logConsole(user, "AutoClose");
+              })
               .catch(() => undefined)
           );
+        }
       });
     },
     { name: "Autoclose", timezone: "Europe/Madrid" }
@@ -80,6 +88,7 @@ export function startCronAutoCheckIn() {
       users.forEach(async (_, userId) => {
         await sesameDatabase.refresh(userId);
         const user = sesameDatabase.getUser(userId);
+
         if (!user) return;
         if (!user.remmeberCheckIn) return;
         if (user.workingStatus !== "offline") return;
