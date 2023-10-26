@@ -1,4 +1,9 @@
-import { startCronAutoCheckIn, startCronAutoClockOut, startCronSessionCheck } from "./src/api/cron/sesame-cron";
+import {
+  startCronAutoCheckIn,
+  startCronAutoClockOut,
+  startCronSessionCheck,
+  startCronAutoCheckOutMaxTime,
+} from "./src/api/cron/sesame-cron";
 import app from "./src/app";
 import { configIndex } from "./src/config";
 
@@ -13,3 +18,4 @@ app.listen(parseInt(PORT), HOST, () => console.info(`Server is listening on ${PO
 startCronSessionCheck();
 startCronAutoClockOut();
 startCronAutoCheckIn();
+startCronAutoCheckOutMaxTime();

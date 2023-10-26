@@ -26,39 +26,38 @@ export async function logIn({ email, password }: { email: string; password: stri
   const [response, errorResponse] = await awaitResolver<any, any>(request(clientServerOptions));
 
   if (errorResponse) throw new Error(errorResponse.error);
-  else {
-    if (response.headers) {
-      const cookies = response.headers["set-cookie"];
-      const decoded = decode(jwt.split(" ")[1], { json: true });
+  else if (response.headers) {
+    const cookies = response.headers["set-cookie"];
+    const decoded = decode(jwt.split(" ")[1], { json: true });
 
-      if (!decoded) return;
+    if (!decoded) return;
 
-      const expiration = cookies[1].match(/expires=([^;]+)/)[1];
-      const expirationDate = new Date(expiration);
+    const expiration = cookies[1].match(/expires=([^;]+)/)[1];
+    const expirationDate = new Date(expiration);
 
-      expirationDate.setDate(expirationDate.getDate() - 5);
+    expirationDate.setDate(expirationDate.getDate() - 5);
 
-      const [employeeInfo] = await awaitResolver(getEmployeeInfo(cookies[1]));
+    const [employeeInfo] = await awaitResolver(getEmployeeInfo(cookies[1]));
 
-      if (employeeInfo) {
-        const user: User = {
-          telegramId: decoded.userId,
-          sesameId: employeeInfo.id,
-          employeeName: email,
-          workingStatus: employeeInfo.workStatus,
-          cookie: cookies[1],
-          logSince: new Date(),
-          logUntil: expirationDate,
-          autoCheckOut: true,
-          remmeberCheckIn: false,
-          autoCheckIn: false,
-        };
-        sesameDatabase.setUser(decoded.userId, user);
+    if (employeeInfo) {
+      const user: User = {
+        telegramId: decoded.userId,
+        sesameId: employeeInfo.id,
+        employeeName: email,
+        workingStatus: employeeInfo.workStatus,
+        cookie: cookies[1],
+        logSince: new Date(),
+        logUntil: expirationDate,
+        autoCheckOut: true,
+        remmeberCheckIn: false,
+        autoCheckIn: false,
+        rejectedAutoCheckOut: false,
+      };
+      sesameDatabase.setUser(decoded.userId, user);
 
-        sendLoggedInMessage(decoded.userId);
+      sendLoggedInMessage(decoded.userId);
 
-        logConsole(user, "Logged");
-      }
+      logConsole(user, "Logged");
     }
   }
 }

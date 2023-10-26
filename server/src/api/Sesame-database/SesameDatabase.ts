@@ -13,6 +13,7 @@ export interface User {
   autoCheckOut: boolean;
   remmeberCheckIn: boolean;
   autoCheckIn: boolean;
+  rejectedAutoCheckOut: boolean;
 }
 
 export class SesameDatabase {
@@ -59,6 +60,12 @@ export class SesameDatabase {
     const user = this.users.get(userId);
 
     if (user) user.remmeberCheckIn = !user.remmeberCheckIn;
+  }
+
+  public toogleInminentAotoclose(userId: number, reject: boolean) {
+    const user = this.users.get(userId);
+
+    if (user) user.rejectedAutoCheckOut = reject;
   }
 }
 

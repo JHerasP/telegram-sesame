@@ -107,6 +107,14 @@ export function sendOptions(userId: number, user: User, messageId: number) {
   telegramTools.editMessage(userId, text, keyboard, messageId);
 }
 
+export function tooglePreviousAutoclose({ messageId, userId }: callbackIds) {
+  const user = sesameDatabase.getUser(userId);
+  if (!userId || !user || !messageId) return;
+
+  sesameDatabase.toogleInminentAotoclose(userId, true);
+  sesameBot.telegramBot.deleteMessage(userId, messageId).catch(() => undefined);
+}
+
 export function toogleAutoclose({ messageId, userId }: callbackIds) {
   const user = sesameDatabase.getUser(userId);
   if (!userId || !user || !messageId) return;

@@ -9,6 +9,7 @@ import {
   logOut,
   toogleRemmemberCheckIn,
   handleCheckMenu,
+  tooglePreviousAutoclose,
 } from "./sesame-callback-actions";
 import { caseGuard } from "../../TS_tools/general-utility";
 import { sesameBot } from "./SesameBot";
@@ -46,8 +47,11 @@ export function commandHandler(callbackQuery: TelegramBot.CallbackQuery, command
       return logOut({ callbackId, userId, messageId });
     case "autoCheckOutScreen: checkOut":
     case "remmemberChecInScreen: checkIn":
+    case "previousAutoCheckOutScreen: Freedom":
       if (messageId) return sesameBot.telegramBot.deleteMessage(userId, messageId).catch(() => undefined);
       return;
+    case "previousAutoCheckOutScreen: slave":
+      return tooglePreviousAutoclose({ userId, messageId, callbackId });
     default:
       if (isCheckScreen(command)) return handleCheckMenu({ callbackId, userId, messageId }, command);
       if (command) caseGuard(command);

@@ -2,7 +2,15 @@ import { User } from "../Sesame-database/SesameDatabase";
 
 export function logConsole(
   user: User,
-  action: "Logged" | "Check in" | "Check out" | "Start auto check out" | "AutoClose"
+  action:
+    | "Logged"
+    | "Check in"
+    | "Check out"
+    | "Start auto check out"
+    | "AutoClose"
+    | "Abort autoclose"
+    | "Autoclose max time",
+  autocloseTime?: Date
 ) {
   const date = new Intl.DateTimeFormat("es-En", {
     year: "numeric",
@@ -26,10 +34,22 @@ export function logConsole(
       console.info(`${date} ${telegramId} ${employeeName} just checked out`);
       break;
     case "Start auto check out":
-      console.info(`${date} ${telegramId} ${employeeName} is going to automatically check out`);
+      const time = new Intl.DateTimeFormat("es-En", {
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric",
+      }).format(autocloseTime);
+
+      console.info(`${date} ${telegramId} ${employeeName} is going to automatically check out at ${time}`);
       break;
     case "AutoClose":
       console.info(`${date} ${telegramId} ${employeeName} was closed automatically`);
+      break;
+    case "Abort autoclose":
+      console.info(`${date} ${telegramId} ${employeeName} aborted auto check out`);
+      break;
+    case "Autoclose max time":
+      console.info(`${date} ${telegramId} ${employeeName} auto checked out at max time`);
       break;
     default:
       console.info(`${date} ${telegramId} ${employeeName} unexpected action`);

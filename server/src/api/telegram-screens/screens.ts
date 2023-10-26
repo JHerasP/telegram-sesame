@@ -14,6 +14,7 @@ export type telegramButtonsCallbacks =
   | menuCallbacks
   | infoMenuCallbacks
   | optionCallbacks
+  | previousAutoChecoutCallbaks
   | autoChecoutCallbaks
   | remmemberCheckInCallbacks
   | checkCallbacks;
@@ -33,9 +34,7 @@ export const welcomeScreen = (): screen<welcomeCallbacks> => {
     { sentence: "", style: { jumpLine: true } },
     { sentence: "- I won't talk about this bot to anybody.", style: { jumpLine: true } },
     { sentence: "", style: { jumpLine: true } },
-    {
-      sentence: "- If you are happy with the bot, you have to ",
-    },
+    { sentence: "- If you are happy with the bot, you have to " },
     { sentence: "pat", style: { strong: true } },
     { sentence: "the creator on the head and say: " },
     { sentence: "good boy", style: { italic: true } },
@@ -228,6 +227,40 @@ export const logOutScreen = (): screen<never> => {
     text,
     keyboard: [],
     callbacks: [],
+  };
+};
+
+type previousAutoChecoutCallbaks = "previousAutoCheckOutScreen: slave" | "previousAutoCheckOutScreen: Freedom";
+export const previousAutoCheckOutScreen = (expireSesion: Date): screen<previousAutoChecoutCallbaks> => {
+  const time = new Intl.DateTimeFormat("es-En", {
+    hour: "numeric",
+    minute: "numeric",
+  }).format(expireSesion);
+
+  const text = createText([
+    { sentence: "Che boludito, deja de chamuyar con el horario que a las: " },
+    { sentence: `${time} `, style: { strong: true } },
+    { sentence: "te lleva " },
+    { sentence: "Morit4 ( ͡° ͜ʖ ͡° )つ ", style: { strong: true } },
+    { sentence: "y " },
+    { sentence: "Juani_ ", style: { strong: true } },
+    { sentence: "a jugar al OW", style: { jumpLine: true } },
+    { sentence: "", style: { jumpLine: true } },
+    { sentence: "(⊙_(⊙_⊙)_⊙)", style: { jumpLine: true, strong: true } },
+  ]);
+
+  return {
+    text,
+    keyboard: [
+      [
+        createButton<previousAutoChecoutCallbaks>("Me están negreando ( ಥ﹏ಥ)", "previousAutoCheckOutScreen: slave"),
+        createButton<previousAutoChecoutCallbaks>(
+          "El decorado se calla ( ಠ ᴥಠ)",
+          "previousAutoCheckOutScreen: Freedom"
+        ),
+      ],
+    ],
+    callbacks: ["previousAutoCheckOutScreen: slave", "previousAutoCheckOutScreen: Freedom"],
   };
 };
 

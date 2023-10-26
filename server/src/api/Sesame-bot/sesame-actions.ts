@@ -1,7 +1,20 @@
 import { chatHistory } from "../Sesame-database/SesameChatHistory";
-import { autoCheckOutScreen, loggedScreen, remmemberChecInScreen, renewLoginScreen } from "../telegram-screens/screens";
+import {
+  autoCheckOutScreen,
+  loggedScreen,
+  previousAutoCheckOutScreen,
+  remmemberChecInScreen,
+  renewLoginScreen,
+} from "../telegram-screens/screens";
 import { telegramTools } from "../tools";
 import getHtmlFile, { createJWT } from "../tools/telegram-files/telegram-files";
+
+export async function sendPreviousAutoCheckOut(userId: number, expireSesion: Date) {
+  if (!userId) return;
+  const { text, keyboard } = previousAutoCheckOutScreen(expireSesion);
+
+  telegramTools.sendMessage(userId, text, keyboard);
+}
 
 export async function sendAutoCheckOut(userId: number) {
   if (!userId) return;
