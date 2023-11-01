@@ -1,6 +1,6 @@
 import cron from "node-cron";
 import { User, sesameDatabase } from "../Sesame-database/SesameDatabase";
-import { logConsole } from "../tools/log";
+import logConsole from "../tools/log";
 
 export function checkIfTodayIsHoliday(hollyDay: string[]) {
   const today = new Date();
@@ -28,7 +28,7 @@ export function shouldAbortAutoCheckOut(user: User) {
   const rejected = sesameDatabase.getUser(user.chatId)?.rejectedAutoCheckOut;
 
   if (rejected) {
-    logConsole(user, "Abort autoclose");
+    logConsole({ user, action: "abortAutoCheckOut" });
     sesameDatabase.toogleInminentAutoclose(user.chatId, false);
   }
 

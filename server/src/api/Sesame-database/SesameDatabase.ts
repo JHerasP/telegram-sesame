@@ -1,5 +1,6 @@
 import { Autocomplete } from "../../TS_tools/ts-utility-types/utiliy-types";
-import { getEmployeeInfo } from "../entity/sesame/sesame.service";
+import { employeeApi } from "../entity/sesame/employee/employee.index";
+import logConsole from "../tools/log";
 
 export interface User {
   chatId: number;
@@ -24,6 +25,7 @@ export class SesameDatabase {
   }
 
   public setUser(userId: number, user: User) {
+    logConsole({ user, action: "logged" });
     this.users.set(userId, user);
   }
   public getUser(id: number) {
@@ -49,7 +51,8 @@ export class SesameDatabase {
     const user = this.users.get(userId);
     if (!user) return;
 
-    return getEmployeeInfo(user?.cookie)
+    return employeeApi
+      .getEmployeeInfo(user?.cookie)
       .then((userData) => {
         if (userData) this.users.set(userId, { ...user, workingStatus: userData.workStatus });
       })

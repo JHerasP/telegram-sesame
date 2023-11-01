@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { sesameRoutes } from "./entity/sesame";
+import { sesameRoutes } from "./entity/sesame/sesame.index";
 
 const routes = Router();
 

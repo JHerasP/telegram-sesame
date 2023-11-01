@@ -1,6 +1,7 @@
 import { sendRemberCheckIn, sendRenewLogIn } from "../Sesame-bot/sesame-actions";
 import { sesameDatabase } from "../Sesame-database/SesameDatabase";
-import { logConsole } from "../tools/log";
+import logConsole from "../tools/log";
+
 import {
   attemptToAutoCheckOut,
   checkIfWorkingDay,
@@ -34,7 +35,7 @@ export function remmemberToCheckIn() {
 
     const workingDay = await checkIfWorkingDay(user);
 
-    if (workingDay) sendRemberCheckIn(chatId).then(() => logConsole(user, "Remember to check in"));
+    if (workingDay) sendRemberCheckIn(chatId).then(() => logConsole({ user, action: "remmemberToCheckIn" }));
   });
 }
 
@@ -66,6 +67,6 @@ export function checkOutAtMaxWorkingTime() {
     if (!user) return;
     if (user.workingStatus === "offline") return;
 
-    checkOutAndMessage(user).then(() => logConsole(user, "Autoclose max time"));
+    checkOutAndMessage(user).then(() => logConsole({ user, action: "autoCheckOutMaxTime" }));
   });
 }

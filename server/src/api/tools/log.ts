@@ -1,21 +1,62 @@
 import { User } from "../Sesame-database/SesameDatabase";
 
-export function logConsole(
-  user: User,
-  action:
-    | "Logged"
-    | "Check in"
-    | "Check out"
-    | "Start auto check out"
-    | "AutoClose"
-    | "Abort autoclose"
-    | "Autoclose max time"
-    | "Start task"
-    | "Remember to check in"
-    | "Close task",
-  autocloseTime?: Date,
-  taskName?: string
-) {
+const Logs = {
+  logged: (user: User, date: string) => `${date} ${user.chatId} ${user.employeeName} Logged`,
+
+  closeSession: (user: User, date: string) => `${date} ${user.chatId} ${user.employeeName} Clossed session`,
+
+  remmemberToCheckIn: (user: User, date: string) =>
+    `${date} ${user.chatId} ${user.employeeName} Process remmember to Check in`,
+
+  checkIn: (user: User, date: string) => `${date} ${user.chatId} ${user.employeeName} Check in`,
+
+  checkOut: (user: User, date: string) => `${date} ${user.chatId} ${user.employeeName} Check out`,
+
+  startAutoCheckOut: (user: User, date: string, time: string) =>
+    `${date} ${user.chatId} ${user.employeeName} Process start auto check out at ${time}`,
+
+  AutoClose: (user: User, date: string) =>
+    `${date} ${user.chatId} ${user.employeeName} Process auto check out completed`,
+
+  abortAutoCheckOut: (user: User, date: string) => `${date} ${user.chatId} ${user.employeeName} Abort auto check out`,
+
+  autoCheckOutMaxTime: (user: User, date: string) =>
+    `${date} ${user.chatId} ${user.employeeName} Process auto check out max time`,
+
+  startTask: (user: User, date: string, _: string, taskName: string) =>
+    `${date} ${user.chatId} ${user.employeeName} Start task ${taskName}`,
+
+  closeTask: (user: User, date: string, _: string, taskName: string) =>
+    `${date} ${user.chatId} ${user.employeeName} Close task ${taskName}`,
+};
+
+type BaseLogs = keyof Omit<typeof Logs, "startAutoCheckOut" | "startTask" | "closeTask">;
+
+function logConsole({ user, action }: { user: User; action: BaseLogs }): void;
+function logConsole({ user, action }: { user: User; action: "startAutoCheckOut"; autoCloseTime: Date }): void;
+function logConsole({ user, action }: { user: User; action: "startTask" | "closeTask"; taskName: string }): void;
+function logConsole({
+  user,
+  action,
+  autoCloseTime = new Date(),
+  taskName = "",
+}: {
+  user: User;
+  action: keyof typeof Logs;
+  autoCloseTime?: Date;
+  taskName?: string;
+}): void {
+  const date = getFulldate();
+  const autoClose = getTime(autoCloseTime);
+
+  console.info(
+    Logs[action](user, date, autoClose, taskName) || `${date} ${user.chatId} ${user.employeeName} unexpected action`
+  );
+}
+
+export default logConsole;
+
+function getFulldate() {
   const date = new Intl.DateTimeFormat("es-En", {
     year: "numeric",
     month: "numeric",
@@ -25,47 +66,14 @@ export function logConsole(
     second: "numeric",
     hour12: false,
   }).format(new Date());
-  const { chatId: telegramId, employeeName } = user;
+  return date;
+}
 
-  switch (action) {
-    case "Logged":
-      console.info(`${date} ${telegramId} ${employeeName} just logged`);
-      break;
-    case "Check in":
-      console.info(`${date} ${telegramId} ${employeeName} just checked in`);
-      break;
-    case "Check out":
-      console.info(`${date} ${telegramId} ${employeeName} just checked out`);
-      break;
-    case "Start auto check out":
-      const time = new Intl.DateTimeFormat("es-En", {
-        hour: "numeric",
-        minute: "numeric",
-        second: "numeric",
-      }).format(autocloseTime);
-
-      console.info(`${date} ${telegramId} ${employeeName} is going to automatically check out at ${time}`);
-      break;
-    case "AutoClose":
-      console.info(`${date} ${telegramId} ${employeeName} was closed automatically`);
-      break;
-    case "Abort autoclose":
-      console.info(`${date} ${telegramId} ${employeeName} aborted auto check out`);
-      break;
-    case "Autoclose max time":
-      console.info(`${date} ${telegramId} ${employeeName} auto checked out at max time`);
-      break;
-    case "Start task":
-      console.info(`${date} ${telegramId} ${employeeName} started task ${taskName}`);
-      break;
-    case "Close task":
-      console.info(`${date} ${telegramId} ${employeeName} closed task ${taskName}`);
-      break;
-    case "Remember to check in":
-      console.info(`${date} ${telegramId} ${employeeName} was remembered to check in`);
-      break;
-    default:
-      console.info(`${date} ${telegramId} ${employeeName} unexpected action`);
-      break;
-  }
+function getTime(autocloseTime: Date) {
+  const date = new Intl.DateTimeFormat("es-En", {
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+  }).format(autocloseTime);
+  return date;
 }

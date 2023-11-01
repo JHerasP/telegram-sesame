@@ -1,14 +1,6 @@
 import { Message } from "node-telegram-bot-api";
 import { User, sesameDatabase } from "../Sesame-database/SesameDatabase";
-import {
-  checkIn,
-  checkout,
-  closeTask,
-  getActiveTask,
-  getAllTask,
-  getWorkTypes,
-  reuseTask,
-} from "../entity/sesame/sesame.service";
+
 import {
   checkScreen,
   infoScreen,
@@ -24,6 +16,9 @@ import getHtmlFile, { createJWT } from "../tools/telegram-files/telegram-files";
 import { sesameBot } from "./SesameBot";
 import { callbackIds } from "./sesame-command-helper";
 import { awaitResolver } from "../../TS_tools/general-utility";
+import { checkApi } from "../entity/sesame/checks/check.index";
+import { taskApi } from "../entity/sesame/task/task.index";
+import { employeeApi } from "../entity/sesame/employee/employee.index";
 
 export function sendWelcomeMessage(msg: Message): void {
   const chatId = msg.chat.id;
@@ -77,7 +72,7 @@ export async function sendCheckMenu({ messageId, userId }: callbackIds) {
   const user = sesameDatabase.getUser(userId);
   if (!user) return;
 
-  const workTypes = await getWorkTypes(user);
+  const workTypes = await employeeApi.getWorkTypes(user);
 
   const { text, keyboard } = checkScreen(user, workTypes);
 
@@ -139,7 +134,7 @@ export function sendOptions(userId: number, user: User, messageId: number) {
 }
 
 export async function sendTaskMenu(userId: number, user: User, messageId: number) {
-  const task = await getActiveTask(user);
+  const task = await taskApi.getActiveTask(user);
 
   const { text, keyboard } = taskScreen(task);
 
@@ -194,7 +189,8 @@ function sendInfo(user: User, userId: number, messageId: number) {
 }
 
 function checkOutSesame(user: User, callbackId: string) {
-  return checkout(user)
+  return checkApi
+    .checkout(user)
     .then(() => asnwerCallback(callbackId))
     .catch((err) => rejectCallback(callbackId.toString(), err.message));
 }
@@ -202,7 +198,8 @@ function checkOutSesame(user: User, callbackId: string) {
 function checkInSesame(user: User, callbackId: string, workCheckTypeId?: string) {
   const checkId = workCheckTypeId?.split(":")[1].split(" ").join("");
 
-  return checkIn(user, checkId)
+  return checkApi
+    .checkIn(user, checkId)
     .then(async () => startLastTask(user).finally(() => asnwerCallback(callbackId)))
     .catch((err) => rejectCallback(callbackId, err.message));
 }
@@ -220,16 +217,17 @@ function rejectCallback(callbackId: string, message?: string) {
 }
 
 async function startLastTask(user: User) {
-  const [task] = await awaitResolver(getAllTask(user));
+  const [task] = await awaitResolver(taskApi.getAllTask(user));
 
-  if (task) return await awaitResolver(reuseTask(user, task[0].days[0].timers[0]));
+  if (task) return await awaitResolver(taskApi.reuseTask(user, task[0].days[0].timers[0]));
   return undefined;
 }
 
 function closeTaskSesame(user: User, callbackId: string, taskId: string) {
   const checkId = taskId?.split(":")[1].split(" ").join("");
 
-  return closeTask(user, checkId)
+  return taskApi
+    .closeTask(user, checkId)
     .then(() => asnwerCallback(callbackId))
     .catch((err) => rejectCallback(callbackId, err.message));
 }

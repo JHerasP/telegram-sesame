@@ -1,7 +1,9 @@
 import { InlineKeyboardButton } from "node-telegram-bot-api";
 import { User } from "../Sesame-database/SesameDatabase";
 import { createButton, createText } from "./keyboards/keyboard-tools";
-import { TaskTimer, WorkType } from "../entity/sesame/sesame.types";
+import { WorkType } from "../entity/sesame/employee/employee.types";
+import { TaskTimer } from "../entity/sesame/task/task.type";
+import { ICustomInLineKeyboadButton } from "./keyboards/types";
 
 type screen<T> = {
   text: string;
@@ -237,10 +239,10 @@ export const optionsScreen = (
   };
 };
 
-type taskCallbaks = "taskScreen: back" | "taskScreen: Open last" | `taskScreen: ${string}`; // ToDO añadir arriba
+type taskCallbaks = "taskScreen: back" | "taskScreen: Open last" | `taskScreen: ${string}`;
 export const taskScreen = (task?: TaskTimer): screen<taskCallbaks> => {
-  let text;
-  let keyboard;
+  let text: string;
+  let keyboard: ICustomInLineKeyboadButton<string, `taskScreen: ${string}`>[][];
   if (task) {
     text = createText([
       { sentence: "As far I can see, this is what you are supposed to be doing now: ", style: { jumpLine: true } },

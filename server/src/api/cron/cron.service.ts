@@ -1,8 +1,10 @@
 import { awaitResolver } from "../../TS_tools/general-utility";
 import { sendAutoCheckOut, sendPreviousAutoCheckOut } from "../Sesame-bot/sesame-actions";
 import { User, sesameDatabase } from "../Sesame-database/SesameDatabase";
-import { checkout, getEmployeeHolidays, getYearHolidays } from "../entity/sesame/sesame.service";
-import { logConsole } from "../tools/log";
+import { checkApi } from "../entity/sesame/checks/check.index";
+import { employeeApi } from "../entity/sesame/employee/employee.index";
+import logConsole from "../tools/log";
+
 import { checkIfTodayIsHoliday, shouldAbortAutoCheckOut } from "./cron.tools";
 
 export async function getRefreshedUserWorkingStatus(chatId: number) {
@@ -15,12 +17,12 @@ export async function attemptToAutoCheckOut(user: User) {
 
   if (shouldAbort) return;
 
-  checkOutAndMessage(user).then(() => logConsole(user, "AutoClose"));
+  checkOutAndMessage(user).then(() => logConsole({ user, action: "AutoClose" }));
 }
 
 export async function checkIfWorkingDay(user: User) {
-  const [employeeHolidays] = await awaitResolver(getEmployeeHolidays(user));
-  const [yearHolidays] = await awaitResolver(getYearHolidays(user));
+  const [employeeHolidays] = await awaitResolver(employeeApi.getEmployeeHolidays(user));
+  const [yearHolidays] = await awaitResolver(employeeApi.getYearHolidays(user));
 
   if (!employeeHolidays || !yearHolidays) return false;
 
@@ -31,7 +33,7 @@ export async function checkIfWorkingDay(user: User) {
 }
 
 export async function checkOutAndMessage(user: User) {
-  const [, err] = await awaitResolver(checkout(user));
+  const [, err] = await awaitResolver(checkApi.checkout(user));
   if (err) return;
 
   return sendAutoCheckOut(user.chatId);
@@ -41,5 +43,7 @@ export function sendMessageAboutCheckOutOutSession(user: User, extraTime: number
   const currentTime = new Date();
   const futureTime = new Date(currentTime.getTime() + extraTime);
 
-  sendPreviousAutoCheckOut(user.chatId, futureTime).then(() => logConsole(user, "Start auto check out", futureTime));
+  sendPreviousAutoCheckOut(user.chatId, futureTime).then(() =>
+    logConsole({ user, action: "startAutoCheckOut", autoCloseTime: futureTime })
+  );
 }
