@@ -41,7 +41,7 @@ export async function logIn({ email, password }: { email: string; password: stri
 
     if (employeeInfo) {
       const user: User = {
-        telegramId: decoded.userId,
+        chatId: decoded.userId,
         sesameId: employeeInfo.id,
         employeeName: email,
         workingStatus: employeeInfo.workStatus,

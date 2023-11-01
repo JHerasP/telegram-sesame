@@ -23,7 +23,7 @@ export async function sendAutoCheckOut(userId: number) {
   telegramTools.sendMessage(userId, text, keyboard);
 }
 
-export async function sendRemmberCheckIn(userId: number) {
+export async function sendRemberCheckIn(userId: number) {
   if (!userId) return;
 
   const { text, keyboard } = remmemberChecInScreen();

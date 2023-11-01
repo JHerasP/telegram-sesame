@@ -2,7 +2,7 @@ import { Autocomplete } from "../../TS_tools/ts-utility-types/utiliy-types";
 import { getEmployeeInfo } from "../entity/sesame/sesame-service";
 
 export interface User {
-  telegramId: number;
+  chatId: number;
   sesameId: string;
   employeeName: string;
   // This is weird, working status is a mix in between online and offline + the cases created by the user
@@ -45,7 +45,7 @@ export class SesameDatabase {
     this.users.delete(userId);
   }
 
-  public refresh(userId: number) {
+  public refreshWorkingStatus(userId: number) {
     const user = this.users.get(userId);
     if (!user) return;
 
@@ -62,7 +62,7 @@ export class SesameDatabase {
     if (user) user.remmeberCheckIn = !user.remmeberCheckIn;
   }
 
-  public toogleInminentAotoclose(userId: number, reject: boolean) {
+  public toogleInminentAutoclose(userId: number, reject: boolean) {
     const user = this.users.get(userId);
 
     if (user) user.rejectedAutoCheckOut = reject;

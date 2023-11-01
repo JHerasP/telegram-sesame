@@ -46,7 +46,7 @@ export function sendLoggin({ messageId, userId }: callbackIds) {
 export async function sendMenu({ messageId, userId }: callbackIds) {
   if (!userId || !messageId) return;
 
-  await sesameDatabase.refresh(userId);
+  await sesameDatabase.refreshWorkingStatus(userId);
   const user = sesameDatabase.getUser(userId);
   if (!user) return;
 
@@ -150,7 +150,7 @@ export function tooglePreviousAutoclose({ messageId, userId }: callbackIds) {
   const user = sesameDatabase.getUser(userId);
   if (!userId || !user || !messageId) return;
 
-  sesameDatabase.toogleInminentAotoclose(userId, true);
+  sesameDatabase.toogleInminentAutoclose(userId, true);
   sesameBot.telegramBot.deleteMessage(userId, messageId).catch(() => undefined);
 }
 

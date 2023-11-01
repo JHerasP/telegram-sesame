@@ -11,6 +11,7 @@ export function logConsole(
     | "Abort autoclose"
     | "Autoclose max time"
     | "Start task"
+    | "Remember to check in"
     | "Close task",
   autocloseTime?: Date,
   taskName?: string
@@ -24,7 +25,7 @@ export function logConsole(
     second: "numeric",
     hour12: false,
   }).format(new Date());
-  const { telegramId, employeeName } = user;
+  const { chatId: telegramId, employeeName } = user;
 
   switch (action) {
     case "Logged":
@@ -59,6 +60,9 @@ export function logConsole(
       break;
     case "Close task":
       console.info(`${date} ${telegramId} ${employeeName} closed task ${taskName}`);
+      break;
+    case "Remember to check in":
+      console.info(`${date} ${telegramId} ${employeeName} was remembered to check in`);
       break;
     default:
       console.info(`${date} ${telegramId} ${employeeName} unexpected action`);

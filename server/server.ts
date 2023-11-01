@@ -1,9 +1,10 @@
+import { cronService } from "./src/api/cron/cron.index";
 import {
-  startCronAutoCheckIn,
-  startCronAutoClockOut,
-  startCronSessionCheck,
+  startCronRememberToCheckIn,
+  startCronAutoCheckOut,
+  runCronExpiringSession,
   startCronAutoCheckOutMaxTime,
-} from "./src/api/cron/sesame-cron";
+} from "./src/api/cron/cron";
 import app from "./src/app";
 import { configIndex } from "./src/config";
 
@@ -15,7 +16,4 @@ console.info(DEV === "true" ? "⚠ Dev mode ⚠" : "🆗 Prod mode 🆗");
 
 app.listen(parseInt(PORT), HOST, () => console.info(`Server is listening on ${PORT}`));
 
-startCronSessionCheck();
-startCronAutoClockOut();
-startCronAutoCheckIn();
-startCronAutoCheckOutMaxTime();
+cronService.runAllCron();
