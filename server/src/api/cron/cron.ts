@@ -9,12 +9,12 @@ export function runCronExpiringSession() {
   createCron("Check expiring session", onEveryDay, checkExpiringSession);
 }
 
-export function startCronAutoCheckOut() {
-  createCron("Auto check out after work end", everyWeekDayAfterWorkEndtime, autoCheckOut);
-}
-
 export function startCronRememberToCheckIn() {
   createCron("Send message to check in", everyDayAfterWorkStartTimePassed, remmemberToCheckIn);
+}
+
+export function startCronAutoCheckOut() {
+  createCron("Auto check out after work end", everyWeekDayAfterWorkEndtime, autoCheckOut);
 }
 
 export function startCronAutoCheckOutMaxTime() {

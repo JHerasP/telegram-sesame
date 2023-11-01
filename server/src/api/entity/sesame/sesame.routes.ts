@@ -1,5 +1,5 @@
 import { Response, Router } from "express";
-import { logIn } from "./sesame-service";
+import { logIn } from "./sesame.service";
 import { ExpressBody } from "../../../TS_tools/request-utility";
 import JWT from "jsonwebtoken";
 import { ENV } from "../../../config";

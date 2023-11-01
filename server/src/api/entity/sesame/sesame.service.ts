@@ -4,7 +4,7 @@ import { ENV } from "../../../config";
 import { User, sesameDatabase } from "../../Sesame-database/SesameDatabase";
 import decode from "jsonwebtoken/decode";
 import { sendLoggedInMessage } from "../../Sesame-bot/sesame-actions";
-import { HolidaysResponse, TaskTimer, TaskWeek, WorkType, YearHolidayResponse } from "./types";
+import { HolidaysResponse, TaskTimer, TaskWeek, WorkType, YearHolidayResponse } from "./sesame.types";
 import { logConsole } from "../../tools/log";
 
 export async function logIn({ email, password }: { email: string; password: string }, jwt: string) {

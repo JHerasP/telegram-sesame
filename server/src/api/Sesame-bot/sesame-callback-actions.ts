@@ -8,7 +8,7 @@ import {
   getAllTask,
   getWorkTypes,
   reuseTask,
-} from "../entity/sesame/sesame-service";
+} from "../entity/sesame/sesame.service";
 import {
   checkScreen,
   infoScreen,

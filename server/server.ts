@@ -1,10 +1,4 @@
 import { cronService } from "./src/api/cron/cron.index";
-import {
-  startCronRememberToCheckIn,
-  startCronAutoCheckOut,
-  runCronExpiringSession,
-  startCronAutoCheckOutMaxTime,
-} from "./src/api/cron/cron";
 import app from "./src/app";
 import { configIndex } from "./src/config";
 

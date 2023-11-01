@@ -1,5 +1,5 @@
 import { Autocomplete } from "../../TS_tools/ts-utility-types/utiliy-types";
-import { getEmployeeInfo } from "../entity/sesame/sesame-service";
+import { getEmployeeInfo } from "../entity/sesame/sesame.service";
 
 export interface User {
   chatId: number;

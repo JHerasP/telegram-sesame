@@ -1,7 +1,7 @@
 import { InlineKeyboardButton } from "node-telegram-bot-api";
 import { User } from "../Sesame-database/SesameDatabase";
 import { createButton, createText } from "./keyboards/keyboard-tools";
-import { TaskTimer, WorkType } from "../entity/sesame/types";
+import { TaskTimer, WorkType } from "../entity/sesame/sesame.types";
 
 type screen<T> = {
   text: string;
