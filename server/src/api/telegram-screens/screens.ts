@@ -1,7 +1,7 @@
 import { InlineKeyboardButton } from "node-telegram-bot-api";
 import { User } from "../Sesame-database/SesameDatabase";
 import { createButton, createText } from "./keyboards/keyboard-tools";
-import { WorkType } from "../entity/sesame/types";
+import { TaskTimer, WorkType } from "../entity/sesame/types";
 
 type screen<T> = {
   text: string;
@@ -17,7 +17,8 @@ export type telegramButtonsCallbacks =
   | previousAutoChecoutCallbaks
   | autoChecoutCallbaks
   | remmemberCheckInCallbacks
-  | checkCallbacks;
+  | checkCallbacks
+  | taskCallbaks;
 
 type welcomeCallbacks = "wellcomeScreen: Conditions";
 export const welcomeScreen = (): screen<welcomeCallbacks> => {
@@ -28,7 +29,7 @@ export const welcomeScreen = (): screen<welcomeCallbacks> => {
     { sentence: "Before we start, I need you to accept the next " },
     { sentence: "conditions:", style: { jumpLine: true, strong: true } },
     { sentence: "", style: { jumpLine: true } },
-    { sentence: "- I won't blame the creator for any bug or mistake that this" },
+    { sentence: "- I won't blame the creator for any bug or mistake that this " },
     { sentence: "rushed", style: { strong: true, jumpLine: true } },
     { sentence: "bot makes.", style: { jumpLine: true } },
     { sentence: "", style: { jumpLine: true } },
@@ -51,9 +52,10 @@ export const firstStepsScreen = (): screen<never> => {
   const text = createText([
     { sentence: "First, I need you to " },
     { sentence: "log in.", style: { strong: true, jumpLine: true } },
-    { sentence: "Don't worry, I am not going to steal your information (⌐■_■),", style: { jumpLine: true } },
     { sentence: "", style: { jumpLine: true } },
-    { sentence: "After you finish it, You will receibe a message on", style: {} },
+    { sentence: "Don't worry, I am not going to steal your information (⌐■_■)", style: { jumpLine: true } },
+    { sentence: "", style: { jumpLine: true } },
+    { sentence: "After you finish it, You will receive a message on", style: {} },
     { sentence: " this ", style: { bold: true } },
     { sentence: "chat." },
   ]);
@@ -82,7 +84,7 @@ export const loggedScreen = (): screen<loggedCallbacks> => {
   };
 };
 
-type menuCallbacks = `MenuScreen: ${"Info" | "Check menu" | "Options" | "Refresh"}`;
+type menuCallbacks = `MenuScreen: ${"Check menu" | "Task" | "Refresh" | "Info" | "Options"}`;
 export const menuScreen = (user: User): screen<menuCallbacks> => {
   const text = createText([
     { sentence: "So, It is sesame time, do as you wish ", style: { jumpLine: true } },
@@ -96,6 +98,7 @@ export const menuScreen = (user: User): screen<menuCallbacks> => {
     text,
     keyboard: [
       [createButton<menuCallbacks>("📳  Check menu", "MenuScreen: Check menu")],
+      [createButton<menuCallbacks>("🎫  Check menu", "MenuScreen: Task")],
       [createButton<menuCallbacks>("🔫 Refresh", "MenuScreen: Refresh")],
       [createButton<menuCallbacks>("🗃 Loggin info", "MenuScreen: Info")],
       [createButton<menuCallbacks>("⚙ Options", "MenuScreen: Options")],
@@ -149,10 +152,10 @@ export const infoScreen = (logSince: string, logUntil: string): screen<infoMenuC
       style: { jumpLine: true },
     },
     { sentence: "", style: { jumpLine: true } },
-    { sentence: "Logged in since:" },
+    { sentence: "Logged in since: " },
     { sentence: `${logSince}`, style: { strong: true, jumpLine: true } },
     { sentence: "", style: { jumpLine: true } },
-    { sentence: "Login renewal:" },
+    { sentence: "Login renewal: " },
     { sentence: `${logUntil}`, style: { strong: true } },
   ]);
 
@@ -183,24 +186,43 @@ type optionCallbacks =
   | "optionsScreen: Back"
   | "optionsScreen: Toogle autoclose"
   | "optionsScreen: Toogle remmember check in"
+  | "optionsScreen: Toogle start task"
   | "optionsScreen: renew session"
   | "optionsScreen: remove session";
-export const optionsScreen = (autoclose: boolean, remmeberCheckIn: boolean): screen<optionCallbacks> => {
+export const optionsScreen = (
+  autoclose: boolean,
+  remmeberCheckIn: boolean,
+  startTask: boolean
+): screen<optionCallbacks> => {
   const text = createText([
     { sentence: "In here you can " },
     { sentence: "wubba lubba dub dub", style: { italic: true } },
-    { sentence: "with the settings" },
+    { sentence: "with the settings " },
     { sentence: " ฅʕ•̫͡•ʔฅ  ", style: { strong: true, jumpLine: true } },
     { sentence: "", style: { jumpLine: true } },
-    { sentence: `Autoclose: ${autoclose ? "On" : "Off"}`, style: { strong: true, jumpLine: true } },
-    { sentence: `Remmeber check in: ${remmeberCheckIn ? "On" : "Off"}`, style: { strong: true } },
   ]);
 
   return {
     text,
     keyboard: [
-      [createButton<optionCallbacks>("⌚ Toogle auto check out", "optionsScreen: Toogle autoclose")],
-      [createButton<optionCallbacks>("🕒 Toogle remmeber check in", "optionsScreen: Toogle remmember check in")],
+      [
+        createButton<optionCallbacks>(
+          `⌚ Auto check out is ${autoclose ? "On" : "Off"}`,
+          "optionsScreen: Toogle autoclose"
+        ),
+      ],
+      [
+        createButton<optionCallbacks>(
+          `🕒 Remmeber check in is ${remmeberCheckIn ? "On" : "Off"}`,
+          "optionsScreen: Toogle remmember check in"
+        ),
+      ],
+      [
+        createButton<optionCallbacks>(
+          `🎫 Start task when check in is ${startTask ? "On" : "Off"}`,
+          "optionsScreen: Toogle start task"
+        ),
+      ],
       [createButton<optionCallbacks>("📋 Renew session", "optionsScreen: renew session")],
       [createButton<optionCallbacks>("🎢 Log out", "optionsScreen: remove session")],
       [createButton<optionCallbacks>("Back", "optionsScreen: Back")],
@@ -215,10 +237,42 @@ export const optionsScreen = (autoclose: boolean, remmeberCheckIn: boolean): scr
   };
 };
 
+type taskCallbaks = "taskScreen: back" | "taskScreen: Open last" | `taskScreen: ${string}`; // ToDO añadir arriba
+export const taskScreen = (task?: TaskTimer): screen<taskCallbaks> => {
+  let text;
+  let keyboard;
+  if (task) {
+    text = createText([
+      { sentence: "As far I can see, this is what you are supposed to be doing now: ", style: { jumpLine: true } },
+      { sentence: "", style: { jumpLine: true } },
+      { sentence: `${task.comment}`, style: { jumpLine: true, strong: true } },
+    ]);
+    keyboard = [[createButton<taskCallbaks>("F this shit", `taskScreen: ${task.id}`)]];
+  } else {
+    text = createText([
+      {
+        sentence: "It seems that you are doing nothing at work, just like you do with your life.",
+        style: { jumpLine: true },
+      },
+      { sentence: "", style: { jumpLine: true } },
+      { sentence: "¯_( ͡° ͜ʖ ͡°)_/¯ ", style: { strong: true } },
+    ]);
+    keyboard = [[createButton<taskCallbaks>("Meh, time to work something", "taskScreen: Open last")]];
+  }
+
+  keyboard.push([createButton<taskCallbaks>("Back", "taskScreen: back")]);
+
+  return {
+    text,
+    keyboard,
+    callbacks: ["taskScreen: Open last", `taskScreen: ${task?.id}`, "taskScreen: back"],
+  };
+};
+
 export const logOutScreen = (): screen<never> => {
   const text = createText([
     { sentence: "Sesion removed", style: { jumpLine: true } },
-    { sentence: "I hope the reason of you abandon was because you got fired", style: { jumpLine: true } },
+    { sentence: "I hope the reason of your abandon was because you got fired", style: { jumpLine: true } },
     { sentence: "", style: { jumpLine: true } },
     { sentence: "(。・ω・。)", style: { strong: true } },
   ]);
@@ -252,8 +306,8 @@ export const previousAutoCheckOutScreen = (expireSesion: Date): screen<previousA
   return {
     text,
     keyboard: [
+      [createButton<previousAutoChecoutCallbaks>("Me están negreando ( ಥ﹏ಥ)", "previousAutoCheckOutScreen: slave")],
       [
-        createButton<previousAutoChecoutCallbaks>("Me están negreando ( ಥ﹏ಥ)", "previousAutoCheckOutScreen: slave"),
         createButton<previousAutoChecoutCallbaks>(
           "El decorado se calla ( ಠ ᴥಠ)",
           "previousAutoCheckOutScreen: Freedom"

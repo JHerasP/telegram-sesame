@@ -12,7 +12,7 @@ export interface User {
   logUntil: Date;
   autoCheckOut: boolean;
   remmeberCheckIn: boolean;
-  autoCheckIn: boolean;
+  startTaskWhenCheckIn: boolean;
   rejectedAutoCheckOut: boolean;
 }
 
@@ -66,6 +66,12 @@ export class SesameDatabase {
     const user = this.users.get(userId);
 
     if (user) user.rejectedAutoCheckOut = reject;
+  }
+
+  public toogleStartTaskCheckIn(userId: number) {
+    const user = this.users.get(userId);
+
+    if (user) user.startTaskWhenCheckIn = !user.startTaskWhenCheckIn;
   }
 }
 

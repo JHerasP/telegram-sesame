@@ -4,7 +4,7 @@ import { ENV } from "../../../config";
 import { User, sesameDatabase } from "../../Sesame-database/SesameDatabase";
 import decode from "jsonwebtoken/decode";
 import { sendLoggedInMessage } from "../../Sesame-bot/sesame-actions";
-import { HolidaysResponse, WorkType, YearHolidayResponse } from "./types";
+import { HolidaysResponse, TaskTimer, TaskWeek, WorkType, YearHolidayResponse } from "./types";
 import { logConsole } from "../../tools/log";
 
 export async function logIn({ email, password }: { email: string; password: string }, jwt: string) {
@@ -50,7 +50,7 @@ export async function logIn({ email, password }: { email: string; password: stri
         logUntil: expirationDate,
         autoCheckOut: true,
         remmeberCheckIn: false,
-        autoCheckIn: false,
+        startTaskWhenCheckIn: false,
         rejectedAutoCheckOut: false,
       };
       sesameDatabase.setUser(decoded.userId, user);
@@ -81,6 +81,13 @@ export async function checkIn(user: User, workCheckTypeId?: string) {
   const [_, errorResponse] = await awaitResolver<any, any>(request(clientServerOptions));
 
   logConsole(user, "Check in");
+
+  if (user.startTaskWhenCheckIn) {
+    const [task] = await awaitResolver(getAllTask(user));
+    if (!task) return;
+
+    await reuseTask(user, task[0].days[0].timers[0]);
+  }
 
   if (!errorResponse) return;
 
@@ -149,16 +156,15 @@ export async function getYearHolidays({ cookie, sesameId }: User) {
     },
   };
 
-  const [body] = await awaitResolver<string, any>(request(clientServerOptions));
-  if (body) {
-    const data = JSON.parse(body);
-    if (data) {
-      const holidays = data as YearHolidayResponse;
+  const [body, error] = await awaitResolver(request(clientServerOptions));
+  if (error) return;
 
-      return holidays.data.map((holiday) => holiday.date);
-    }
-  }
-  return [];
+  const data = JSON.parse(body);
+  if (!data) return [];
+
+  const holidays = data as YearHolidayResponse;
+
+  return holidays.data.map((holiday) => holiday.date);
 }
 
 export async function getEmployeeHolidays({ cookie, sesameId }: User) {
@@ -173,22 +179,19 @@ export async function getEmployeeHolidays({ cookie, sesameId }: User) {
   };
 
   const [body] = await awaitResolver<string, any>(request(clientServerOptions));
-  if (body) {
-    const data = JSON.parse(body);
-    if (data) {
-      const holidays = data as HolidaysResponse;
+  if (!body) return [];
 
-      return holidays.data.map((holiday) => {
-        if (holiday)
-          return holiday.daysOff.map((day) => {
-            if (day.date) return day.date;
-            else return "";
-          });
-        else return [];
-      });
-    }
-  }
-  return [];
+  const data = JSON.parse(body);
+
+  if (!data) return [];
+
+  const holidays = data as HolidaysResponse;
+
+  return holidays.data.map((holiday) => {
+    if (!holiday) return [];
+
+    return holiday.daysOff.map((day) => day.date ?? "");
+  });
 }
 
 export async function getWorkTypes({ cookie, sesameId }: User) {
@@ -203,12 +206,84 @@ export async function getWorkTypes({ cookie, sesameId }: User) {
   };
 
   const [body] = await awaitResolver<string, any>(request(clientServerOptions));
-  if (body) {
-    const data = JSON.parse(body);
-    if (data) {
-      return data.data as WorkType[];
-    }
-  }
 
+  if (!body) return [];
+
+  const data = JSON.parse(body);
+
+  if (data) return data.data as WorkType[];
   return [];
+}
+
+export async function getAllTask({ cookie, sesameId }: User) {
+  const clientServerOptions = {
+    uri: ENV.allTaskUrl.replace("idEmployee", sesameId),
+    method: "GET",
+    headers: {
+      "User-Agent": "Request-Promise",
+      "Content-Type": "application/json",
+      Cookie: cookie,
+    },
+  };
+
+  const [body] = await awaitResolver<string, any>(request(clientServerOptions));
+
+  if (!body) return [];
+
+  const data = JSON.parse(body);
+
+  if (data) return data.data as TaskWeek[];
+  return [];
+}
+
+export async function reuseTask(user: User, task: TaskTimer) {
+  const clientServerOptions = {
+    uri: ENV.reuseTaskUrl.replace("taskId", task.id),
+    method: "POST",
+    body: JSON.stringify({ latitude: null, longitude: null }),
+    headers: {
+      "User-Agent": "Request-Promise",
+      "Content-Type": "application/json",
+      Cookie: user.cookie,
+    },
+  };
+  await awaitResolver<string, any>(request(clientServerOptions));
+  logConsole(user, "Start task", undefined, task.comment);
+}
+
+export async function getActiveTask({ cookie, sesameId }: User) {
+  const clientServerOptions = {
+    uri: ENV.activeTaskUrl.replace("idEmployee", sesameId),
+    method: "GET",
+    headers: {
+      "User-Agent": "Request-Promise",
+      "Content-Type": "application/json",
+      Cookie: cookie,
+    },
+  };
+
+  const [body] = await awaitResolver<string, any>(request(clientServerOptions));
+
+  if (!body) return undefined;
+
+  const data = JSON.parse(body);
+
+  if (data) return data.data as TaskTimer;
+  return undefined;
+}
+
+export async function closeTask(user: User, taskId: string) {
+  const clientServerOptions = {
+    uri: ENV.closeTaskUrl.replace("idTask", taskId),
+    method: "POST",
+    body: JSON.stringify({ latitude: null, longitude: null }),
+    headers: {
+      "User-Agent": "Request-Promise",
+      "Content-Type": "application/json",
+      Cookie: user.cookie,
+    },
+  };
+
+  await awaitResolver(request(clientServerOptions));
+  logConsole(user, "Start task", undefined, taskId); // TODO get task name
 }

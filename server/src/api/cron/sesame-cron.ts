@@ -138,7 +138,7 @@ export function startCronAutoCheckOutMaxTime() {
           .then(() => {
             sendAutoCheckOut(userId);
 
-            logConsole(user, "AutoClose");
+            logConsole(user, "Autoclose max time");
           })
           .catch(() => undefined);
       });

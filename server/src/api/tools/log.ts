@@ -9,8 +9,11 @@ export function logConsole(
     | "Start auto check out"
     | "AutoClose"
     | "Abort autoclose"
-    | "Autoclose max time",
-  autocloseTime?: Date
+    | "Autoclose max time"
+    | "Start task"
+    | "Close task",
+  autocloseTime?: Date,
+  taskName?: string
 ) {
   const date = new Intl.DateTimeFormat("es-En", {
     year: "numeric",
@@ -50,6 +53,12 @@ export function logConsole(
       break;
     case "Autoclose max time":
       console.info(`${date} ${telegramId} ${employeeName} auto checked out at max time`);
+      break;
+    case "Start task":
+      console.info(`${date} ${telegramId} ${employeeName} started task ${taskName}`);
+      break;
+    case "Close task":
+      console.info(`${date} ${telegramId} ${employeeName} closed task ${taskName}`);
       break;
     default:
       console.info(`${date} ${telegramId} ${employeeName} unexpected action`);
