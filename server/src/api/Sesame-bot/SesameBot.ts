@@ -5,6 +5,7 @@ import TELEGRAM_COMMANDS from "../tools/telegram-commands";
 import { privateScreens, publicScreens } from "../telegram-screens";
 import { commandHandler } from "./command/command";
 import { sesameUserRequestDatabase } from "../Sesame-database/SesameUserRequest";
+import logConsole from "../tools/log";
 
 const TOKEN = configIndex.ENV.telegramToken;
 const TC = TELEGRAM_COMMANDS;
@@ -27,6 +28,10 @@ export class SesameBot {
       publicScreens.waitingForAccessMessage(message);
 
       if (!user) {
+        logConsole({
+          user: { chatId: message.chat.id, employeeName: message.chat.first_name || "Unknown" },
+          action: "requestedAccess",
+        });
         privateScreens.requestAcessMessage(message);
         sesameUserRequestDatabase.setUser(message.chat.id, {
           chatId: message.chat.id,

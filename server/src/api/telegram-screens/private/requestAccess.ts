@@ -10,6 +10,7 @@ import { createButton, createText } from "../keyboards/keyboard";
 import { asnwerCallback } from "../telegramScreen.tools";
 import { TelegramScreen } from "../telegramScreens.types";
 import { ENV } from "../../../config";
+import logConsole from "../../tools/log";
 
 export type RequestAccessScreenCallbacks = `requestAccessScreen: ${"No way" | `Meh.${string}`}`;
 
@@ -63,6 +64,9 @@ export function handleRequestAcessMenu(
       .then(() => {
         sesameUserRequestDatabase.acceptUser(newUserId);
         asnwerCallback(telegramCommand.callbackId);
+
+        const user = sesameUserRequestDatabase.getUser(newUserId);
+        if (user) logConsole({ user, action: "grantedAccess" });
       })
       .catch(() => undefined);
   } else return;

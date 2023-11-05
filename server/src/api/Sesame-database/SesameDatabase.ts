@@ -1,5 +1,6 @@
 import { awaitResolver } from "../../TS_tools/general-utility";
 import { Autocomplete } from "../../TS_tools/ts-utility-types/utiliy-types";
+import { ENV } from "../../config";
 import { employeeApi } from "../entity/sesame/employee/employee.index";
 import logConsole from "../tools/log";
 
@@ -79,6 +80,12 @@ export class SesameDatabase {
     const user = this.users.get(userId);
 
     if (user) user.startTaskWhenCheckIn = !user.startTaskWhenCheckIn;
+  }
+
+  public isAdmin(userId: number) {
+    const user = this.users.get(userId);
+
+    return parseInt(ENV.adminId) === user?.chatId;
   }
 }
 

@@ -18,6 +18,7 @@ import { sendRemberCheckInMessage, RemmemberCheckInCallbacks } from "./private/r
 import { sendRenewLogInMessage } from "./private/renew";
 import { sendTaskMenu, handleTaskMenu, TaskCallbaks } from "./private/task";
 import { requestAcessMessage, handleRequestAcessMenu, RequestAccessScreenCallbacks } from "./private/requestAccess";
+import { sendAdminMenu, handleAdminMenu, AdminMenuCallbacks } from "./private/adminMenu";
 
 export const publicScreens = {
   sendLoggingMessage,
@@ -38,6 +39,7 @@ export const privateScreens = {
   sendRenewLogInMessage,
   sendTaskMenu,
   requestAcessMessage,
+  sendAdminMenu,
 };
 
 export const privateScreensMenuHandlers = {
@@ -48,6 +50,7 @@ export const privateScreensMenuHandlers = {
   handleCheckOutWarningMenu,
   handleInfoMenu,
   handleRequestAcessMenu,
+  handleAdminMenu,
 };
 
 export type PublicScreenCallbacks = welcomeCallbacks;
@@ -61,4 +64,5 @@ export type PrivateScreenCallbacks =
   | OptionCallbacks
   | RemmemberCheckInCallbacks
   | TaskCallbaks
-  | RequestAccessScreenCallbacks;
+  | RequestAccessScreenCallbacks
+  | AdminMenuCallbacks;

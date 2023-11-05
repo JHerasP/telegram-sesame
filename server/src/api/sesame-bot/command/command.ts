@@ -3,7 +3,7 @@ import { TelegramButtonsCallbacks } from "../../telegram-screens/telegramScreens
 import { caseGuard } from "../../../TS_tools/general-utility";
 import { privateScreens, privateScreensMenuHandlers, publicScreens } from "../../telegram-screens";
 import { TelegramCommand } from "./command.types";
-import { isCheckScreen, isRequestAccessScreen, isTaskScreen } from "./command.tools";
+import { isAdminScreen, isCheckScreen, isRequestAccessScreen, isTaskScreen } from "./command.tools";
 import { sesameBot } from "../SesameBot";
 
 export function commandHandler(callbackQuery: TelegramBot.CallbackQuery, command?: TelegramButtonsCallbacks) {
@@ -33,6 +33,7 @@ export function commandHandler(callbackQuery: TelegramBot.CallbackQuery, command
     case "MenuScreen: Task":
     case "MenuScreen: Refresh":
     case "MenuScreen: Options":
+    case "MenuScreen: Admin":
       return privateScreensMenuHandlers.handleMainMenu(telegramCommand, command);
     case "OptionsScreen: Toogle autoclose":
     case "OptionsScreen: Toogle remmember check in":
@@ -50,11 +51,14 @@ export function commandHandler(callbackQuery: TelegramBot.CallbackQuery, command
       return sesameBot.telegramBot.deleteMessage(chatId, messageId).catch(() => undefined);
     case "requestAccessScreen: No way":
       return privateScreensMenuHandlers.handleRequestAcessMenu(telegramCommand, command);
+    case "AdminMenu: back":
+      return privateScreensMenuHandlers.handleAdminMenu(telegramCommand, command);
     default:
       if (isCheckScreen(command)) return privateScreensMenuHandlers.handleCheckMenu(telegramCommand, command);
       if (isTaskScreen(command)) return privateScreensMenuHandlers.handleTaskMenu(telegramCommand, command);
       if (isRequestAccessScreen(command))
         return privateScreensMenuHandlers.handleRequestAcessMenu(telegramCommand, command);
+      if (isAdminScreen(command)) return privateScreensMenuHandlers.handleAdminMenu(telegramCommand, command);
       if (command) caseGuard(command);
       break;
   }

@@ -1,10 +1,11 @@
+import { ENV } from "../../../config";
 import { sesameBotService } from "../../sesame-bot";
 import { chatHistory } from "../../Sesame-database/SesameChatHistory";
-import getHtmlFile, { createJWT } from "../../tools/telegram-files/telegram-files";
+import { createJWT } from "../../tools/telegram-files/telegram-files";
 import { createText } from "../keyboards/keyboard";
 import { TelegramScreen } from "../telegramScreens.types";
 
-const renewLoginScreen = (logUntil: string): TelegramScreen<never> => {
+const renewLoginScreen = (logUntil: string, jwt: string): TelegramScreen<never> => {
   const text = createText([
     { sentence: "Hey, your session will expire on" },
     { sentence: `${logUntil}`, style: { strong: true } },
@@ -15,7 +16,7 @@ const renewLoginScreen = (logUntil: string): TelegramScreen<never> => {
 
   return {
     text,
-    keyboard: [[]],
+    keyboard: [[{ text: "Log in", url: `http://${ENV.serverIp}:${ENV.port}/sesame/?jwt=${jwt}` }]],
     callbacks: [],
   };
 };
@@ -26,12 +27,8 @@ export function sendRenewLogInMessage(chatId: number, expiration: Date) {
   const today = new Date();
   const daysLeft = expiration.getDay() - today.getDay();
 
-  const { text, keyboard } = renewLoginScreen(daysLeft.toString());
-  // const jwt = createJWT(chatId);
-  const file = getHtmlFile();
-
-  const expiresOn = new Intl.DateTimeFormat("es").format(expiration);
+  const jwt = createJWT(chatId);
+  const { text, keyboard } = renewLoginScreen(daysLeft.toString(), jwt);
 
   sesameBotService.sendMessage(chatId, text, keyboard);
-  sesameBotService.sendFile(chatId, file, expiresOn.replace(/\//g, "-"));
 }

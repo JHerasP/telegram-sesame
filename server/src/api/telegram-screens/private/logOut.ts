@@ -1,6 +1,7 @@
 import { sesameBotService } from "../../sesame-bot";
 import { TelegramCommand } from "../../sesame-bot/command/command.types";
 import { sesameDatabase } from "../../Sesame-database/SesameDatabase";
+import logConsole from "../../tools/log";
 
 import { createText } from "../keyboards/keyboard";
 import { TelegramScreen } from "../telegramScreens.types";
@@ -24,6 +25,10 @@ const logOutScreen = (): TelegramScreen<never> => {
 
 export function sendLogOutMessage({ messageId, chatId }: TelegramCommand) {
   const { text } = logOutScreen();
+
+  const user = sesameDatabase.getUser(chatId);
+
+  if (user) logConsole({ user, action: "closeSession" });
 
   sesameDatabase.logOut(chatId);
   sesameBotService.editMessage(chatId, text, [], messageId);

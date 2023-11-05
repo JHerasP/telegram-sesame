@@ -1,7 +1,6 @@
-import { Message } from "node-telegram-bot-api";
+import { sesameBotService } from "../../sesame-bot";
 import { createButton, createText } from "../keyboards/keyboard";
 import { TelegramScreen } from "../telegramScreens.types";
-import { sesameBotService } from "../../sesame-bot";
 
 export type welcomeCallbacks = "wellcomeScreen: Conditions";
 const welcomeScreen = (): TelegramScreen<welcomeCallbacks> => {

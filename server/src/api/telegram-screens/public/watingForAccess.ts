@@ -20,7 +20,7 @@ const waitingForAccessScreen = (): TelegramScreen<never> => {
 
   return {
     text,
-    keyboard: [[]],
+    keyboard: [],
     callbacks: [],
   };
 };

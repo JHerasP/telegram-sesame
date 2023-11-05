@@ -1,47 +1,57 @@
-import { User } from "../Sesame-database/SesameDatabase";
+type UserLog = {
+  chatId: number;
+  employeeName: string;
+};
 
 const Logs = {
-  logged: (user: User, date: string) => `${date} ${user.chatId} ${user.employeeName} Logged`,
+  logged: (user: UserLog, date: string) => `${date} ${user.chatId} ${user.employeeName} Logged`,
 
-  closeSession: (user: User, date: string) => `${date} ${user.chatId} ${user.employeeName} Clossed session`,
+  closeSession: (user: UserLog, date: string) => `${date} ${user.chatId} ${user.employeeName} Clossed session`,
 
-  remmemberToCheckIn: (user: User, date: string) =>
+  remmemberToCheckIn: (user: UserLog, date: string) =>
     `${date} ${user.chatId} ${user.employeeName} Process remmember to Check in`,
 
-  checkIn: (user: User, date: string) => `${date} ${user.chatId} ${user.employeeName} Check in`,
+  checkIn: (user: UserLog, date: string) => `${date} ${user.chatId} ${user.employeeName} Check in`,
 
-  checkOut: (user: User, date: string) => `${date} ${user.chatId} ${user.employeeName} Check out`,
+  checkOut: (user: UserLog, date: string) => `${date} ${user.chatId} ${user.employeeName} Check out`,
 
-  startAutoCheckOut: (user: User, date: string, time: string) =>
+  startAutoCheckOut: (user: UserLog, date: string, time: string) =>
     `${date} ${user.chatId} ${user.employeeName} Process start auto check out at ${time}`,
 
-  AutoClose: (user: User, date: string) =>
+  AutoClose: (user: UserLog, date: string) =>
     `${date} ${user.chatId} ${user.employeeName} Process auto check out completed`,
 
-  abortAutoCheckOut: (user: User, date: string) => `${date} ${user.chatId} ${user.employeeName} Abort auto check out`,
+  abortAutoCheckOut: (user: UserLog, date: string) =>
+    `${date} ${user.chatId} ${user.employeeName} Abort auto check out`,
 
-  autoCheckOutMaxTime: (user: User, date: string) =>
+  autoCheckOutMaxTime: (user: UserLog, date: string) =>
     `${date} ${user.chatId} ${user.employeeName} Process auto check out max time`,
 
-  startTask: (user: User, date: string, _: string, taskName: string) =>
+  startTask: (user: UserLog, date: string, _: string, taskName: string) =>
     `${date} ${user.chatId} ${user.employeeName} Start task ${taskName}`,
 
-  closeTask: (user: User, date: string, _: string, taskName: string) =>
+  closeTask: (user: UserLog, date: string, _: string, taskName: string) =>
     `${date} ${user.chatId} ${user.employeeName} Close task ${taskName}`,
+
+  requestedAccess: (user: UserLog, date: string, _: string, __: string) =>
+    `${date} ${user.chatId} ${user.employeeName} Asked for access`,
+
+  grantedAccess: (user: UserLog, date: string, _: string, __: string) =>
+    `${date} ${user.chatId} ${user.employeeName} got access`,
 };
 
 type BaseLogs = keyof Omit<typeof Logs, "startAutoCheckOut" | "startTask" | "closeTask">;
 
-function logConsole({ user, action }: { user: User; action: BaseLogs }): void;
-function logConsole({ user, action }: { user: User; action: "startAutoCheckOut"; autoCloseTime: Date }): void;
-function logConsole({ user, action }: { user: User; action: "startTask" | "closeTask"; taskName: string }): void;
+function logConsole({ user, action }: { user: UserLog; action: BaseLogs }): void;
+function logConsole({ user, action }: { user: UserLog; action: "startAutoCheckOut"; autoCloseTime: Date }): void;
+function logConsole({ user, action }: { user: UserLog; action: "startTask" | "closeTask"; taskName: string }): void;
 function logConsole({
   user,
   action,
   autoCloseTime = new Date(),
   taskName = "",
 }: {
-  user: User;
+  user: UserLog;
   action: keyof typeof Logs;
   autoCloseTime?: Date;
   taskName?: string;
