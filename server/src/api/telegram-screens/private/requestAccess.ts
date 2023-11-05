@@ -30,8 +30,8 @@ const requestAcessScreen = (msg: Message): TelegramScreen<RequestAccessScreenCal
     text,
     keyboard: [
       [
-        createButton<RequestAccessScreenCallbacks>("No", "requestAccessScreen: No way"),
-        createButton<RequestAccessScreenCallbacks>("Yep", `requestAccessScreen: Meh.${msg.chat.id}`),
+        createButton<RequestAccessScreenCallbacks>("Dehogy is", "requestAccessScreen: No way"),
+        createButton<RequestAccessScreenCallbacks>("Még szép", `requestAccessScreen: Meh.${msg.chat.id}`),
       ],
     ],
     callbacks: [],

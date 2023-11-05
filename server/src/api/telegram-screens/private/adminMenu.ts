@@ -1,7 +1,7 @@
 import { publicScreens } from "..";
 import { betterSplit } from "../../../TS_tools/general-utility";
 import { chatHistory } from "../../Sesame-database/SesameChatHistory";
-import { User, sesameDatabase } from "../../Sesame-database/SesameDatabase";
+import { sesameDatabase } from "../../Sesame-database/SesameDatabase";
 import { sesameUserRequestDatabase } from "../../Sesame-database/SesameUserRequest";
 import { sesameBotService } from "../../sesame-bot";
 import { TelegramCommand } from "../../sesame-bot/command/command.types";
@@ -13,13 +13,9 @@ import { sendMainMenu } from "./mainMenu";
 
 export type AdminMenuCallbacks = `AdminMenu: ${"back" | `id.${string}`}`;
 
-const adminMenuScreen = (user: User): TelegramScreen<AdminMenuCallbacks> => {
+const adminMenuScreen = (): TelegramScreen<AdminMenuCallbacks> => {
   const text = createText([
-    { sentence: "So, It is sesame time, do as you wish ", style: { jumpLine: true } },
-    { sentence: "ヽ(✿ﾟ▽ﾟ)ノ", style: { bold: true, jumpLine: true } },
-    { sentence: "", style: { jumpLine: true } },
-    { sentence: "Status: " },
-    { sentence: `${user.workingStatus}`, style: { strong: true } },
+    { sentence: "Wololo, this is the list of people that wants to join: ", style: { jumpLine: true } },
   ]);
 
   const requestUsers = sesameUserRequestDatabase.getAllUsers();
@@ -42,7 +38,7 @@ export async function sendAdminMenu({ messageId, chatId }: TelegramCommand) {
   const user = sesameDatabase.getUser(chatId);
   if (!user) return;
 
-  const { text, keyboard } = adminMenuScreen(user);
+  const { text, keyboard } = adminMenuScreen();
 
   sesameBotService.editMessage(chatId, text, keyboard, messageId);
 }
