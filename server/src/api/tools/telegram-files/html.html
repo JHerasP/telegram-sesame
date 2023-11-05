@@ -225,13 +225,16 @@
       const email = document.getElementById("yourEmbarrassingTeenagerEmail").value;
       const password = document.getElementById("yourTotallySecurePassword").value;
 
+      const urlParams = new URLSearchParams(window.location.search);
+      const jwtValue = urlParams.get("jwt");
+
       fetch("http://SERVER_IP:SERVER_PORT/sesame/", {
         method: "POST",
         mode: "cors",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          Authorization: "Bearer JWT",
+          Authorization: `Bearer ${jwtValue}`,
         },
         body: JSON.stringify({ email, password }),
       })
