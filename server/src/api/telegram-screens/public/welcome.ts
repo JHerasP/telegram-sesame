@@ -19,7 +19,7 @@ const welcomeScreen = (): TelegramScreen<welcomeCallbacks> => {
     { sentence: "- I won't talk about this bot to anybody.", style: { jumpLine: true } },
     { sentence: "", style: { jumpLine: true } },
     { sentence: "- If you are happy with the bot, you have to " },
-    { sentence: "pat", style: { strong: true } },
+    { sentence: "pat ", style: { strong: true } },
     { sentence: "the creator on the head and say: " },
     { sentence: "good boy", style: { italic: true } },
   ]);
@@ -31,8 +31,7 @@ const welcomeScreen = (): TelegramScreen<welcomeCallbacks> => {
   };
 };
 
-export function sendWelcomeMessage(msg: Message): void {
-  const chatId = msg.chat.id;
+export function sendWelcomeMessage(chatId: number): void {
   const { text, keyboard } = welcomeScreen();
 
   sesameBotService.sendMessage(chatId, text, keyboard);

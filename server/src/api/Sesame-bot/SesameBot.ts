@@ -1,9 +1,10 @@
 import TelegramBot from "node-telegram-bot-api";
-import { configIndex } from "../../config";
+import { ENV, configIndex } from "../../config";
 import { TelegramButtonsCallbacks } from "../telegram-screens/telegramScreens.types";
 import TELEGRAM_COMMANDS from "../tools/telegram-commands";
-import { publicScreens } from "../telegram-screens";
+import { privateScreens, publicScreens } from "../telegram-screens";
 import { commandHandler } from "./command/command";
+import { sesameUserRequestDatabase } from "../Sesame-database/SesameUserRequest";
 
 const TOKEN = configIndex.ENV.telegramToken;
 const TC = TELEGRAM_COMMANDS;
@@ -17,7 +18,23 @@ export class SesameBot {
   }
 
   init() {
-    this.telegramBot.onText(TC.start, (message) => publicScreens.sendWelcomeMessage(message));
+    this.telegramBot.onText(TC.start, (message) => {
+      const user = sesameUserRequestDatabase.getUser(message.chat.id);
+
+      if (message.chat.id === parseInt(ENV.adminId) || user?.accepted)
+        return publicScreens.sendWelcomeMessage(message.chat.id);
+
+      publicScreens.waitingForAccessMessage(message);
+
+      if (!user) {
+        privateScreens.requestAcessMessage(message);
+        sesameUserRequestDatabase.setUser(message.chat.id, {
+          chatId: message.chat.id,
+          employeeName: message.chat.first_name || "Unknown",
+          accepted: false,
+        });
+      }
+    });
 
     this.telegramBot.on("callback_query", (callbackQuery) => {
       const command = callbackQuery.data as TelegramButtonsCallbacks;

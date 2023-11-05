@@ -7,14 +7,17 @@ export interface User {
   chatId: number;
   sesameId: string;
   employeeName: string;
+  cookie: string;
+
   // This is weird, working status is a mix in between online and offline + the cases created by the user
   workingStatus: Autocomplete<"online" | "offline">;
-  cookie: string;
+
   logSince: Date;
   logUntil: Date;
-  autoCheckOut: boolean;
+
   remmeberCheckIn: boolean;
   startTaskWhenCheckIn: boolean;
+  autoCheckOut: boolean;
   rejectedAutoCheckOut: boolean;
 }
 

@@ -10,6 +10,7 @@ const ENV = {
   host: process.env.SESAME_PROJECT_HOST!,
   telegramToken:
     process.env.SESAME_DEV === "true" ? process.env.SESAME_TELEGRAM_TOKEN_DEV! : process.env.SESAME_TELEGRAM_TOKEN!,
+  adminId: process.env.SESAME_TELEGRAM_ADMIN_ID!,
   sesameUrl: process.env.SESAME_URL!,
   sesameCrypto: process.env.SESAME_CRYPTO!,
   checkIn: process.env.SESAME_CHECK_IN_URL!,
