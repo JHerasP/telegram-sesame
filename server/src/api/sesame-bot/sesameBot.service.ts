@@ -2,7 +2,7 @@
 process.env["NTBA_FIX_350"] = "1";
 import TelegramBot from "node-telegram-bot-api";
 import { chatHistory } from "../Sesame-database/SesameChatHistory";
-import { sesameBot } from "../Sesame-bot/SesameBot";
+import { sesameBot } from "../sesame-bot/SesameBot";
 
 export function sendMessage(chatId: number, message: string, keyboard: TelegramBot.InlineKeyboardButton[][]) {
   sesameBot.telegramBot
@@ -17,7 +17,7 @@ export function sendMessage(chatId: number, message: string, keyboard: TelegramB
       if (chatLog) chatHistory.updateChatLog(x.chat.id, x.message_id);
       else chatHistory.createChatLog(x.chat.id, x.message_id);
     })
-    .catch(() => undefined);
+    .catch((e) => console.log(e));
 }
 
 export function editMessage(

@@ -1,4 +1,4 @@
-import { ICustomInLineKeyboadButton } from "./types";
+import { ICustomInLineKeyboadButton, TTextStyle } from "./keyboard.types";
 
 export type TWeekMenuValues = ICustomInLineKeyboadButton<string, string>;
 
@@ -9,18 +9,9 @@ export const createButton = <Y extends string>(
   return { text, callback_data };
 };
 
-export type TTextStyle = {
-  sentence: string;
-  style?: {
-    bold?: true;
-    strong?: true;
-    italic?: true;
-    underline?: true;
-    jumpLine?: true;
-  };
-};
 export const createText = (text: TTextStyle[]): string => {
   let returnText = "";
+
   text.forEach((line) => {
     const sentence = addStyles(line);
 
@@ -36,6 +27,7 @@ const addStyles = (line: TTextStyle) => {
 
   Object.entries(line.style).forEach((style) => {
     const [key] = style as [keyof TTextStyle["style"], boolean];
+
     if (key === "bold") sentence = `<b>${sentence}</b>`;
     else if (key === "italic") sentence = `<i>${sentence}</i>`;
     else if (key === "strong") sentence = `<strong>${sentence}</strong>`;

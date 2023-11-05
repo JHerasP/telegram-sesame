@@ -2,8 +2,8 @@ import decode from "jsonwebtoken/decode";
 import { User, sesameDatabase } from "../../../Sesame-database/SesameDatabase";
 import { awaitResolver } from "../../../../TS_tools/general-utility";
 import { employeeApi } from "../employee/employee.index";
-import { sendLoggedInMessage } from "../../../Sesame-bot/sesame-actions";
 import { SesameEmployee } from "../employee/employee.types";
+import { privateScreens } from "../../../telegram-screens";
 
 function getExpirationDate(cookie: string) {
   const regrex = RegExp(/expires=([^;]+)/);
@@ -64,5 +64,5 @@ export async function processLoggedInUser(headers: Record<string, string>, jwt: 
 
   createNewUser({ userId: decoded.userId, sesameEmployee, email, cookie: cookies[1] });
 
-  sendLoggedInMessage(decoded.userId);
+  privateScreens.sendLoggedWelcomeMessage(decoded.userId);
 }

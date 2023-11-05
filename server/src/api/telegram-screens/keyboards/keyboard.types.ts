@@ -4,3 +4,14 @@ export interface ICustomInLineKeyboadButton<T extends string, Y extends string> 
   text: T;
   callback_data: Y;
 }
+
+export type TTextStyle = {
+  sentence: string;
+  style?: {
+    bold?: true;
+    strong?: true;
+    italic?: true;
+    underline?: true;
+    jumpLine?: true;
+  };
+};

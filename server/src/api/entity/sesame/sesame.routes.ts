@@ -1,10 +1,18 @@
 import { Response, Router } from "express";
 import { ExpressBody } from "../../../TS_tools/request-utility";
+import getHtmlFile from "../../tools/telegram-files/telegram-files";
+import { loginApi } from "./login/login.index";
 import { checkJWT } from "./sesame.middleware";
 import { LogInBody } from "./sesame.types";
-import { loginApi } from "./login/login.index";
 
 const router = Router();
+
+router.get("/", (_, res: Response) => {
+  const htmlContent = getHtmlFile();
+
+  res.setHeader("Content-Type", "text/html");
+  res.send(htmlContent);
+});
 
 router.post("/", checkJWT, async (req: ExpressBody<LogInBody>, res: Response) => {
   loginApi

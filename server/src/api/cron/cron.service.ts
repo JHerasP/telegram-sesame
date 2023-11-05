@@ -1,10 +1,9 @@
 import { awaitResolver } from "../../TS_tools/general-utility";
-import { sendAutoCheckOut, sendPreviousAutoCheckOut } from "../Sesame-bot/sesame-actions";
 import { User, sesameDatabase } from "../Sesame-database/SesameDatabase";
 import { checkApi } from "../entity/sesame/checks/check.index";
 import { employeeApi } from "../entity/sesame/employee/employee.index";
+import { privateScreens } from "../telegram-screens";
 import logConsole from "../tools/log";
-
 import { checkIfTodayIsHoliday, shouldAbortAutoCheckOut } from "./cron.tools";
 
 export async function getRefreshedUserWorkingStatus(chatId: number) {
@@ -36,14 +35,14 @@ export async function checkOutAndMessage(user: User) {
   const [, err] = await awaitResolver(checkApi.checkout(user));
   if (err) return;
 
-  return sendAutoCheckOut(user.chatId);
+  return privateScreens.sendAutoCheckOutMessage(user.chatId);
 }
 
 export function sendMessageAboutCheckOutOutSession(user: User, extraTime: number) {
   const currentTime = new Date();
   const futureTime = new Date(currentTime.getTime() + extraTime);
 
-  sendPreviousAutoCheckOut(user.chatId, futureTime).then(() =>
-    logConsole({ user, action: "startAutoCheckOut", autoCloseTime: futureTime })
-  );
+  return privateScreens
+    .sendAutoCheckOutWarningMessage(user.chatId, futureTime)
+    .then(() => logConsole({ user, action: "startAutoCheckOut", autoCloseTime: futureTime }));
 }

@@ -1,3 +1,4 @@
+import { awaitResolver } from "../../TS_tools/general-utility";
 import { Autocomplete } from "../../TS_tools/ts-utility-types/utiliy-types";
 import { employeeApi } from "../entity/sesame/employee/employee.index";
 import logConsole from "../tools/log";
@@ -28,12 +29,15 @@ export class SesameDatabase {
     logConsole({ user, action: "logged" });
     this.users.set(userId, user);
   }
+
   public getUser(id: number) {
     return this.users.get(id);
   }
+
   public deleteUser(id: number) {
     this.users.delete(id);
   }
+
   public getAllUsers() {
     return this.users;
   }
@@ -47,16 +51,13 @@ export class SesameDatabase {
     this.users.delete(userId);
   }
 
-  public refreshWorkingStatus(userId: number) {
+  public async refreshWorkingStatus(userId: number) {
     const user = this.users.get(userId);
     if (!user) return;
 
-    return employeeApi
-      .getEmployeeInfo(user?.cookie)
-      .then((userData) => {
-        if (userData) this.users.set(userId, { ...user, workingStatus: userData.workStatus });
-      })
-      .catch(() => undefined);
+    const [userData] = await awaitResolver(employeeApi.getEmployeeInfo(user?.cookie));
+
+    if (userData) this.users.set(userId, { ...user, workingStatus: userData.workStatus });
   }
 
   public toogleremmeberCheckIn(userId: number) {

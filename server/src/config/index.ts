@@ -18,7 +18,7 @@ const ENV = {
   holidaysUrl: process.env.SESAME_EMPLOYEE_HOLIDAYS!,
   yearholidaysUrl: process.env.SESAME_YEAR_HOLIDAYS!,
   checkInTypes: process.env.SESAME_CHECK_IN_TYPES!,
-  serverIp: process.env.SESAME_DEV === "true" ? "localhost" : process.env.SESAME_SERVER_IP!,
+  serverIp: process.env.SESAME_DEV === "true" ? "127.0.0.1" : process.env.SESAME_SERVER_IP!, // Dont use localhost, telegram doesnt like it
   allTaskUrl: process.env.SESAME_GET_ALL_TASK!,
   reuseTaskUrl: process.env.SESAME_REUSE_TASK!,
   activeTaskUrl: process.env.SESAME_ACTIVE_TASK!,

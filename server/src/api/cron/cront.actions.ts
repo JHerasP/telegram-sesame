@@ -1,7 +1,6 @@
-import { sendRemberCheckIn, sendRenewLogIn } from "../Sesame-bot/sesame-actions";
 import { sesameDatabase } from "../Sesame-database/SesameDatabase";
+import { privateScreens } from "../telegram-screens";
 import logConsole from "../tools/log";
-
 import {
   attemptToAutoCheckOut,
   checkIfWorkingDay,
@@ -19,7 +18,9 @@ export function checkExpiringSession() {
   const users = sesameDatabase.getAllUsers();
   if (!users.size) return;
 
-  users.forEach(({ chatId, logUntil }) => isSameDay(logUntil, today) && sendRenewLogIn(chatId, logUntil));
+  users.forEach(
+    ({ chatId, logUntil }) => isSameDay(logUntil, today) && privateScreens.sendRenewLogInMessage(chatId, logUntil)
+  );
 }
 
 export function remmemberToCheckIn() {
@@ -35,7 +36,8 @@ export function remmemberToCheckIn() {
 
     const workingDay = await checkIfWorkingDay(user);
 
-    if (workingDay) sendRemberCheckIn(chatId).then(() => logConsole({ user, action: "remmemberToCheckIn" }));
+    if (workingDay)
+      privateScreens.sendRemberCheckInMessage(chatId).then(() => logConsole({ user, action: "remmemberToCheckIn" }));
   });
 }
 

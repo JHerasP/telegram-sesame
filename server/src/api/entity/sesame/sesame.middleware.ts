@@ -9,8 +9,12 @@ export function checkJWT(req: ExpressBody<LogInBody>, res, next) {
 
   const noBearer = token.split(" ")[1];
 
-  const decodedToken = JWT.verify(noBearer, ENV.sesameCrypto);
+  try {
+    const decodedToken = JWT.verify(noBearer, ENV.sesameCrypto);
 
-  if (decodedToken) next();
-  else res.status(200).send("ಠ▃ಠ");
+    if (decodedToken) next();
+    else res.status(200).send("ಠ▃ಠ");
+  } catch (error) {
+    res.status(200).send("Your JWT sucks");
+  }
 }

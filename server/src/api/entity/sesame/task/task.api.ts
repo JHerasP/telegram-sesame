@@ -73,7 +73,9 @@ export async function closeTask(user: User, taskId: string) {
     },
   };
 
-  await awaitResolver(request(clientServerOptions));
+  const [, err] = await awaitResolver(request(clientServerOptions));
+
+  if (err) throw new Error("Meh, my creator screwed up somehow, try to log in again (┬┬﹏┬┬)");
 
   logConsole({ user, action: "closeTask", taskName: "TODO" }); // TODO Task name
 }

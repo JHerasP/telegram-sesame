@@ -1,4 +1,4 @@
-import { sesameBot } from "../Sesame-bot/SesameBot";
+import { sesameBot } from "../sesame-bot/SesameBot";
 
 export class SesameChatHistory {
   private history: Map<number, Set<number>>;
