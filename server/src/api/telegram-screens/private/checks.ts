@@ -9,7 +9,7 @@ import { createButton, createText } from "../keyboards/keyboard";
 import { asnwerCallback, rejectCallback } from "../telegramScreen.tools";
 import { TelegramScreen } from "../telegramScreens.types";
 import { sendMainMenu } from "./mainMenu";
-import { betterSplit } from "../../../TS_tools/general-utility";
+import { awaitResolver, betterSplit } from "../../../TS_tools/general-utility";
 
 export type CheckCallbacks =
   | `CheckScreen: ${string}`
@@ -82,14 +82,15 @@ export function handleCheckMenu(
   else return;
 }
 
-function checkInSesame(user: User, callbackId: string, workCheckTypeId?: `CheckScreen: ${string}`) {
-  const checType = workCheckTypeId || "";
-  const checkId = betterSplit(checType, ":", 1).trim();
+async function checkInSesame(user: User, callbackId: string, workCheckTypeId?: `CheckScreen: ${string}`) {
+  const checkId = workCheckTypeId ? betterSplit(workCheckTypeId, ":", 1).trim() : undefined;
+  const [_, err] = await awaitResolver(checkApi.checkIn(user, checkId));
 
-  return checkApi
-    .checkIn(user, checkId)
-    .then(() => taskApiService.startLastTask(user).finally(() => asnwerCallback(callbackId)))
-    .catch((err) => rejectCallback(callbackId, err.message));
+  if (err) return rejectCallback(callbackId, "F at checking in (╯▽╰ )");
+
+  if (user.startTaskWhenCheckIn) await awaitResolver(taskApiService.startLastTask(user));
+
+  asnwerCallback(callbackId);
 }
 
 function checkOutSesame(user: User, callbackId: string) {
