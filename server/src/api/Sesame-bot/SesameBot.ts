@@ -22,7 +22,11 @@ export class SesameBot {
     this.telegramBot.onText(TC.start, (message) => {
       const user = sesameUserRequestDatabase.getUser(message.chat.id);
 
-      if (message.chat.id === parseInt(ENV.adminId) || user?.accepted)
+      if (
+        message.chat.id === parseInt(ENV.adminId) ||
+        user?.accepted ||
+        ENV.secretBoyBandMembers.includes(message.chat.id.toString())
+      )
         return publicScreens.sendWelcomeMessage(message.chat.id);
 
       publicScreens.waitingForAccessMessage(message);
