@@ -2,6 +2,7 @@ import { sesameBot } from "../sesame-bot/SesameBot";
 
 export class SesameChatHistory {
   private history: Map<number, Set<number>>;
+
   constructor() {
     this.history = new Map<number, Set<number>>();
   }
@@ -35,3 +36,4 @@ export class SesameChatHistory {
 }
 
 export const chatHistory = new SesameChatHistory();
+export const tempChatHistory = new SesameChatHistory();

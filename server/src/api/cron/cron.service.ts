@@ -1,4 +1,5 @@
 import { awaitResolver } from "../../TS_tools/general-utility";
+import { tempChatHistory } from "../Sesame-database/SesameChatHistory";
 import { User, sesameDatabase } from "../Sesame-database/SesameDatabase";
 import { checkApi } from "../entity/sesame/checks/check.index";
 import { employeeApi } from "../entity/sesame/employee/employee.index";
@@ -16,7 +17,11 @@ export async function attemptToAutoCheckOut(user: User) {
 
   if (shouldAbort) return;
 
-  checkOutAndMessage(user).then(() => logConsole({ user, action: "AutoClose" }));
+  checkOutAndMessage(user).then(() => {
+    logConsole({ user, action: "AutoClose" });
+
+    tempChatHistory.deleteChatHistory(user.chatId);
+  });
 }
 
 export async function checkIfWorkingDay(user: User) {

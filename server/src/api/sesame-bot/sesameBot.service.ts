@@ -1,10 +1,15 @@
 // I still dont understand why I have to add this to avoid a deprecation warning
 process.env["NTBA_FIX_350"] = "1";
 import TelegramBot from "node-telegram-bot-api";
-import { chatHistory } from "../Sesame-database/SesameChatHistory";
+import { chatHistory, tempChatHistory } from "../Sesame-database/SesameChatHistory";
 import { sesameBot } from "../sesame-bot/SesameBot";
 
-export function sendMessage(chatId: number, message: string, keyboard: TelegramBot.InlineKeyboardButton[][]) {
+export function sendMessage(
+  chatId: number,
+  message: string,
+  keyboard: TelegramBot.InlineKeyboardButton[][],
+  tempMessage: boolean = false
+) {
   sesameBot.telegramBot
     .sendMessage(chatId, message, {
       reply_markup: {
@@ -13,11 +18,17 @@ export function sendMessage(chatId: number, message: string, keyboard: TelegramB
       parse_mode: "HTML",
     })
     .then((x) => {
-      const chatLog = chatHistory.get(chatId);
-      if (chatLog) chatHistory.updateChatLog(x.chat.id, x.message_id);
-      else chatHistory.createChatLog(x.chat.id, x.message_id);
+      if (tempMessage) {
+        const chatLog = tempChatHistory.get(chatId);
+        if (chatLog) tempChatHistory.updateChatLog(x.chat.id, x.message_id);
+        else tempChatHistory.createChatLog(x.chat.id, x.message_id);
+      } else {
+        const chatLog = chatHistory.get(chatId);
+        if (chatLog) chatHistory.updateChatLog(x.chat.id, x.message_id);
+        else chatHistory.createChatLog(x.chat.id, x.message_id);
+      }
     })
-    .catch((e) => console.log(e));
+    .catch(() => undefined);
 }
 
 export function editMessage(

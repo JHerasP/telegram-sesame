@@ -36,7 +36,7 @@ const checkScreen = (user: User, workTypes: WorkType[]): TelegramScreen<CheckCal
     return callback;
   });
 
-  buttons.unshift([createButton("Office", "CheckScreen: Check in")]);
+  if (user.workingStatus === "offline") buttons.unshift([createButton("Office", "CheckScreen: Check in")]);
   if (user.workingStatus !== "offline") buttons.push([createButton("📴 Check out", "CheckScreen: Check out")]);
   buttons.push([createButton("Back", "CheckScreen: Back")]);
 

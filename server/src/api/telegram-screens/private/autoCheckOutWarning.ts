@@ -46,18 +46,21 @@ const autoCheckOutWarningScreen = (expireSesion: Date): TelegramScreen<AutoCheck
 export async function sendAutoCheckOutWarningMessage(userId: number, expireSesion: Date) {
   const { text, keyboard } = autoCheckOutWarningScreen(expireSesion);
 
-  sesameBotService.sendMessage(userId, text, keyboard);
+  sesameBotService.sendMessage(userId, text, keyboard, true);
 }
 
 export async function handleCheckOutWarningMenu(
   telegramCommand: TelegramCommand,
   command: ReturnType<typeof autoCheckOutWarningScreen>["callbacks"][number]
 ) {
+  sesameDatabase.refreshWorkingStatus(telegramCommand.chatId);
   const user = sesameDatabase.getUser(telegramCommand.chatId);
   if (!user) return;
+  if (user.workingStatus === "offline")
+    return sesameBot.telegramBot.deleteMessage(telegramCommand.chatId, telegramCommand.messageId);
 
   if (command === "PreviousAutoCheckOutScreen: Freedom")
-    return await awaitResolver(sesameBot.telegramBot.deleteMessage(telegramCommand.chatId, telegramCommand.messageId));
+    return sesameBot.telegramBot.deleteMessage(telegramCommand.chatId, telegramCommand.messageId);
   else return tooglePreviousAutoclose(telegramCommand, user);
 }
 
