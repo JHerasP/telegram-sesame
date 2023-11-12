@@ -52,6 +52,7 @@ export function commandHandler(callbackQuery: TelegramBot.CallbackQuery, command
     case "requestAccessScreen: No way":
       return privateScreensMenuHandlers.handleRequestAcessMenu(telegramCommand, command);
     case "AdminMenu: back":
+    case "AdminMenu: send restart":
       return privateScreensMenuHandlers.handleAdminMenu(telegramCommand, command);
     default:
       if (isCheckScreen(command)) return privateScreensMenuHandlers.handleCheckMenu(telegramCommand, command);

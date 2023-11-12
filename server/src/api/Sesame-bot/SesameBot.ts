@@ -32,7 +32,9 @@ export class SesameBot {
           user: { chatId: message.chat.id, employeeName: message.chat.first_name || "Unknown" },
           action: "requestedAccess",
         });
+
         privateScreens.requestAcessMessage(message);
+
         sesameUserRequestDatabase.setUser(message.chat.id, {
           chatId: message.chat.id,
           employeeName: message.chat.first_name || "Unknown",

@@ -10,8 +10,9 @@ import { createButton, createText } from "../keyboards/keyboard";
 import { asnwerCallback } from "../telegramScreen.tools";
 import { TelegramScreen } from "../telegramScreens.types";
 import { sendMainMenu } from "./mainMenu";
+import { sendRestartMessage } from "./needRestart";
 
-export type AdminMenuCallbacks = `AdminMenu: ${"back" | `id.${string}`}`;
+export type AdminMenuCallbacks = `AdminMenu: ${"send restart" | "back" | `id.${string}`}`;
 
 const adminMenuScreen = (): TelegramScreen<AdminMenuCallbacks> => {
   const text = createText([
@@ -20,7 +21,10 @@ const adminMenuScreen = (): TelegramScreen<AdminMenuCallbacks> => {
 
   const requestUsers = sesameUserRequestDatabase.getAllUsers();
 
-  const keyboard = [[createButton<AdminMenuCallbacks>("Back", "AdminMenu: back")]];
+  const keyboard = [
+    [createButton<AdminMenuCallbacks>("Send restart message", "AdminMenu: send restart")],
+    [createButton<AdminMenuCallbacks>("Back", "AdminMenu: back")],
+  ];
 
   requestUsers.forEach((user) => {
     if (user.accepted) return;
@@ -30,7 +34,7 @@ const adminMenuScreen = (): TelegramScreen<AdminMenuCallbacks> => {
   return {
     text,
     keyboard,
-    callbacks: ["AdminMenu: back"],
+    callbacks: ["AdminMenu: back", "AdminMenu: send restart"],
   };
 };
 
@@ -51,16 +55,27 @@ export function handleAdminMenu(
   if (!user) return;
 
   if (command === "AdminMenu: back") sendMainMenu(telegramCommand);
-  else if (command.includes("AdminMenu")) {
-    const newUserId = parseInt(betterSplit(command, ".", 1));
+  else if (command === "AdminMenu: send restart") sendResetAllUsers(telegramCommand);
+  else if (command.includes("AdminMenu")) grantAccess(command, telegramCommand);
+  else return;
+}
+function grantAccess(command: string, telegramCommand: TelegramCommand) {
+  const newUserId = parseInt(betterSplit(command, ".", 1));
 
-    chatHistory.deleteChatHistory(newUserId);
-    publicScreens.sendWelcomeMessage(newUserId);
-    sesameUserRequestDatabase.acceptUser(newUserId);
+  chatHistory.deleteChatHistory(newUserId);
+  publicScreens.sendWelcomeMessage(newUserId);
+  sesameUserRequestDatabase.acceptUser(newUserId);
 
-    sendAdminMenu(telegramCommand).then(() => asnwerCallback(telegramCommand.callbackId));
+  sendAdminMenu(telegramCommand).then(() => asnwerCallback(telegramCommand.callbackId));
 
-    const user = sesameUserRequestDatabase.getUser(newUserId);
-    if (user) logConsole({ user, action: "grantedAccess" });
-  } else return;
+  const user = sesameUserRequestDatabase.getUser(newUserId);
+  if (user) logConsole({ user, action: "grantedAccess" });
+}
+
+function sendResetAllUsers(telegramCommand: TelegramCommand) {
+  const users = sesameDatabase.getAllUsers();
+  if (!users.size) return;
+
+  users.forEach((_, userId) => sendRestartMessage(userId));
+  return asnwerCallback(telegramCommand.callbackId);
 }
