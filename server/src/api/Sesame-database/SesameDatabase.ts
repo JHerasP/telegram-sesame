@@ -1,7 +1,7 @@
-import { awaitResolver } from "../../TS_tools/general-utility";
-import { Autocomplete } from "../../TS_tools/ts-utility-types/utiliy-types";
-import { ENV } from "../../config";
-import { employeeApi } from "../entity/sesame/employee/employee.index";
+import {awaitResolver} from "../../TS_tools/general-utility";
+import {Autocomplete} from "../../TS_tools/ts-utility-types/utiliy-types";
+import {ENV} from "../../config";
+import {employeeApi} from "../entity/sesame/employee/employee.index";
 import logConsole from "../tools/log";
 
 export interface User {
@@ -30,7 +30,7 @@ export class SesameDatabase {
   }
 
   public setUser(userId: number, user: User) {
-    logConsole({ user, action: "logged" });
+    logConsole({user, action: "logged"});
     this.users.set(userId, user);
   }
 
@@ -61,7 +61,7 @@ export class SesameDatabase {
 
     const [userData] = await awaitResolver(employeeApi.getEmployeeInfo(user?.cookie));
 
-    if (userData) this.users.set(userId, { ...user, workingStatus: userData.workStatus });
+    if (userData) this.users.set(userId, {...user, workingStatus: userData.workStatus});
   }
 
   public toogleremmeberCheckIn(userId: number) {

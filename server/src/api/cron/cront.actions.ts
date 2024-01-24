@@ -1,5 +1,5 @@
-import { sesameDatabase } from "../Sesame-database/SesameDatabase";
-import { privateScreens } from "../telegram-screens";
+import {sesameDatabase} from "../Sesame-database/SesameDatabase";
+import {privateScreens} from "../telegram-screens";
 import logConsole from "../tools/log";
 import {
   attemptToAutoCheckOut,
@@ -8,10 +8,10 @@ import {
   getRefreshedUserWorkingStatus,
   sendMessageAboutCheckOutOutSession,
 } from "./cron.service";
-import { getRandomTimeInterval, isSameDay, waitUntil } from "./cron.tools";
+import {getRandomTimeInterval, isSameDay, waitUntil} from "./cron.tools";
 import cronVariables from "./cront.variables";
 
-const { minRandomTime, maxRandomTime } = cronVariables;
+const {minRandomTime, maxRandomTime} = cronVariables;
 
 export function checkExpiringSession() {
   const today = new Date();
@@ -19,7 +19,7 @@ export function checkExpiringSession() {
   if (!users.size) return;
 
   users.forEach(
-    ({ chatId, logUntil }) => isSameDay(logUntil, today) && privateScreens.sendRenewLogInMessage(chatId, logUntil)
+    ({chatId, logUntil}) => isSameDay(logUntil, today) && privateScreens.sendRenewLogInMessage(chatId, logUntil),
   );
 }
 
@@ -37,7 +37,7 @@ export function remmemberToCheckIn() {
     const workingDay = await checkIfWorkingDay(user);
 
     if (workingDay)
-      privateScreens.sendRemberCheckInMessage(chatId).then(() => logConsole({ user, action: "remmemberToCheckIn" }));
+      privateScreens.sendRemberCheckInMessage(chatId).then(() => logConsole({user, action: "remmemberToCheckIn"}));
   });
 }
 
@@ -45,7 +45,7 @@ export function autoCheckOut() {
   const users = sesameDatabase.getAllUsers();
   if (!users.size) return;
 
-  users.forEach(async ({ chatId, autoCheckOut }) => {
+  users.forEach(async ({chatId, autoCheckOut}) => {
     if (!autoCheckOut) return;
 
     const user = await getRefreshedUserWorkingStatus(chatId);
@@ -69,6 +69,6 @@ export function checkOutAtMaxWorkingTime() {
     if (!user) return;
     if (user.workingStatus === "offline") return;
 
-    checkOutAndMessage(user).then(() => logConsole({ user, action: "autoCheckOutMaxTime" }));
+    checkOutAndMessage(user).then(() => logConsole({user, action: "autoCheckOutMaxTime"}));
   });
 }

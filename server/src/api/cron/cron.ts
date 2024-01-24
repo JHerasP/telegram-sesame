@@ -1,20 +1,16 @@
-import { createCron } from "./cron.tools";
-import { autoCheckOut, checkExpiringSession, checkOutAtMaxWorkingTime, remmemberToCheckIn } from "./cront.actions";
+import {createCron} from "./cron.tools";
+import {autoCheckOut, checkExpiringSession, checkOutAtMaxWorkingTime, remmemberToCheckIn} from "./cront.actions";
 import cronVariables from "./cront.variables";
 
-const {
-  everyWeekDayAfterWorkStartTimePassed: everyDayAfterWorkStartTimePassed,
-  everyWeekDayAfterWorkEndtime,
-  everyWeekDayMaxWorkingTime,
-  onEveryDay,
-} = cronVariables;
+const {everyWeekDayAfterWorkStartTimePassed, everyWeekDayAfterWorkEndtime, everyWeekDayMaxWorkingTime, onEveryDay} =
+  cronVariables;
 
 export function runCronExpiringSession() {
   createCron("Check expiring session", onEveryDay, checkExpiringSession);
 }
 
 export function startCronRememberToCheckIn() {
-  createCron("Send message to check in", everyDayAfterWorkStartTimePassed, remmemberToCheckIn);
+  createCron("Send message to check in", everyWeekDayAfterWorkStartTimePassed, remmemberToCheckIn);
 }
 
 export function startCronAutoCheckOut() {

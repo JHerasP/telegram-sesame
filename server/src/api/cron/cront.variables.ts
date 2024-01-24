@@ -6,6 +6,6 @@ const cronVariables = {
   everyWeekDayAfterWorkEndtime: "10 15 * * 1-5",
   everyWeekDayAfterWorkStartTimePassed: "10 7 * * 1-5",
   everyWeekDayMaxWorkingTime: "29 15 * * 1-5",
-};
+} as const;
 
 export default cronVariables;

@@ -1,6 +1,6 @@
-import { cronService } from "./src/api/cron/cron.index";
+import {cronService} from "./src/api/cron/cron.index";
 import app from "./src/app";
-import { configIndex } from "./src/config";
+import {configIndex} from "./src/config";
 
 const PORT = configIndex.ENV.port;
 const HOST = configIndex.ENV.host;
