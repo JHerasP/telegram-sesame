@@ -1,7 +1,7 @@
 import request from "request-promise-native";
 import { awaitResolver } from "../../../../TS_tools/general-utility";
 import { ENV } from "../../../../config";
-import { User } from "../../../asesame-database/SesameDatabase";
+import { User } from "../../../sesame-database/SesameDatabase";
 import logConsole from "../../../tools/log";
 import { handleErrorCheckInOut } from "./checks.tools";
 import { taskApiService } from "../task/task.index";

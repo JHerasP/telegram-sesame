@@ -1,8 +1,8 @@
 import { publicScreens } from "..";
 import { betterSplit } from "../../../TS_tools/general-utility";
-import { chatHistory } from "../../asesame-database/SesameChatHistory";
-import { sesameDatabase } from "../../asesame-database/SesameDatabase";
-import { sesameUserRequestDatabase } from "../../asesame-database/SesameUserRequest";
+import { chatHistory } from "../../sesame-database/SesameChatHistory";
+import { sesameDatabase } from "../../sesame-database/SesameDatabase";
+import { sesameUserRequestDatabase } from "../../sesame-database/SesameUserRequest";
 import { sesameBotService } from "../../sesame-bot";
 import { TelegramCommand } from "../../sesame-bot/command/command.types";
 import logConsole from "../../tools/log";

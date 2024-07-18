@@ -2,7 +2,7 @@ import { awaitResolver } from "../../../TS_tools/general-utility";
 import { sesameBotService } from "../../sesame-bot";
 import { sesameBot } from "../../sesame-bot/SesameBot";
 import { TelegramCommand } from "../../sesame-bot/command/command.types";
-import { User, sesameDatabase } from "../../asesame-database/SesameDatabase";
+import { User, sesameDatabase } from "../../sesame-database/SesameDatabase";
 
 import logConsole from "../../tools/log";
 import { createButton, createText } from "../keyboards/keyboard";

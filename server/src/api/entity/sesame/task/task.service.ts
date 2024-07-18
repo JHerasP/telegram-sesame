@@ -1,5 +1,5 @@
 import { awaitResolver } from "../../../../TS_tools/general-utility";
-import { User } from "../../../asesame-database/SesameDatabase";
+import { User } from "../../../sesame-database/SesameDatabase";
 import { taskApi } from "./task.index";
 
 export async function startLastTask(user: User) {

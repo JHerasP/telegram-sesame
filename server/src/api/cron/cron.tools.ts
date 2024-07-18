@@ -1,5 +1,5 @@
 import cron from "node-cron";
-import { User, sesameDatabase } from "../asesame-database/SesameDatabase";
+import { User, sesameDatabase } from "../sesame-database/SesameDatabase";
 
 export function checkIfTodayIsHoliday(hollyDay: string[]) {
   const today = new Date();

@@ -1,6 +1,6 @@
 import { ENV } from "../../../config";
 import { sesameBotService } from "../../sesame-bot";
-import { chatHistory } from "../../asesame-database/SesameChatHistory";
+import { chatHistory } from "../../sesame-database/SesameChatHistory";
 import { createJWT } from "../../tools/telegram-files/telegram-files";
 import { createText } from "../keyboards/keyboard";
 import { TelegramScreen } from "../telegramScreens.types";

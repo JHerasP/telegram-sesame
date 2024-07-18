@@ -1,4 +1,4 @@
-import { User, sesameDatabase } from "../../asesame-database/SesameDatabase";
+import { User, sesameDatabase } from "../../sesame-database/SesameDatabase";
 import { checkApi } from "../../entity/sesame/checks/check.index";
 import { employeeApi } from "../../entity/sesame/employee/employee.index";
 import { WorkType } from "../../entity/sesame/employee/employee.types";

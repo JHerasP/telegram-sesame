@@ -1,5 +1,5 @@
 import { betterSplit } from "../../../TS_tools/general-utility";
-import { User, sesameDatabase } from "../../asesame-database/SesameDatabase";
+import { User, sesameDatabase } from "../../sesame-database/SesameDatabase";
 import { taskApi, taskApiService } from "../../entity/sesame/task/task.index";
 import { TaskTimer } from "../../entity/sesame/task/task.type";
 import { sesameBotService } from "../../sesame-bot";

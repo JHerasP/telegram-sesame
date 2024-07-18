@@ -1,7 +1,7 @@
 // I still dont understand why I have to add this to avoid a deprecation warning
 process.env["NTBA_FIX_350"] = "1";
 import TelegramBot from "node-telegram-bot-api";
-import { chatHistory, tempChatHistory } from "../asesame-database/SesameChatHistory";
+import { chatHistory, tempChatHistory } from "../sesame-database/SesameChatHistory";
 import { sesameBot } from "../sesame-bot/SesameBot";
 
 export function sendMessage(

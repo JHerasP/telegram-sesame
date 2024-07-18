@@ -1,4 +1,4 @@
-import { sesameDatabase } from "../asesame-database/SesameDatabase";
+import { sesameDatabase } from "../sesame-database/SesameDatabase";
 import { privateScreens } from "../telegram-screens";
 import logConsole from "../tools/log";
 import {

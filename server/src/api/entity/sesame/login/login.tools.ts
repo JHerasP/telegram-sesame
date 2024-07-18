@@ -1,5 +1,5 @@
 import decode from "jsonwebtoken/decode";
-import { User, sesameDatabase } from "../../../asesame-database/SesameDatabase";
+import { User, sesameDatabase } from "../../../sesame-database/SesameDatabase";
 import { awaitResolver } from "../../../../TS_tools/general-utility";
 import { employeeApi } from "../employee/employee.index";
 import { SesameEmployee } from "../employee/employee.types";

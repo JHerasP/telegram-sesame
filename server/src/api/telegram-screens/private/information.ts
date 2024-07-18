@@ -1,6 +1,6 @@
 import { sesameBotService } from "../../sesame-bot";
 import { TelegramCommand } from "../../sesame-bot/command/command.types";
-import { sesameDatabase, User } from "../../asesame-database/SesameDatabase";
+import { sesameDatabase, User } from "../../sesame-database/SesameDatabase";
 import { createButton, createText } from "../keyboards/keyboard";
 import { TelegramScreen } from "../telegramScreens.types";
 import { sendLoggedWelcomeMessage } from "./loggingWelcome";

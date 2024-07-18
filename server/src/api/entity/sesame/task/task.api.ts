@@ -1,7 +1,7 @@
 import { ENV } from "../../../../config";
 import { awaitResolver } from "../../../../TS_tools/general-utility";
 import request from "request-promise-native";
-import { User } from "../../../asesame-database/SesameDatabase";
+import { User } from "../../../sesame-database/SesameDatabase";
 import logConsole from "../../../tools/log";
 import { TaskTimer, TaskWeek } from "./task.type";
 

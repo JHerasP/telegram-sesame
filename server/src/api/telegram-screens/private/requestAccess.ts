@@ -1,8 +1,8 @@
 import { Message } from "node-telegram-bot-api";
 import { publicScreens } from "..";
 import { betterSplit } from "../../../TS_tools/general-utility";
-import { chatHistory } from "../../asesame-database/SesameChatHistory";
-import { sesameUserRequestDatabase } from "../../asesame-database/SesameUserRequest";
+import { chatHistory } from "../../sesame-database/SesameChatHistory";
+import { sesameUserRequestDatabase } from "../../sesame-database/SesameUserRequest";
 import { sesameBotService } from "../../sesame-bot";
 import { sesameBot } from "../../sesame-bot/SesameBot";
 import { TelegramCommand } from "../../sesame-bot/command/command.types";

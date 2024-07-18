@@ -1,4 +1,4 @@
-import { User, sesameDatabase } from "../../asesame-database/SesameDatabase";
+import { User, sesameDatabase } from "../../sesame-database/SesameDatabase";
 import { sesameBotService } from "../../sesame-bot";
 import { TelegramCommand } from "../../sesame-bot/command/command.types";
 import { createButton, createText } from "../keyboards/keyboard";

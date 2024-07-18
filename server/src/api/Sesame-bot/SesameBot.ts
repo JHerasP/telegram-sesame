@@ -4,7 +4,7 @@ import { TelegramButtonsCallbacks } from "../telegram-screens/telegramScreens.ty
 import TELEGRAM_COMMANDS from "../tools/telegram-commands";
 import { privateScreens, publicScreens } from "../telegram-screens";
 import { commandHandler } from "./command/command";
-import { sesameUserRequestDatabase } from "../asesame-database/SesameUserRequest";
+import { sesameUserRequestDatabase } from "../sesame-database/SesameUserRequest";
 import logConsole from "../tools/log";
 
 const TOKEN = configIndex.ENV.telegramToken;
