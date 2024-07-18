@@ -1,5 +1,5 @@
 import express from "express";
-import apiIndex from "./api/index";
+import apiIndex from "./index";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
