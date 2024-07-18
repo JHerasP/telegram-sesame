@@ -1,8 +1,8 @@
 import { Message } from "node-telegram-bot-api";
 import { publicScreens } from "..";
 import { betterSplit } from "../../../TS_tools/general-utility";
-import { chatHistory } from "../../Sesame-database/SesameChatHistory";
-import { sesameUserRequestDatabase } from "../../Sesame-database/SesameUserRequest";
+import { chatHistory } from "../../asesame-database/SesameChatHistory";
+import { sesameUserRequestDatabase } from "../../asesame-database/SesameUserRequest";
 import { sesameBotService } from "../../sesame-bot";
 import { sesameBot } from "../../sesame-bot/SesameBot";
 import { TelegramCommand } from "../../sesame-bot/command/command.types";
@@ -31,7 +31,10 @@ const requestAcessScreen = (msg: Message): TelegramScreen<RequestAccessScreenCal
     keyboard: [
       [
         createButton<RequestAccessScreenCallbacks>("Dehogy is", "requestAccessScreen: No way"),
-        createButton<RequestAccessScreenCallbacks>("Még szép", `requestAccessScreen: Meh.${msg.chat.id}`),
+        createButton<RequestAccessScreenCallbacks>(
+          "Még szép",
+          `requestAccessScreen: Meh.${msg.chat.id}`
+        ),
       ],
     ],
     callbacks: [],

@@ -1,6 +1,6 @@
 import { awaitResolver } from "../../TS_tools/general-utility";
-import { tempChatHistory } from "../Sesame-database/SesameChatHistory";
-import { User, sesameDatabase } from "../Sesame-database/SesameDatabase";
+import { tempChatHistory } from "../asesame-database/SesameChatHistory";
+import { User, sesameDatabase } from "../asesame-database/SesameDatabase";
 import { checkApi } from "../entity/sesame/checks/check.index";
 import { employeeApi } from "../entity/sesame/employee/employee.index";
 import { privateScreens } from "../telegram-screens";

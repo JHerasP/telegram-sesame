@@ -1,4 +1,4 @@
-import { User, sesameDatabase } from "../../Sesame-database/SesameDatabase";
+import { User, sesameDatabase } from "../../asesame-database/SesameDatabase";
 import { sesameBotService } from "../../sesame-bot";
 import { TelegramCommand } from "../../sesame-bot/command/command.types";
 import { createButton, createText } from "../keyboards/keyboard";
@@ -9,7 +9,12 @@ import { sendCheckMenu } from "./checks";
 import { sendOptionsMenu } from "./options";
 import { sendTaskMenu } from "./task";
 
-export type MenuCallbacks = `MenuScreen: ${"Check menu" | "Task" | "Refresh" | "Options" | "Admin"}`;
+export type MenuCallbacks = `MenuScreen: ${
+  | "Check menu"
+  | "Task"
+  | "Refresh"
+  | "Options"
+  | "Admin"}`;
 
 const mainMenuScreen = (user: User): TelegramScreen<MenuCallbacks> => {
   const text = createText([

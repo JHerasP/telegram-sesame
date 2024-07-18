@@ -1,5 +1,5 @@
 import decode from "jsonwebtoken/decode";
-import { User, sesameDatabase } from "../../../Sesame-database/SesameDatabase";
+import { User, sesameDatabase } from "../../../asesame-database/SesameDatabase";
 import { awaitResolver } from "../../../../TS_tools/general-utility";
 import { employeeApi } from "../employee/employee.index";
 import { SesameEmployee } from "../employee/employee.types";
@@ -52,7 +52,11 @@ export function createNewUser({
   sesameDatabase.setUser(userId, user);
 }
 
-export async function processLoggedInUser(headers: Record<string, string>, jwt: string, email: string) {
+export async function processLoggedInUser(
+  headers: Record<string, string>,
+  jwt: string,
+  email: string
+) {
   const cookies = headers["set-cookie"];
   const decoded: { userId: number } = decode(jwt.split(" ")[1], { json: true });
 

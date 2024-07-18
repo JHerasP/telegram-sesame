@@ -1,8 +1,8 @@
 import { publicScreens } from "..";
 import { betterSplit } from "../../../TS_tools/general-utility";
-import { chatHistory } from "../../Sesame-database/SesameChatHistory";
-import { sesameDatabase } from "../../Sesame-database/SesameDatabase";
-import { sesameUserRequestDatabase } from "../../Sesame-database/SesameUserRequest";
+import { chatHistory } from "../../asesame-database/SesameChatHistory";
+import { sesameDatabase } from "../../asesame-database/SesameDatabase";
+import { sesameUserRequestDatabase } from "../../asesame-database/SesameUserRequest";
 import { sesameBotService } from "../../sesame-bot";
 import { TelegramCommand } from "../../sesame-bot/command/command.types";
 import logConsole from "../../tools/log";
@@ -16,7 +16,10 @@ export type AdminMenuCallbacks = `AdminMenu: ${"send restart" | "back" | `id.${s
 
 const adminMenuScreen = (): TelegramScreen<AdminMenuCallbacks> => {
   const text = createText([
-    { sentence: "Wololo, this is the list of people that wants to join: ", style: { jumpLine: true } },
+    {
+      sentence: "Wololo, this is the list of people that wants to join: ",
+      style: { jumpLine: true },
+    },
   ]);
 
   const requestUsers = sesameUserRequestDatabase.getAllUsers();
@@ -28,7 +31,9 @@ const adminMenuScreen = (): TelegramScreen<AdminMenuCallbacks> => {
 
   requestUsers.forEach((user) => {
     if (user.accepted) return;
-    keyboard.unshift([createButton<AdminMenuCallbacks>(`${user.employeeName}`, `AdminMenu: id.${user.chatId}`)]);
+    keyboard.unshift([
+      createButton<AdminMenuCallbacks>(`${user.employeeName}`, `AdminMenu: id.${user.chatId}`),
+    ]);
   });
 
   return {

@@ -1,4 +1,4 @@
-import { User, sesameDatabase } from "../../Sesame-database/SesameDatabase";
+import { User, sesameDatabase } from "../../asesame-database/SesameDatabase";
 import { sesameBotService } from "../../sesame-bot";
 import { TelegramCommand } from "../../sesame-bot/command/command.types";
 import { createButton, createText } from "../keyboards/keyboard";
@@ -65,7 +65,11 @@ const optionsScreen = (
 };
 
 export function sendOptionsMenu({ chatId, messageId }: TelegramCommand, user: User) {
-  const { text, keyboard } = optionsScreen(user.autoCheckOut, user.remmeberCheckIn, user.startTaskWhenCheckIn);
+  const { text, keyboard } = optionsScreen(
+    user.autoCheckOut,
+    user.remmeberCheckIn,
+    user.startTaskWhenCheckIn
+  );
 
   sesameBotService.editMessage(chatId, text, keyboard, messageId);
 }
@@ -80,7 +84,8 @@ export function handleOptionsMenu(
   if (command === "OptionsScreen: Back") sendMainMenu(telegramCommand);
   else if (command === "OptionsScreen: Info") sendInfoMenu(telegramCommand, user);
   else if (command === "OptionsScreen: Toogle autoclose") toogleAutoclose(telegramCommand);
-  else if (command === "OptionsScreen: Toogle remmember check in") toogleRemmemberCheckIn(telegramCommand);
+  else if (command === "OptionsScreen: Toogle remmember check in")
+    toogleRemmemberCheckIn(telegramCommand);
   else if (command === "OptionsScreen: Toogle start task") toogleStartTaskCheckIn(telegramCommand);
   else if (command === "OptionsScreen: Remove session") sendLogOutMessage(telegramCommand);
   else return;

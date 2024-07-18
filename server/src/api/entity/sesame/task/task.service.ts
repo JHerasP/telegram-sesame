@@ -1,6 +1,6 @@
-import {awaitResolver} from "../../../../TS_tools/general-utility";
-import {User} from "../../../Sesame-database/SesameDatabase";
-import {taskApi} from "./task.index";
+import { awaitResolver } from "../../../../TS_tools/general-utility";
+import { User } from "../../../asesame-database/SesameDatabase";
+import { taskApi } from "./task.index";
 
 export async function startLastTask(user: User) {
   const [task] = await awaitResolver(taskApi.getAllTask(user));

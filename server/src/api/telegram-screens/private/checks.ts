@@ -1,4 +1,4 @@
-import { User, sesameDatabase } from "../../Sesame-database/SesameDatabase";
+import { User, sesameDatabase } from "../../asesame-database/SesameDatabase";
 import { checkApi } from "../../entity/sesame/checks/check.index";
 import { employeeApi } from "../../entity/sesame/employee/employee.index";
 import { WorkType } from "../../entity/sesame/employee/employee.types";
@@ -27,7 +27,8 @@ const checkScreen = (user: User, workTypes: WorkType[]): TelegramScreen<CheckCal
   ]);
 
   const buttons = workTypes.map((workType) => {
-    if (user.workingStatus === "offline") return [createButton(workType.name, `CheckScreen: ${workType.id}`)];
+    if (user.workingStatus === "offline")
+      return [createButton(workType.name, `CheckScreen: ${workType.id}`)];
     else return [];
   });
 
@@ -36,8 +37,10 @@ const checkScreen = (user: User, workTypes: WorkType[]): TelegramScreen<CheckCal
     return callback;
   });
 
-  if (user.workingStatus === "offline") buttons.unshift([createButton("Office", "CheckScreen: Check in")]);
-  if (user.workingStatus !== "offline") buttons.push([createButton("📴 Check out", "CheckScreen: Check out")]);
+  if (user.workingStatus === "offline")
+    buttons.unshift([createButton("Office", "CheckScreen: Check in")]);
+  if (user.workingStatus !== "offline")
+    buttons.push([createButton("📴 Check out", "CheckScreen: Check out")]);
   buttons.push([createButton("Back", "CheckScreen: Back")]);
 
   callbacks.unshift("CheckScreen: Check in");
@@ -72,17 +75,27 @@ export function handleCheckMenu(
   if (!user) return;
 
   if (command === "CheckScreen: Check in")
-    return checkInSesame(user, telegramCommand.callbackId).then(() => sendMainMenu(telegramCommand));
+    return checkInSesame(user, telegramCommand.callbackId).then(() =>
+      sendMainMenu(telegramCommand)
+    );
   else if (command === "CheckScreen: Check out")
-    return checkOutSesame(user, telegramCommand.callbackId).then(() => sendMainMenu(telegramCommand));
+    return checkOutSesame(user, telegramCommand.callbackId).then(() =>
+      sendMainMenu(telegramCommand)
+    );
   else if (command === "CheckScreen: Back") return sendMainMenu(telegramCommand);
 
   if (command.includes("CheckScreen"))
-    return checkInSesame(user, telegramCommand.callbackId, command).then(() => sendMainMenu(telegramCommand));
+    return checkInSesame(user, telegramCommand.callbackId, command).then(() =>
+      sendMainMenu(telegramCommand)
+    );
   else return;
 }
 
-async function checkInSesame(user: User, callbackId: string, workCheckTypeId?: `CheckScreen: ${string}`) {
+async function checkInSesame(
+  user: User,
+  callbackId: string,
+  workCheckTypeId?: `CheckScreen: ${string}`
+) {
   const checkId = workCheckTypeId ? betterSplit(workCheckTypeId, ":", 1).trim() : undefined;
   const [_, err] = await awaitResolver(checkApi.checkIn(user, checkId));
 

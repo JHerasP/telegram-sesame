@@ -1,5 +1,5 @@
 import { sesameBotService } from "../../sesame-bot";
-import { chatHistory } from "../../Sesame-database/SesameChatHistory";
+import { chatHistory } from "../../asesame-database/SesameChatHistory";
 import { createButton, createText } from "../keyboards/keyboard";
 import { TelegramScreen } from "../telegramScreens.types";
 
@@ -17,7 +17,14 @@ const loggingWelcome = (): TelegramScreen<LoggedCallbacks> => {
 
   return {
     text,
-    keyboard: [[createButton<LoggedCallbacks>("I want to eat pancakes (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧", "LoggingWelcomeScreen: start")]],
+    keyboard: [
+      [
+        createButton<LoggedCallbacks>(
+          "I want to eat pancakes (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧",
+          "LoggingWelcomeScreen: start"
+        ),
+      ],
+    ],
     callbacks: ["LoggingWelcomeScreen: start"],
   };
 };

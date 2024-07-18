@@ -1,7 +1,7 @@
 import { awaitResolver } from "../../../../TS_tools/general-utility";
 import { ENV } from "../../../../config";
 import request from "request-promise-native";
-import { User } from "../../../Sesame-database/SesameDatabase";
+import { User } from "../../../asesame-database/SesameDatabase";
 import { getDaysOff } from "./employee.tools";
 import { HolidaysResponse, SesameEmployee, WorkType, YearHolidayResponse } from "./employee.types";
 

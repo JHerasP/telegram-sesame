@@ -1,6 +1,6 @@
 import { sesameBotService } from "../../sesame-bot";
 import { TelegramCommand } from "../../sesame-bot/command/command.types";
-import { sesameDatabase, User } from "../../Sesame-database/SesameDatabase";
+import { sesameDatabase, User } from "../../asesame-database/SesameDatabase";
 import { createButton, createText } from "../keyboards/keyboard";
 import { TelegramScreen } from "../telegramScreens.types";
 import { sendLoggedWelcomeMessage } from "./loggingWelcome";
@@ -11,7 +11,8 @@ export type InfoMenuCallbacks = `InfoScreen: ${"Renew session" | "Back"}`;
 const infoScreen = (logSince: string, logUntil: string): TelegramScreen<InfoMenuCallbacks> => {
   const text = createText([
     {
-      sentence: "In here you can check when was the time when you logged in and when I am going to ask you to renewal:",
+      sentence:
+        "In here you can check when was the time when you logged in and when I am going to ask you to renewal:",
       style: { jumpLine: true },
     },
     { sentence: "", style: { jumpLine: true } },
@@ -49,5 +50,6 @@ export function handleInfoMenu(
   if (!user) return;
 
   if (command === "InfoScreen: Back") sendOptionsMenu(telegramCommand, user);
-  else if (command === "InfoScreen: Renew session") sendLoggedWelcomeMessage(telegramCommand.chatId);
+  else if (command === "InfoScreen: Renew session")
+    sendLoggedWelcomeMessage(telegramCommand.chatId);
 }

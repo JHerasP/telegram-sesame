@@ -2,7 +2,7 @@ import { awaitResolver } from "../../../TS_tools/general-utility";
 import { sesameBotService } from "../../sesame-bot";
 import { sesameBot } from "../../sesame-bot/SesameBot";
 import { TelegramCommand } from "../../sesame-bot/command/command.types";
-import { User, sesameDatabase } from "../../Sesame-database/SesameDatabase";
+import { User, sesameDatabase } from "../../asesame-database/SesameDatabase";
 
 import logConsole from "../../tools/log";
 import { createButton, createText } from "../keyboards/keyboard";
@@ -10,7 +10,9 @@ import { TelegramScreen } from "../telegramScreens.types";
 
 export type AutoCheckOutWarningCallbaks = `PreviousAutoCheckOutScreen: ${"Slave" | "Freedom"}`;
 
-const autoCheckOutWarningScreen = (expireSesion: Date): TelegramScreen<AutoCheckOutWarningCallbaks> => {
+const autoCheckOutWarningScreen = (
+  expireSesion: Date
+): TelegramScreen<AutoCheckOutWarningCallbaks> => {
   const time = new Intl.DateTimeFormat("es-En", {
     hour: "numeric",
     minute: "numeric",
@@ -31,7 +33,12 @@ const autoCheckOutWarningScreen = (expireSesion: Date): TelegramScreen<AutoCheck
   return {
     text,
     keyboard: [
-      [createButton<AutoCheckOutWarningCallbaks>("Me están negreando ( ಥ﹏ಥ)", "PreviousAutoCheckOutScreen: Slave")],
+      [
+        createButton<AutoCheckOutWarningCallbaks>(
+          "Me están negreando ( ಥ﹏ಥ)",
+          "PreviousAutoCheckOutScreen: Slave"
+        ),
+      ],
       [
         createButton<AutoCheckOutWarningCallbaks>(
           "El decorado se calla ( ಠ ᴥಠ)",

@@ -1,7 +1,7 @@
 import request from "request-promise-native";
 import { awaitResolver } from "../../../../TS_tools/general-utility";
 import { ENV } from "../../../../config";
-import { User } from "../../../Sesame-database/SesameDatabase";
+import { User } from "../../../asesame-database/SesameDatabase";
 import logConsole from "../../../tools/log";
 import { handleErrorCheckInOut } from "./checks.tools";
 import { taskApiService } from "../task/task.index";
@@ -48,6 +48,9 @@ export async function checkout(user: User) {
   const [_, errorResponse] = await awaitResolver(request(clientServerOptions));
 
   if (errorResponse)
-    handleErrorCheckInOut(errorResponse, "You are not working. How come can you stop working twice? (►__◄)╯");
+    handleErrorCheckInOut(
+      errorResponse,
+      "You are not working. How come can you stop working twice? (►__◄)╯"
+    );
   else logConsole({ user, action: "checkOut" });
 }
