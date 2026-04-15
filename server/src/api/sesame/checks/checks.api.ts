@@ -4,7 +4,6 @@ import { ENV } from "../../../config";
 import { User } from "../../../databases/SesameDatabase";
 import logConsole from "../../../telegram/tools/log";
 import { handleErrorCheckInOut } from "./checks.tools";
-import { taskApiService } from "../task/task.index";
 const baseheaders = {
   "User-Agent": "Request-Promise",
   "Content-Type": "application/json",
@@ -31,7 +30,6 @@ export async function checkIn(user: User, workCheckTypeId?: string) {
       "You are already in. How many times do you want to check in until you are satisfied? (╬▔皿▔)╯"
     );
   } else {
-    if (user.startTaskWhenCheckIn) taskApiService.startLastTask(user);
     logConsole({ user, action: "checkIn" });
   }
 }
@@ -54,3 +52,4 @@ export async function checkout(user: User) {
     );
   else logConsole({ user, action: "checkOut" });
 }
+
