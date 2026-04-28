@@ -2,7 +2,7 @@ import { ENV } from "../config";
 import { employeeApi } from "../api/sesame/employee/employee.index";
 import logConsole from "../telegram/tools/log";
 import { awaitResolver } from "../TS_tools/general-utility";
-import { Autocomplete } from "../TS_tools/ts-utility-types/utiliy-types";
+import { LooseAutocomplete } from "../TS_tools/ts-utility-types/utiliy-types";
 
 export interface User {
   chatId: number;
@@ -11,7 +11,7 @@ export interface User {
   cookie: string;
 
   // This is weird, working status is a mix in between online and offline + the cases created by the user
-  workingStatus: Autocomplete<"online" | "offline">;
+  workingStatus: LooseAutocomplete<"online" | "offline">;
 
   logSince: Date;
   logUntil: Date;
